@@ -117,7 +117,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 </style>
 </head>
 <body>
-<div id="ptr" style="text-align:center;padding:0;height:0;overflow:hidden;transition:height .2s;color:#CFEF4E;font-size:13px;font-weight:500"></div><div id="root"></div>
+<div id="ptr" style="text-align:center;padding:0;height:0;overflow:hidden;transition:height .2s;color:#CFEF4E;font-size:13px;font-weight:500;pointer-events:none"></div><div id="root"></div>
 <div class="toast" id="toast"></div>
 <script>
 var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:'',regDay:0,regRepeat:'once',schedView:'week',tOpen:{},settings:false},_LS=false;
@@ -929,12 +929,14 @@ else{P.gap=0}UI.step=3;go()};document.getElementById('bk2').onclick=function(){U
 if(s===3){document.getElementById('b4').onclick=function(){P.rn=document.getElementById('i_rn').value||'';var gtv=document.getElementById('i_gt').value||'2:59:59';if(gtv.split(':').length===2)gtv=gtv+':00';P.gt=gtv;P.rd=document.getElementById('i_gd').value||'2026-11-01';P.done=true;svP();go()};document.getElementById('bk3').onclick=function(){UI.step=2;go()}}
 }
 
+window._calTap=function(ts){var SC2=gSC();for(var fw=1;fw<=Object.keys(SC2).length;fw++){var fws=SC2[fw].w1;for(var fd=0;fd<7;fd++){var fdd=new Date(fws.getTime()+fd*864e5);fdd.setHours(0,0,0,0);if(fdd.getTime()===ts){UI.cw=fw;UI._cwInit=true;UI.schedView='week';go();return}}}};
 window._tab=function(t){UI.tab=t;go()};
 window._tm=function(u){FT.tm=u;FT.ex=anaFit(FT.laps,u);go()};
 window._saveFit=function(){if(!FT.ex)return;var ex=FT.ex;if(FT.fileDate){var md2=matchWD(FT.fileDate);UI.cw=md2.w;UI.cd=md2.d}var k='w'+UI.cw+'d'+UI.cd;var rpe=document.getElementById('rpeSlider');S[k]={distance:ex.dist,pace:ex.pace,avgHR:ex.avgHR,maxHR:ex.maxHR,gct:ex.avgGCT,avgCad:ex.avgCad,avgPow:ex.avgPow,rpe:rpe?rpe.value:'5',notes:(ex.tk?'[트랙보정] ':'[FIT] ')+ex.laps.length+'랩'+(ex.cc?' ('+ex.cc+'랩 보정)':''),logged:new Date().toISOString()};svS();toast('W'+UI.cw+' '+DY[UI.cd]+' 저장 완료');go()};
 window._gw=function(w){UI.cw=w;UI.cd=0;go()};
 window._sd=function(d){UI.cd=d;go()};
 window._sleep=function(v){UI.sleep=v;go()};
+window._editBack=function(){P.done=true;svP();UI._editMode=false;UI.settings=false;go()};
 window._edit=function(){P.done=false;UI.step=0;go()};
 window._selType=function(el){document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('ac')});el.classList.add('ac')};
 window._regManual=function(){var day=UI.regDay||0;var typeEl=document.querySelector('.type-btn.ac');var type=typeEl?typeEl.dataset.type:'easy';var name=(document.getElementById('regName')||{}).value;var desc=(document.getElementById('regDesc')||{}).value;var dist=(document.getElementById('regDist')||{}).value;var pace=(document.getElementById('regPace')||{}).value;if(!name){toast('세션 이름을 입력해주세요');return}if(!P.cust)P.cust={};
