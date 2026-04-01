@@ -218,6 +218,9 @@ h+='<div class="sleep-row">';
 h+='<div class="sleep-btn'+(UI.sleep===i+1?' ac':'')+'" onclick="window._sleep('+(i+1)+')">'+s+'</div>'});
 h+='</div>';
 
+// Weather widget
+h+='<div id="weatherCard" style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;margin-bottom:8px;display:none"><div class="st"><div class="dot" style="background:var(--bl)"></div>현재 날씨</div><div id="weatherData" style="font-size:10px;color:var(--tx2)">로딩 중...</div></div>';
+
 // Today session card
 var cd=wk.d[UI.cd];
 var dd=new Date(wk.w1.getTime()+UI.cd*864e5);
@@ -256,13 +259,28 @@ h+='<div style="display:flex;justify-content:space-between;margin-bottom:4px;fon
 h+='<div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:10px"><div style="width:'+(wk.km>0?Math.round(doneKm/wk.km*100):0)+'%;height:100%;background:var(--ac);border-radius:2px"></div></div>';
 
 // Checklist
-for(var ci2=0;ci2<7;ci2++){var cd3=wk.d[ci2];var dd5=new Date(wk.w1.getTime()+ci2*864e5);var isDone=!!S['w'+cw+'d'+ci2];var tc3=cd3.type==='point'?'p':cd3.type==='tempo'?'t':cd3.type==='long'?'l':cd3.type==='rest'?'r':'e';
-h+='<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg3);border-radius:7px;margin-bottom:3px;cursor:pointer" onclick="window._sd('+ci2+');window._tab(\'today\')">';
+for(var ci2=0;ci2<7;ci2++){var cd3=wk.d[ci2];var dd5=new Date(wk.w1.getTime()+ci2*864e5);var sk2='w'+cw+'d'+ci2;var isDone=!!S[sk2];var isOpen=UI.cd===ci2;var tc3=cd3.type==='point'?'p':cd3.type==='tempo'?'t':cd3.type==='long'?'l':cd3.type==='rest'?'r':'e';
+h+='<div style="background:var(--bg3);border-radius:7px;margin-bottom:3px;overflow:hidden'+(isOpen?';border:1px solid rgba(139,122,255,.2)':'')+'">';
+h+='<div style="display:flex;align-items:center;gap:8px;padding:8px;cursor:pointer" onclick="window._sd('+ci2+');go()">';
 h+='<div style="width:16px;height:16px;border-radius:4px;border:1.5px solid '+(isDone?'var(--gn)':'rgba(255,255,255,.1)')+';background:'+(isDone?'rgba(45,212,160,.15)':'transparent')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gn);font-weight:700">'+(isDone?'✓':'')+'</div>';
 h+='<div style="flex:1"><div style="display:flex;align-items:center;gap:4px"><span class="dc-t '+tc3+'">'+(TN[cd3.type]||'이지')+'</span><span style="font-size:10px;font-weight:500;color:var(--tx)">'+cd3.l+'</span></div>';
-h+='<div style="font-size:8px;color:var(--tx3)">'+DY[ci2]+' '+dd5.getDate()+' · '+(cd3.d||'')+(cd3.pace?' · '+cd3.pace+'/km':'')+'</div>';
-if(isDone){var sd2=S['w'+cw+'d'+ci2];h+='<div style="font-size:8px;color:var(--gn);margin-top:1px">'+(sd2.distance||'-')+'km · '+(sd2.pace||'-')+'/km'+(sd2.gct?' · GCT '+(sd2.gct)+'ms':'')+'</div>'}
-h+='</div></div>'}
+h+='<div style="font-size:8px;color:var(--tx3)">'+DY[ci2]+' '+dd5.getDate()+' · '+(cd3.d||'')+(cd3.pace?' · '+cd3.pace+'/km':'')+'</div></div>';
+h+='<div style="font-size:12px;color:var(--tx3);padding:4px">'+(isOpen?'▲':'▼')+'</div></div>';
+if(isOpen){
+h+='<div style="padding:0 10px 10px;border-top:1px solid rgba(255,255,255,.03)">';
+if(isDone){var sd2=S[sk2];
+h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px;font-size:9px">';
+h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">거리</div><div style="font-family:var(--m);font-weight:600;color:var(--tx)">'+(sd2.distance||'-')+'km</div></div>';
+h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">페이스</div><div style="font-family:var(--m);font-weight:600;color:var(--tx)">'+(sd2.pace||'-')+'/km</div></div>';
+h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">심박</div><div style="font-family:var(--m);font-weight:600;color:'+(sd2.avgHR>185?'var(--rd)':'var(--tx)')+'">'+(sd2.avgHR||'-')+'bpm</div></div>';
+h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">GCT</div><div style="font-family:var(--m);font-weight:600;color:'+(sd2.gct&&sd2.gct<=220?'var(--gn)':'var(--tx)')+'">'+(sd2.gct||'-')+'ms</div></div>';
+h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">케이던스</div><div style="font-family:var(--m);font-weight:600">'+(sd2.avgCad||'-')+'spm</div></div>';
+h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">RPE</div><div style="font-family:var(--m);font-weight:600">'+(sd2.rpe||'-')+'/10</div></div>';
+h+='</div>';
+if(sd2.notes)h+='<div style="font-size:8px;color:var(--tx3);margin-top:4px">'+sd2.notes+'</div>';
+}else{h+='<div style="padding:8px 0;font-size:10px;color:var(--tx3);text-align:center">아직 기록이 없어요. <span style="color:var(--ac2);cursor:pointer" onclick="window._sd('+ci2+');window._tab(\'ana\')">분석 탭</span>에서 .fit 올려보세요.</div>'}
+h+='</div>'}
+h+='</div>'}
 
 }else if(UI.tab==='rec'){
 // Record tab - performance calendar
@@ -527,6 +545,31 @@ window._rst=function(){P=null;S={};if(_LS){localStorage.removeItem('mc_p');local
 function postRender(){
 var fi=document.getElementById('fitIn');if(fi&&!fi._b){fi._b=true;fi.onchange=function(e){if(e.target.files[0])hFile(e.target.files[0])}}
 var rpe=document.getElementById('rpeSlider');if(rpe&&!rpe._b){rpe._b=true;rpe.oninput=function(){document.getElementById('rpeVal').textContent=this.value}}
+// Weather
+var wc2=document.getElementById('weatherCard');
+if(wc2&&UI.tab==='today'){
+wc2.style.display='block';
+if(!window._wCache||Date.now()-window._wCache.ts>600000){
+fetch('https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.978&current=temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m&timezone=Asia%2FSeoul')
+.then(function(r){return r.json()}).then(function(d){
+var c=d.current;var t=Math.round(c.temperature_2m);var wc3=c.weather_code;var ws=Math.round(c.wind_speed_10m);var hm=c.relative_humidity_2m;
+var wDesc={0:'맑음',1:'대체로 맑음',2:'구름 조금',3:'흐림',45:'안개',48:'안개',51:'이슬비',53:'이슬비',55:'이슬비',61:'비',63:'비',65:'강한 비',71:'눈',73:'눈',75:'강한 눈',80:'소나기',81:'소나기',95:'뇌우'};
+var wIcon={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌧',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'❄️',73:'❄️',75:'❄️',80:'🌧',81:'🌧',95:'⛈'};
+var desc=wDesc[wc3]||'';var icon=wIcon[wc3]||'';
+var runAdv='';if(t>30)runAdv='🔴 폭염 — 페이스 +20초/km 이상 감속';else if(t>27)runAdv='🟡 더위 — 페이스 +10~15초/km';else if(t<-5)runAdv='🔴 혹한 — 방한 필수';else if(t<5)runAdv='🟡 추위 — 장갑/귀마개';else runAdv='🟢 러닝하기 좋은 날씨';
+return fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=37.5665&longitude=126.978&current=pm2_5,pm10&timezone=Asia%2FSeoul').then(function(r2){return r2.json()}).then(function(d2){
+var pm25=d2.current?Math.round(d2.current.pm2_5):null;var pm10=d2.current?Math.round(d2.current.pm10):null;
+var aqDesc='',aqColor='var(--gn)';
+if(pm25!==null){if(pm25>75){aqDesc='매우나쁨';aqColor='var(--rd)'}else if(pm25>35){aqDesc='나쁨';aqColor='var(--am)'}else if(pm25>15){aqDesc='보통';aqColor='var(--am)'}else{aqDesc='좋음';aqColor='var(--gn)'}}
+window._wCache={ts:Date.now()};
+var wd=document.getElementById('weatherData');if(wd){
+wd.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px"><span style="font-size:20px">'+icon+'</span><span style="font-family:var(--m);font-size:20px;font-weight:600;color:var(--tx)">'+t+'°C</span><span style="font-size:10px;color:var(--tx2)">'+desc+'</span></div>'
++'<div style="display:flex;gap:8px;font-size:9px;margin-bottom:4px"><span>습도 '+hm+'%</span><span>바람 '+ws+'km/h</span>'
++(pm25!==null?'<span>미세먼지 <span style="color:'+aqColor+';font-weight:600">'+aqDesc+'</span> (PM2.5: '+pm25+')</span>':'')
++(pm10!==null?'<span>PM10: '+pm10+'</span>':'')+'</div>'
++'<div style="font-size:9px;'+(runAdv.startsWith('🔴')?'color:var(--rd)':runAdv.startsWith('🟡')?'color:var(--am)':'color:var(--gn)')+'">'+runAdv+'</div>'}})})
+.catch(function(e){var wd2=document.getElementById('weatherData');if(wd2)wd2.innerHTML='<div style="font-size:10px;color:var(--tx3)">날씨 정보를 불러올 수 없어요</div>'})}}
+
 // Volume chart
 var vc=document.getElementById('volChart');
 if(vc){setTimeout(function(){
