@@ -293,7 +293,7 @@ var NAV='<nav class="bnav" id="bnav"></nav>';
 var TABS=[
 {id:'today',icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',l:'오늘'},
 {id:'sched',icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>',l:'스케줄'},
-{id:'rec',icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',l:'기록'},
+
 {id:'ana',icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',l:'분석'},
 {id:'trend',icon:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>',l:'트렌드'},
 {id:'coach',icon:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',l:'코칭'}
@@ -444,45 +444,6 @@ if(sd2.notes)h+='<div style="font-size:11px;color:var(--tx3);margin-top:4px">'+s
 }
 h+='</div></div>'}
 
-}else if(UI.tab==='rec'){
-// Record tab - performance calendar
-var curMonth=new Date();
-// Stats summary at top
-var allRec=[];for(var arw=1;arw<=tw;arw++){for(var ard=0;ard<7;ard++){var ark='w'+arw+'d'+ard;if(S[ark])allRec.push(S[ark])}}
-if(allRec.length){var trDist=0,trCnt=allRec.length,trGct=0,trGctC=0,trHR=0,trHRC=0,bestPace='';var bpSec=99999;
-for(var ari=0;ari<allRec.length;ari++){trDist+=parseFloat(allRec[ari].distance)||0;if(allRec[ari].gct){trGct+=parseFloat(allRec[ari].gct);trGctC++}if(allRec[ari].avgHR){trHR+=parseFloat(allRec[ari].avgHR);trHRC++}if(allRec[ari].pace&&allRec[ari].pace!=='--:--'){var bps=p2s(allRec[ari].pace);if(bps>0&&bps<bpSec){bpSec=bps;bestPace=allRec[ari].pace}}}
-h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px">';
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--tx2)">총 거리</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+Math.round(trDist*10)/10+'<span style="font-size:12px;color:var(--tx3)">km</span></div></div>';
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--tx2)">세션</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+trCnt+'<span style="font-size:12px;color:var(--tx3)">회</span></div></div>';
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--tx2)">평균 GCT</div><div style="font-family:var(--m);font-size:18px;font-weight:600;color:var(--gn)">'+(trGctC?Math.round(trGct/trGctC):'-')+'<span style="font-size:12px;color:var(--tx3)">ms</span></div></div>';
-var trPaceS=0,trPaceC=0;for(var api=0;api<allRec.length;api++){if(allRec[api].pace&&allRec[api].pace!=='--:--'){trPaceS+=p2s(allRec[api].pace);trPaceC++}}
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--tx2)">평균 페이스</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+(trPaceC?s2p(Math.round(trPaceS/trPaceC)):'-')+'<span style="font-size:12px;color:var(--tx3)">/km</span></div></div>';
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--tx2)">최고 페이스</div><div style="font-family:var(--m);font-size:18px;font-weight:600;color:var(--ac2)">'+(bestPace||'-')+'<span style="font-size:12px;color:var(--tx3)">/km</span></div></div>';
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:11px;color:var(--tx2)">주당 평균</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+(cw>0?Math.round(trDist/cw*10)/10:'-')+'<span style="font-size:12px;color:var(--tx3)">km</span></div></div>';
-h+='</div>'}
-
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--gn)"></div>훈련 기록</div>';
-h+='<div style="font-size:12px;color:var(--tx2);margin-bottom:6px">최근 기록</div>';
-var recList=[];for(var rw=1;rw<=tw;rw++){for(var rd3=0;rd3<7;rd3++){var rk='w'+rw+'d'+rd3;if(S[rk]){var rdd=new Date(SC[rw].w1.getTime()+rd3*864e5);recList.push({w:rw,d:rd3,date:rdd,data:S[rk],type:SC[rw].d[rd3].type})}}}
-recList.sort(function(a,b){return b.date-a.date});
-if(!recList.length)h+='<div style="text-align:center;padding:16px;color:var(--tx3);font-size:11px">아직 기록이 없어요.<br>분석 탭에서 .fit 파일을 올려보세요.</div>';
-for(var ri=0;ri<Math.min(recList.length,10);ri++){var rc=recList[ri];var rdt=(rc.date.getMonth()+1)+'/'+rc.date.getDate();var rtc=rc.type==='point'?'background:rgba(255,107,107,.12);color:#FF6B6B':rc.type==='tempo'?'background:rgba(91,164,245,.12);color:#5BA4F5':rc.type==='long'?'background:rgba(45,212,160,.12);color:#2DD4A0':'background:rgba(255,179,71,.12);color:#FFB347';
-h+='<div style="display:flex;gap:8px;padding:8px;background:var(--bg3);border-radius:6px;margin-bottom:3px;align-items:center">';
-h+='<div style="font-size:12px;color:var(--tx2);min-width:32px">'+rdt+'</div>';
-h+='<span style="font-size:13px;font-weight:700;padding:1px 5px;border-radius:3px;'+rtc+'">'+(TN[rc.type]||'이지')+'</span>';
-h+='<div style="flex:1;display:flex;gap:8px;font-size:12px"><div><span style="color:var(--tx3)">거리</span> <span style="font-family:var(--m);color:var(--tx)">'+(rc.data.distance||'-')+'km</span></div>';
-h+='<div><span style="color:var(--tx3)">페이스</span> <span style="font-family:var(--m);color:var(--tx)">'+(rc.data.pace||'-')+'</span></div>';
-h+=(rc.data.gct?'<div><span style="color:var(--tx3)">GCT</span> <span style="font-family:var(--m);color:var(--gn)">'+rc.data.gct+'ms</span></div>':'');
-h+='</div></div>'}
-// Monthly summary
-if(recList.length){var mDist=0,mCnt=0,mGct=0,mGctC=0;for(var mi=0;mi<recList.length;mi++){mDist+=parseFloat(recList[mi].data.distance)||0;mCnt++;if(recList[mi].data.gct){mGct+=parseFloat(recList[mi].data.gct);mGctC++}}
-h+='<div style="margin-top:8px;font-size:12px;color:var(--tx2);margin-bottom:4px">전체 요약</div>';
-h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">';
-h+='<div style="background:var(--bg3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;color:var(--tx2)">총 거리</div><div style="font-family:var(--m);font-size:13px;font-weight:600">'+Math.round(mDist*10)/10+'km</div></div>';
-h+='<div style="background:var(--bg3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;color:var(--tx2)">세션</div><div style="font-family:var(--m);font-size:13px;font-weight:600">'+mCnt+'회</div></div>';
-h+='<div style="background:var(--bg3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:13px;color:var(--tx2)">평균 GCT</div><div style="font-family:var(--m);font-size:13px;font-weight:600;color:var(--gn)">'+(mGctC?Math.round(mGct/mGctC):'-')+'ms</div></div></div>'}
-h+='</div>';
-
 }else if(UI.tab==='ana'){
 var dd4=new Date(wk.w1.getTime()+UI.cd*864e5);var ds4=(dd4.getMonth()+1)+'월 '+dd4.getDate()+'일 ('+DY[UI.cd]+')';
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--gn)"></div>세션 분석</div>';
@@ -547,6 +508,22 @@ h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-
 h+='<div style="background:var(--bg2);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--tx3)">총 거리</div><div style="font-family:var(--m);font-size:22px;font-weight:700">'+Math.round(tDist*10)/10+'<span style="font-size:12px;color:var(--tx3)">km</span></div></div>';
 h+='<div style="background:var(--bg2);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--tx3)">세션</div><div style="font-family:var(--m);font-size:22px;font-weight:700">'+tSess+'<span style="font-size:12px;color:var(--tx3)">회</span></div></div>';
 h+='<div style="background:var(--bg2);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--tx3)">평균 GCT</div><div style="font-family:var(--m);font-size:22px;font-weight:700;color:var(--gn)">'+(tGctC?Math.round(tGct/tGctC):'-')+'<span style="font-size:12px;color:var(--tx3)">ms</span></div></div></div>';
+// Recent sessions list
+var recList2=[];for(var rw2=1;rw2<=tw;rw2++){for(var rd4=0;rd4<7;rd4++){var rk2='w'+rw2+'d'+rd4;if(S[rk2]){var rdd2=new Date(SC[rw2].w1.getTime()+rd4*864e5);recList2.push({date:rdd2,data:S[rk2],type:SC[rw2].d[rd4].type})}}}
+recList2.sort(function(a,b){return b.date-a.date});
+if(recList2.length){
+h+='<div style="font-size:13px;color:var(--tx3);margin-bottom:8px">최근 세션</div>';
+for(var ri2=0;ri2<Math.min(recList2.length,5);ri2++){var rc2=recList2[ri2];var rtc2=rc2.type==='point'?'#FF453A':rc2.type==='tempo'?'#0A84FF':rc2.type==='long'?'#30D158':'#FFD60A';
+h+='<div style="display:flex;gap:10px;padding:12px 14px;background:var(--bg2);border-radius:12px;margin-bottom:6px;align-items:center">';
+h+='<div style="min-width:36px;text-align:center"><div style="font-size:15px;font-weight:700;color:var(--tx)">'+rc2.date.getDate()+'</div><div style="font-size:10px;color:var(--tx3)">'+(rc2.date.getMonth()+1)+'월</div></div>';
+h+='<div style="width:3px;height:32px;border-radius:2px;background:'+rtc2+';flex-shrink:0"></div>';
+h+='<div style="flex:1;display:flex;gap:10px;font-size:14px;flex-wrap:wrap">';
+h+='<span style="font-family:var(--m);font-weight:600">'+(rc2.data.distance||'-')+'km</span>';
+h+='<span style="color:var(--tx2)">'+(rc2.data.pace||'-')+'/km</span>';
+if(rc2.data.gct)h+='<span style="color:var(--gn)">GCT '+rc2.data.gct+'ms</span>';
+h+='</div></div>'}
+h+='<div style="height:12px"></div>'}
+
 var tI=[['vol','📏','주간 주행거리','목표 대비 실제 볼륨'],['gct','👟','GCT vs 페이스','엘리트·마스터즈 비교'],['ready','🎯','레이스 준비도','종합 점수 0~100'],['load','⚡','훈련 부하','급성:만성 비율']];
 for(var tii=0;tii<tI.length;tii++){var tid=tI[tii][0],tic=tI[tii][1],tit=tI[tii][2],tid2=tI[tii][3],tO=!!UI.tOpen[tid];
 h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overflow:hidden'+(tO?';border:1px solid rgba(232,255,90,.12)':'')+'">';
