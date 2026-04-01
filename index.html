@@ -14,17 +14,17 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0A0A0A;--bg2:#111111;--bg3:#1A1A1A;--bg4:#232323;--tx:#F5F5F5;--tx2:#999;--tx3:#555;--ac:#E8FF5A;--ac2:#E8FF5A;--acb:rgba(232,255,90,.08);--gn:#2DD4A0;--gnb:rgba(45,212,160,.1);--rd:#FF6B6B;--rdb:rgba(255,107,107,.1);--am:#FFB347;--amb:rgba(255,179,71,.1);--bl:#5BA4F5;--blb:rgba(91,164,245,.1);--f:'Outfit',sans-serif;--m:'JetBrains Mono',monospace;--r:12px;--rl:16px}
-body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100dvh;padding-top:env(safe-area-inset-top);overflow-x:hidden}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;font-size:15px;min-height:100dvh;padding-top:env(safe-area-inset-top);overflow-x:hidden}
 .app{max-width:480px;margin:0 auto;padding:16px 16px 100px}
 .onb{min-height:90dvh;display:flex;flex-direction:column;justify-content:center;padding:24px 20px;max-width:480px;margin:0 auto}
-.onb-title{font-size:28px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}.onb-title span{color:var(--ac2)}
-.onb-sub{font-size:14px;color:var(--tx2);margin-bottom:28px}
+.onb-title{font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}.onb-title span{color:var(--ac2)}
+.onb-sub{font-size:15px;color:var(--tx2);margin-bottom:28px}
 .onb-step{font-size:11px;color:var(--ac);font-weight:500;margin-bottom:14px;letter-spacing:1px}
 .fg{margin-bottom:12px}.fg label{display:block;font-size:12px;color:var(--tx2);font-weight:500;margin-bottom:4px}
-.fg input,.fg select{width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:14px;padding:12px 14px;border-radius:10px;outline:none;-webkit-appearance:none}
+.fg input,.fg select{width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:16px;padding:14px 16px;border-radius:10px;outline:none;-webkit-appearance:none}
 .fg input::placeholder{color:var(--tx3)}.fg input:focus,.fg select:focus{border-color:var(--ac)}
 .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn{font-family:var(--f);font-size:14px;font-weight:600;padding:14px 28px;border-radius:12px;cursor:pointer;border:none;width:100%;margin-top:12px}
+.btn{font-family:var(--f);font-size:15px;font-weight:600;padding:16px 28px;border-radius:12px;cursor:pointer;border:none;width:100%;margin-top:12px}
 .btn-p{background:var(--ac);color:#fff}.btn-p:active{transform:scale(.97)}
 .btn-s{background:var(--bg3);color:var(--tx2);border:1px solid rgba(255,255,255,.06)}
 .btn-d{background:var(--rdb);color:var(--rd)}
@@ -35,17 +35,17 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;m
 .res-v{font-family:var(--m);font-size:22px;font-weight:600}.res-s{font-size:11px;color:var(--tx3);margin-top:2px}
 .res-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .res-sm{background:var(--bg3);border-radius:10px;padding:12px}
-.pz{display:flex;align-items:center;gap:10px;padding:8px 14px;background:var(--bg3);border-radius:10px;margin-bottom:4px}
-.pz-n{font-size:12px;font-weight:600;min-width:55px}.pz-p{font-family:var(--m);font-size:14px;font-weight:500}
-.ins{padding:10px 14px;margin-bottom:6px;font-size:12px;line-height:1.6}
+.pz{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg3);border-radius:10px;margin-bottom:4px}
+.pz-n{font-size:14px;font-weight:700;min-width:55px}.pz-p{font-family:var(--m);font-size:16px;font-weight:500}
+.ins{padding:12px 14px;margin-bottom:6px;font-size:14px;line-height:1.6}
 .ins.ok{border-left:3px solid var(--gn);background:rgba(45,212,160,.03)}
 .ins.w{border-left:3px solid var(--am);background:rgba(255,179,71,.03)}
 .ins.al{border-left:3px solid var(--rd);background:rgba(255,107,107,.03)}
 .ins-t{font-weight:600;margin-bottom:2px}.ins-d{color:var(--tx2)}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.95);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:center;padding:6px 0;padding-bottom:max(14px,env(safe-area-inset-bottom));z-index:50}
-.bnav-i{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px;font-size:10px;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
+.bnav-i{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;font-size:11px;font-weight:500;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
 .bnav-i.ac{color:var(--ac)}
-.bnav-i svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
+.bnav-i svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.5}
 .ws{display:flex;gap:3px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:8px}
 .ws::-webkit-scrollbar{display:none}
 .wb{background:var(--bg3);border:1px solid transparent;color:var(--tx3);font-family:var(--m);font-size:13px;padding:5px 7px;border-radius:7px;cursor:pointer;flex-shrink:0;min-width:28px;text-align:center}
@@ -60,11 +60,11 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;m
 .dc-l{font-size:6px;color:var(--tx3)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
 .stat{background:var(--bg3);border-radius:8px;padding:8px 6px}
-.stat-l{font-size:11px;color:var(--tx2);margin-bottom:1px}.stat-v{font-family:var(--m);font-size:18px;font-weight:600}
+.stat-l{font-size:11px;color:var(--tx2);margin-bottom:1px}.stat-v{font-family:var(--m);font-size:20px;font-weight:600}
 .cd{background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:var(--rl);padding:14px;margin-bottom:10px}
-.st{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.st{font-size:16px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .st .dot{width:5px;height:5px;border-radius:2px}
-.detail{background:var(--bg3);border-radius:8px;padding:10px;margin-bottom:6px;font-size:11px;line-height:1.5}
+.detail{background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:6px;font-size:14px;line-height:1.5}
 .detail-h{font-weight:600;margin-bottom:3px;font-size:13px}.detail-d{color:var(--tx2)}
 .cue{background:var(--bg2);border:none;border-left:2px solid var(--ac);border-radius:8px;padding:10px 12px;margin-bottom:5px}
 .cue-t{font-size:13px;font-weight:600;color:var(--ac);margin-bottom:2px;letter-spacing:.3px}.cue-d{font-size:13px;color:var(--tx2);line-height:1.5}
@@ -311,7 +311,7 @@ var h='<div class="app fade">';
 // NRC-style hero header
 h+='<div style="margin-bottom:14px">';
 h+='<div style="font-size:13px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:2px">marathon coach</div>';
-h+='<div style="font-size:32px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+P.name+'의 <span style="color:var(--ac)">런</span></div>';
+h+='<div style="font-size:34px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+P.name+'의 <span style="color:var(--ac)">런</span></div>';
 h+='<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+(P.rn||'풀마라톤')+' | '+P.gt+' 목표</div></div>';
 // Stat strip
 h+='<div style="display:flex;gap:0;margin-bottom:12px;border-radius:10px;overflow:hidden">';
@@ -615,15 +615,10 @@ h+='</div>';
 
 // Pace zones
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--bl)"></div>페이스 존</div>';
-h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:12px;color:var(--tx3)">VDOT '+P.vd+' 기준'+(P.vdAll?' ('+P.vdAll[0].d+')':'')+'</span><span style="font-size:11px;color:var(--ac);cursor:pointer" onclick="document.getElementById(\'pzEdit\').style.display=document.getElementById(\'pzEdit\').style.display===\'none\'?\'block\':\'none\'">수동 조정 ▼</span></div>';
-h+='<div id="pzEdit" style="display:none;margin-bottom:8px;padding:10px;background:var(--bg3);border-radius:8px"><div style="font-size:11px;color:var(--tx2);margin-bottom:6px">페이스를 직접 수정할 수 있어요 (mm:ss)</div>';
-h+='<div style="display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center;font-size:12px">';
-h+='<span style="color:var(--gn)">E</span><input type="text" id="pzE" value="'+z.e+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
-h+='<span style="color:var(--bl)">MP</span><input type="text" id="pzMP" value="'+z.mp+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
-h+='<span style="color:var(--ac)">T</span><input type="text" id="pzT" value="'+z.t+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
-h+='<span style="color:var(--am)">I</span><input type="text" id="pzI" value="'+z.i+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
-h+='<span style="color:var(--rd)">R</span><input type="text" id="pzR" value="'+z.r+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
-h+='</div><button class="btn btn-p btn-sm" style="margin-top:8px" onclick="window._savePZ()">페이스존 저장</button></div>';
+// Data-driven pace zone note
+var sessCount=0;for(var pzk in S){if(S[pzk])sessCount++}
+h+='<div style="font-size:13px;color:var(--tx3);margin-bottom:8px">VDOT '+P.vd+' ('+(P.vdAll?P.vdAll[0].d:'기록')+' 기준)'+(sessCount>=3?' · <span style="color:var(--gn)">훈련 데이터 반영 중</span>':'')+'</div>';
+if(sessCount<3){h+='<div style="font-size:12px;color:var(--tx3);background:var(--bg3);border-radius:8px;padding:10px;margin-bottom:8px;line-height:1.6">세션 3회 이상 기록하면 실제 훈련 데이터 기반으로 페이스존이 자동 보정돼요. 현재는 대회 기록 기반 이론값이에요.</div>'}
 var pzl=[['E (이지)',z.e,'var(--gn)'],['MP (마라톤)',z.mp,'var(--bl)'],['T (템포)',z.t,'var(--ac2)'],['I (인터벌)',z.i,'var(--am)'],['R (반복)',z.r,'var(--rd)']];
 for(var pi=0;pi<pzl.length;pi++)h+='<div class="pz"><div class="pz-n" style="color:'+pzl[pi][2]+'">'+pzl[pi][0]+'</div><div class="pz-p" style="color:'+pzl[pi][2]+'">'+pzl[pi][1]+'/km</div></div>';
 h+='</div>';
@@ -749,6 +744,7 @@ h+='<div class="btn-row"><button class="btn btn-s" id="bk" style="flex:1">이전
 h+='<button class="btn btn-s" id="bs">건너뛰기</button>';
 }else if(s===2){
 h+='<div class="onb-step">STEP 3/4 — 대회 기록</div><div class="onb-title">레이스 <span>기록</span></div><div class="onb-sub">최소 하나 입력</div>';
+h+='<div style="background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--tx2);line-height:1.6"><span style="color:var(--ac);font-weight:600">대회 기록이 없다면?</span><br>괜찮아요! 일단 건너뛰고 1주일 동안 평소대로 조깅하면서 .fit 파일을 기록해주세요. 데이터가 3회 이상 쌓이면 자동으로 분석해서 맞춤 훈련 프로그램을 만들어줘요.</div>';
 h+='<div class="fg"><label>10K (mm:ss)</label><input type="text" id="i_10" placeholder="40:06"></div>';
 h+='<div class="fg"><label>하프마라톤 (h:mm:ss)</label><input type="text" id="i_hm" placeholder="1:27:55"></div>';
 h+='<div class="fg"><label>풀마라톤 (h:mm:ss)</label><input type="text" id="i_fm" placeholder="3:13:00"></div>';
@@ -756,6 +752,7 @@ h+='<div class="btn-row"><button class="btn btn-s" id="bk2" style="flex:1">이�
 }else if(s===3){
 var z=P.z,gap=P.gap||0;
 h+='<div class="onb-step">STEP 4/4 — 결과 + 목표</div><div class="onb-title">분석 <span>결과</span></div>';
+if(P.assess){h+='<div style="background:rgba(232,255,90,.05);border:1px solid rgba(232,255,90,.15);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;color:var(--tx2);line-height:1.6"><span style="color:var(--ac);font-weight:600">평가 모드</span><br>대회 기록이 없어서 기본값(VDOT 35)으로 시작해요. 1주일 동안 조깅하고 .fit 파일을 올리면 실제 데이터로 자동 업그레이드돼요!</div>'}
 h+='<div class="res-grid"><div class="res-sm"><div class="res-t">기준 VDOT</div><div class="res-v" style="color:var(--ac)">'+P.vd+'</div><div class="res-s">'+P.vdAll[0].d+' 기록 기준</div></div>';
 h+='<div class="res-sm"><div class="res-t">예측 풀</div><div class="res-v" style="color:var(--gn)">'+s2t(z.mr)+'</div></div></div>';
 if(P.vdAll&&P.vdAll.length>1){h+='<div style="font-size:12px;color:var(--tx3);margin-bottom:8px">';for(var vi=0;vi<P.vdAll.length;vi++){h+=P.vdAll[vi].d+' VDOT: <span style="font-family:var(--m);color:var(--tx)">'+Math.round(P.vdAll[vi].v*10)/10+'</span> '}h+='<br>가장 긴 거리('+P.vdAll[0].d+') 기준으로 페이스존 설정</div>'}
@@ -774,7 +771,9 @@ h+='</div>';R.innerHTML=h;
 // Bind events
 if(s===0)document.getElementById('b1').onclick=function(){P={name:document.getElementById('i_n').value||'러너',age:parseInt(document.getElementById('i_a').value)||28,sex:document.getElementById('i_sx').value,ht:parseInt(document.getElementById('i_h').value)||175,wt:parseInt(document.getElementById('i_w').value)||68};UI.step=1;go()};
 if(s===1){var fn=function(){P.mu=parseFloat((document.getElementById('i_mu')||{}).value)||0;P.fat=parseFloat((document.getElementById('i_ft')||{}).value)||0;P.rhr=parseInt((document.getElementById('i_rh')||{}).value)||0;P.mhr=parseInt((document.getElementById('i_mh')||{}).value)||(220-P.age);UI.step=2;go()};document.getElementById('b2').onclick=fn;document.getElementById('bs').onclick=fn;document.getElementById('bk').onclick=function(){UI.step=0;go()}}
-if(s===2){document.getElementById('b3').onclick=function(){var r1=document.getElementById('i_10').value,r2=document.getElementById('i_hm').value,r3=document.getElementById('i_fm').value;if(!r1&&!r2&&!r3){toast('최소 하나의 기록을 입력해주세요');return}P.tenk=r1;P.half=r2;P.full=r3;
+if(s===2){document.getElementById('b3').onclick=function(){var r1=document.getElementById('i_10').value,r2=document.getElementById('i_hm').value,r3=document.getElementById('i_fm').value;if(!r1&&!r2&&!r3){
+// Assessment mode - no race records
+P.tenk='';P.half='';P.full='';P.vd=35;P.z=gZ(35);P.gap=0;P.vdAll=[{d:'추정',v:35,dist:0}];P.assess=true;UI.step=3;go();return}P.tenk=r1;P.half=r2;P.full=r3;
 // VDOT: prioritize longest distance for realistic marathon zones
 // Full > Half > 10K (longer = more relevant for marathon training)
 var vAll=[];
