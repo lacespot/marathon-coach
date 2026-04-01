@@ -107,7 +107,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <script>
-var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:'',tOpen:{}},_LS=false;
+var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:'',tOpen:{},settings:false},_LS=false;
 try{localStorage.setItem('_t','1');if(localStorage.getItem('_t')==='1')_LS=true;localStorage.removeItem('_t');}catch(e){}
 function ldA(){try{if(_LS){var p=localStorage.getItem('mc_p');if(p)P=JSON.parse(p);var s=localStorage.getItem('mc_s');if(s)S=JSON.parse(s);
 var _ak=_LS?localStorage.getItem('mc_ak')||'':'';if(P){if(P.gt&&P.gt.split(':').length===2&&parseInt(P.gt.split(':')[0])<=6){P.gt=P.gt+':00'}if(P.raceDate&&!P.rd)P.rd=P.raceDate;if(P.targetTime&&!P.gt)P.gt=P.targetTime;if(P.vdot&&!P.vd)P.vd=P.vdot;if(P.zones&&!P.z)P.z=P.zones;if(P.weight&&!P.wt)P.wt=P.weight;if(P.height&&!P.ht)P.ht=P.height;if(P.maxHR&&!P.mhr)P.mhr=P.maxHR;if(P.vd&&P.z&&P.rd&&P.gt)P.done=true;svP()}
@@ -323,7 +323,7 @@ var h='<div class="app fade">';
 
 // Header
 // NRC-style hero header
-h+='<div style="margin-bottom:14px">';
+h+='<div style="margin-bottom:14px;position:relative">';
 h+='<div style="font-size:13px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:2px">marathon coach</div>';
 h+='<div style="font-size:34px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+P.name+'의 <span style="color:var(--ac)">런</span></div>';
 h+='<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+(P.rn||'풀마라톤')+' | '+P.gt+' 목표</div></div>';
@@ -663,25 +663,9 @@ h+='<div style="font-size:13px;color:var(--tx3)">anthropic.com → API Keys에�
 h+='</div></div>';
 h+='</div>';
 
-// Sync
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--ac)"></div>동기화</div>';
-var fbUrl=_LS?localStorage.getItem('mc_fburl')||'':'';var fbCode=_LS?localStorage.getItem('mc_sync')||'':'';
-if(fbUrl&&fbCode){h+='<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2);margin-bottom:6px"><span style="width:6px;height:6px;border-radius:50%;background:var(--gn)"></span>동기화 활성 — <span style="font-family:var(--m);color:var(--ac2);letter-spacing:1px">'+fbCode+'</span></div>';
-h+='<button class="btn btn-s btn-sm" onclick="syncFB();toast(\'수동 동기화 완료\')">수동 동기화</button>'}
-else{h+='<div style="font-size:13px;color:var(--tx2);margin-bottom:6px">Firebase 연결하면 기기 간 동기화</div>';
-h+='<div style="margin-bottom:4px"><input type="text" id="fbUrlIn" placeholder="https://xxxxx-default-rtdb.firebaseio.com" value="'+fbUrl+'" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:8px;border-radius:6px;outline:none"></div>';
-h+='<div style="margin-bottom:6px"><input type="text" id="fbCodeIn" placeholder="동기화 코드 (비워두면 자동생성)" value="'+fbCode+'" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:11px;padding:8px;border-radius:6px;outline:none;letter-spacing:2px" maxlength="6"></div>';
-h+='<button class="btn btn-p btn-sm" onclick="window._setupFB()">연결하기</button>'}
-h+='</div>';
 
-// Export/Import
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--am)"></div>데이터 관리</div>';
-h+='<div style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn btn-s btn-sm" onclick="window._export()">내보내기 (JSON)</button><button class="btn btn-s btn-sm" onclick="document.getElementById(\'impFile\').click()">가져오기</button><input type="file" accept=".json" id="impFile" style="display:none" onchange="window._import(event)"></div></div>';
 
-// Profile
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--rd)"></div>프로필</div>';
-h+='<div style="font-size:11px;color:var(--tx2);line-height:1.8">VDOT <span style="font-family:var(--m);color:var(--ac2)">'+P.vd+'</span> · 목표 <span style="font-family:var(--m);color:var(--gn)">'+P.gt+'</span> · '+P.wt+'kg'+(P.fat?' · 체지방 '+P.fat+'%':'')+'</div>';
-h+='<div style="display:flex;gap:6px;margin-top:8px"><button class="btn btn-s btn-sm" onclick="window._edit()">프로필 수정</button><button class="btn btn-d btn-sm" onclick="window._rst()">초기화</button></div></div>';
+
 }
 
 h+='</div>'+NAV;
