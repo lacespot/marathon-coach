@@ -107,7 +107,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <script>
-var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:'',tOpen:{},settings:false},_LS=false;
+var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:'',regDay:0,regRepeat:'once',tOpen:{},settings:false},_LS=false;
 try{localStorage.setItem('_t','1');if(localStorage.getItem('_t')==='1')_LS=true;localStorage.removeItem('_t');}catch(e){}
 function ldA(){try{if(_LS){var p=localStorage.getItem('mc_p');if(p)P=JSON.parse(p);var s=localStorage.getItem('mc_s');if(s)S=JSON.parse(s);
 var _ak=_LS?localStorage.getItem('mc_ak')||'':'';if(P){if(P.gt&&P.gt.split(':').length===2&&parseInt(P.gt.split(':')[0])<=6){P.gt=P.gt+':00'}if(P.raceDate&&!P.rd)P.rd=P.raceDate;if(P.targetTime&&!P.gt)P.gt=P.targetTime;if(P.vdot&&!P.vd)P.vd=P.vdot;if(P.zones&&!P.z)P.z=P.zones;if(P.weight&&!P.wt)P.wt=P.weight;if(P.height&&!P.ht)P.ht=P.height;if(P.maxHR&&!P.mhr)P.mhr=P.maxHR;if(P.vd&&P.z&&P.rd&&P.gt)P.done=true;svP()}
@@ -399,27 +399,60 @@ h+='<div style="height:6px;background:var(--bg2);border-radius:3px;overflow:hidd
 // Registration button + form
 if(!UI.regOpen){h+='<div style="background:rgba(139,122,255,.08);border:1.5px dashed rgba(139,122,255,.25);border-radius:10px;padding:12px;text-align:center;cursor:pointer;margin-bottom:8px" onclick="UI.regOpen=true;go()"><span style="font-size:12px;color:var(--ac2);font-weight:500">+ 훈련 세션 등록</span><br><span style="font-size:12px;color:var(--tx3)">수동 입력 또는 텍스트 붙여넣기</span></div>'}
 else{
-h+='<div class="reg-overlay">';
-h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-size:13px;font-weight:600">훈련 등록</span><span style="font-size:16px;color:var(--tx3);cursor:pointer" onclick="UI.regOpen=false;go()">✕</span></div>';
-h+='<div class="reg-tabs"><div class="reg-tab'+(UI.regMode==='manual'?' ac':'')+'" onclick="UI.regMode=\'manual\';go()">수동 입력</div><div class="reg-tab'+(UI.regMode==='ai'?' ac':'')+'" onclick="UI.regMode=\'ai\';go()">텍스트 AI 파싱</div></div>';
+h+='<div style="background:var(--bg2);border-radius:16px;padding:16px;margin-bottom:10px">';
+h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:17px;font-weight:600">훈련 등록</span><span style="font-size:18px;color:var(--tx3);cursor:pointer" onclick="UI.regOpen=false;go()">✕</span></div>';
+
+// Mode tabs
+h+='<div style="display:flex;gap:2px;background:var(--bg3);border-radius:10px;padding:2px;margin-bottom:12px">';
+h+='<div style="flex:1;text-align:center;font-size:14px;padding:10px;border-radius:8px;cursor:pointer;font-weight:500;'+(UI.regMode==='manual'?'background:var(--bg);color:var(--tx)':'color:var(--tx3)')+'" onclick="UI.regMode=\'manual\';go()">캘린더</div>';
+h+='<div style="flex:1;text-align:center;font-size:14px;padding:10px;border-radius:8px;cursor:pointer;font-weight:500;'+(UI.regMode==='ai'?'background:var(--bg);color:var(--tx)':'color:var(--tx3)')+'" onclick="UI.regMode=\'ai\';go()">텍스트 AI</div></div>';
+
 if(UI.regMode==='manual'){
-h+='<div class="fg"><label>날짜</label><select id="regDay">';
-for(var ri=0;ri<7;ri++){var rdd=new Date(wk.w1.getTime()+ri*864e5);h+='<option value="'+ri+'">'+DY[ri]+' '+(rdd.getMonth()+1)+'/'+rdd.getDate()+'</option>'}
-h+='</select></div>';
-h+='<div class="fg"><label>세션 유형</label><div class="type-grid" id="typeGrid">';
-var regTypes=[['point','포인트','var(--rdb)','var(--rd)'],['tempo','템포','var(--blb)','var(--bl)'],['easy','이지','var(--amb)','var(--am)'],['long','롱런','var(--gnb)','var(--gn)'],['interval','인터벌','var(--acb)','var(--ac2)'],['rest','휴식','rgba(255,255,255,.04)','var(--tx3)']];
-for(var rt=0;rt<regTypes.length;rt++){h+='<div class="type-btn" style="background:'+regTypes[rt][2]+';color:'+regTypes[rt][3]+'" data-type="'+regTypes[rt][0]+'" onclick="window._selType(this)">'+regTypes[rt][1]+'</div>'}
-h+='</div></div>';
-h+='<div class="fg"><label>세션 이름</label><input type="text" id="regName" placeholder="예: 빌드업 12km, 인터벌 400mx10"></div>';
-h+='<div class="fg"><label>세션 디테일 (선택)</label><input type="text" id="regDesc" placeholder="WU 2km → 메인 8km → CD 2km"></div>';
-h+='<div style="display:flex;gap:8px"><div class="fg" style="flex:1"><label>목표 거리(km)</label><input type="number" step="0.1" id="regDist" placeholder="12"></div>';
-h+='<div class="fg" style="flex:1"><label>목표 페이스(/km)</label><input type="text" id="regPace" placeholder="4:15"></div></div>';
+// Apple Calendar style - show week days
+h+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px">';
+for(var ci3=0;ci3<7;ci3++){var cdd=new Date(wk.w1.getTime()+ci3*864e5);
+var cSel=UI.regDay===ci3;
+h+='<div style="text-align:center;padding:10px 4px;border-radius:12px;cursor:pointer;'+(cSel?'background:var(--ac);color:#000':'background:var(--bg3);color:var(--tx2)')+'" onclick="UI.regDay='+ci3+';go()">';
+h+='<div style="font-size:11px;font-weight:500">'+DY[ci3]+'</div>';
+h+='<div style="font-size:18px;font-weight:700">'+cdd.getDate()+'</div></div>'}
+h+='</div>';
+
+// Session type
+h+='<div style="font-size:13px;color:var(--tx3);margin-bottom:6px">세션 유형</div>';
+h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="typeGrid">';
+var rTypes=[['point','포인트','#FF453A'],['tempo','템포','#0A84FF'],['easy','이지','#FFD60A'],['long','롱런','#30D158'],['interval','인터벌','var(--ac)'],['rest','휴식','#636366']];
+for(var rt2=0;rt2<rTypes.length;rt2++){h+='<div class="type-btn" style="padding:8px 14px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;background:'+rTypes[rt2][2]+'22;color:'+rTypes[rt2][2]+';border:1.5px solid transparent" data-type="'+rTypes[rt2][0]+'" onclick="window._selType(this)">'+rTypes[rt2][1]+'</div>'}
+h+='</div>';
+
+// Session name + details
+h+='<div class="fg"><label>세션 이름</label><input type="text" id="regName" placeholder="예: 비타블로썸 정기훈련"></div>';
+h+='<div class="fg"><label>디테일 (선택)</label><input type="text" id="regDesc" placeholder="WU 2km → 메인 8km → CD 2km"></div>';
+h+='<div style="display:flex;gap:8px"><div class="fg" style="flex:1"><label>거리 (km)</label><input type="number" step="0.1" id="regDist" placeholder="12"></div>';
+h+='<div class="fg" style="flex:1"><label>페이스 (/km)</label><input type="text" id="regPace" placeholder="4:30"></div></div>';
+
+// Recurrence - Apple style
+h+='<div style="font-size:13px;color:var(--tx3);margin-bottom:6px;margin-top:4px">반복</div>';
+h+='<div style="display:flex;gap:4px;margin-bottom:12px">';
+var repOpts=[['once','이번만'],['weekly','매주'],['biweekly','격주'],['monthly','매달']];
+if(!UI.regRepeat)UI.regRepeat='once';
+for(var rp=0;rp<repOpts.length;rp++){h+='<div style="flex:1;text-align:center;padding:10px 6px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.regRepeat===repOpts[rp][0]?'background:var(--ac);color:#000':'background:var(--bg3);color:var(--tx2)')+'" onclick="UI.regRepeat=\''+repOpts[rp][0]+'\';go()">'+repOpts[rp][1]+'</div>'}
+h+='</div>';
+
+if(UI.regRepeat!=='once'){h+='<div style="font-size:13px;color:var(--ac);background:var(--acb);padding:10px;border-radius:10px;margin-bottom:12px">';
+var repDay=DY[UI.regDay||0];
+if(UI.regRepeat==='weekly')h+='매주 '+repDay+'에 자동 등록됩니다';
+else if(UI.regRepeat==='biweekly')h+='격주 '+repDay+'에 자동 등록됩니다 (W'+cw+', W'+(cw+2)+', W'+(cw+4)+'...)';
+else h+='매달 같은 요일에 자동 등록됩니다';
+h+='</div>'}
+
 h+='<button class="btn btn-p" onclick="window._regManual()">등록하기</button>';
+
 }else{
-h+='<textarea class="ai-area" id="aiText" placeholder="코치 프로그램을 붙여넣으세요.\n\n예시:\n월: 템포 12km 4분페이스\n화: 이지 8km\n수: 인터벌 400m x 10본\n목: 휴식\n금: 이지 6km\n토: 롱런 25km\n일: 리커버리 5km\n\n또는 카톡 내용, 엑셀 복붙 아무거나 OK">'+(UI.regAI||'')+'</textarea>';
+// AI text parsing mode
+h+='<textarea class="ai-area" id="aiText" placeholder="코치 프로그램을 붙여넣으세요.\n\n예시:\n월: 템포 12km 4분페이스\n화: 이지 8km\n수: 인터벌 400m x 10본\n\n카톡 복붙, 엑셀 복붙 다 OK" style="width:100%;min-height:120px;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--f);font-size:15px;padding:14px;border-radius:12px;resize:vertical;outline:none;line-height:1.6">'+(UI.regAI||'')+'</textarea>';
 h+='<button class="btn btn-p" style="margin-top:8px" onclick="window._regAI()" id="aiBtn">AI로 분석하기</button>';
-h+='<div id="aiResult"></div>';
-}
+h+='<div id="aiResult"></div>'}
+
 h+='</div>'}
 
 for(var ci2=0;ci2<7;ci2++){var cd3=(P.cust&&P.cust['w'+cw+'d'+ci2])?P.cust['w'+cw+'d'+ci2]:wk.d[ci2];var dd5=new Date(wk.w1.getTime()+ci2*864e5);var sk2='w'+cw+'d'+ci2;var isDone=!!S[sk2];var isOpen=!!UI.sOpen[ci2];var tc3=cd3.type==='point'?'p':cd3.type==='tempo'?'t':cd3.type==='long'?'l':cd3.type==='rest'?'r':'e';
@@ -744,7 +777,14 @@ window._sd=function(d){UI.cd=d;go()};
 window._sleep=function(v){UI.sleep=v;go()};
 window._edit=function(){P.done=false;UI.step=0;go()};
 window._selType=function(el){document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('ac')});el.classList.add('ac')};
-window._regManual=function(){var day=parseInt((document.getElementById('regDay')||{}).value||'0');var typeEl=document.querySelector('.type-btn.ac');var type=typeEl?typeEl.dataset.type:'easy';var name=(document.getElementById('regName')||{}).value;var desc=(document.getElementById('regDesc')||{}).value;var dist=(document.getElementById('regDist')||{}).value;var pace=(document.getElementById('regPace')||{}).value;if(!name){toast('세션 이름을 입력해주세요');return}if(!P.cust)P.cust={};P.cust['w'+UI.cw+'d'+day]={type:type==='interval'?'point':type,l:name,d:desc||(name),pace:pace||''};svP();UI.regOpen=false;toast(name+' 등록 완료');go()};
+window._regManual=function(){var day=UI.regDay||0;var typeEl=document.querySelector('.type-btn.ac');var type=typeEl?typeEl.dataset.type:'easy';var name=(document.getElementById('regName')||{}).value;var desc=(document.getElementById('regDesc')||{}).value;var dist=(document.getElementById('regDist')||{}).value;var pace=(document.getElementById('regPace')||{}).value;if(!name){toast('세션 이름을 입력해주세요');return}if(!P.cust)P.cust={};
+var rep=UI.regRepeat||'once';
+var SC3=gSC();var tw3=Object.keys(SC3).length;
+if(rep==='once'){P.cust['w'+UI.cw+'d'+day]={type:type==='interval'?'point':type,l:name,d:desc||name,pace:pace||''};toast(name+' 등록 완료')}
+else if(rep==='weekly'){var cnt=0;for(var rw=UI.cw;rw<=tw3;rw++){P.cust['w'+rw+'d'+day]={type:type==='interval'?'point':type,l:name,d:desc||name,pace:pace||''};cnt++}toast(name+' — 매주 '+DY[day]+' '+cnt+'주 등록')}
+else if(rep==='biweekly'){var cnt2=0;for(var rw2=UI.cw;rw2<=tw3;rw2+=2){P.cust['w'+rw2+'d'+day]={type:type==='interval'?'point':type,l:name,d:desc||name,pace:pace||''};cnt2++}toast(name+' — 격주 '+DY[day]+' '+cnt2+'회 등록')}
+else if(rep==='monthly'){var cnt3=0;for(var rw3=UI.cw;rw3<=tw3;rw3+=4){P.cust['w'+rw3+'d'+day]={type:type==='interval'?'point':type,l:name,d:desc||name,pace:pace||''};cnt3++}toast(name+' — 매달 '+cnt3+'회 등록')}
+svP();UI.regOpen=false;go()};
 window._regAI=function(){var txt=(document.getElementById('aiText')||{}).value;if(!txt||txt.length<5){toast('텍스트를 입력해주세요');return}UI.regAI=txt;var btn=document.getElementById('aiBtn');if(btn)btn.textContent='분석 중...';var resEl=document.getElementById('aiResult');
 var ak2=_LS?localStorage.getItem('mc_ak')||'':'';if(!ak2){toast('코칭 탭 → 갈치냐옹에서 AI 계정을 연결해주세요');if(btn)btn.textContent='AI로 분석하기';return}fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ak2,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:'다음 텍스트에서 주간 훈련 프로그램을 추출해서 JSON으로 반환해. 반드시 JSON만 반환하고 다른 텍스트는 포함하지 마.\n\n형식: [{"day":0,"type":"tempo","name":"템포 12km","desc":"WU 2km → 템포 8km → CD 2km","dist":12,"pace":"4:15"}]\n\nday: 0=월~6=일, type: point/tempo/easy/long/rest 중 하나\n\n텍스트:\n'+txt}]})}).then(function(r){return r.json()}).then(function(d){
 var raw=d.content?d.content.map(function(c){return c.text||''}).join(''):'';
