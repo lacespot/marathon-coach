@@ -110,7 +110,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;m
 var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:''},_LS=false;
 try{localStorage.setItem('_t','1');if(localStorage.getItem('_t')==='1')_LS=true;localStorage.removeItem('_t');}catch(e){}
 function ldA(){try{if(_LS){var p=localStorage.getItem('mc_p');if(p)P=JSON.parse(p);var s=localStorage.getItem('mc_s');if(s)S=JSON.parse(s);
-if(P){if(P.raceDate&&!P.rd)P.rd=P.raceDate;if(P.targetTime&&!P.gt)P.gt=P.targetTime;if(P.vdot&&!P.vd)P.vd=P.vdot;if(P.zones&&!P.z)P.z=P.zones;if(P.weight&&!P.wt)P.wt=P.weight;if(P.height&&!P.ht)P.ht=P.height;if(P.maxHR&&!P.mhr)P.mhr=P.maxHR;if(P.vd&&P.z&&P.rd&&P.gt)P.done=true;svP()}
+var _ak=_LS?localStorage.getItem('mc_ak')||'':'';if(P){if(P.raceDate&&!P.rd)P.rd=P.raceDate;if(P.targetTime&&!P.gt)P.gt=P.targetTime;if(P.vdot&&!P.vd)P.vd=P.vdot;if(P.zones&&!P.z)P.z=P.zones;if(P.weight&&!P.wt)P.wt=P.weight;if(P.height&&!P.ht)P.ht=P.height;if(P.maxHR&&!P.mhr)P.mhr=P.maxHR;if(P.vd&&P.z&&P.rd&&P.gt)P.done=true;svP()}
 }}catch(e){}}
 function svP(){try{if(_LS&&P)localStorage.setItem('mc_p',JSON.stringify(P));}catch(e){}}
 function svS(){try{if(_LS)localStorage.setItem('mc_s',JSON.stringify(S));}catch(e){}syncFB()}
@@ -610,6 +610,23 @@ h+='<div style="display:flex;align-items:baseline;gap:4px;margin-bottom:4px"><sp
 h+='<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:4px"><div style="width:'+shoePct+'%;height:100%;background:'+(shoePct>85?'var(--rd)':shoePct>60?'var(--am)':'var(--gn)')+';border-radius:3px"></div></div>';
 h+='<div style="font-size:8px;color:var(--tx3)">'+(shoePct>85?'교체 시기가 다가왔어요!':shoePct>60?'절반 이상 사용. 상태 체크.':'아직 여유 있어요.')+'</div></div>';
 
+// AI Settings + Form Analysis
+h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--ac)"></div>AI 설정</div>';
+var akVal=_LS?localStorage.getItem('mc_ak')||'':'';
+h+='<div style="font-size:9px;color:var(--tx2);margin-bottom:4px">Claude API 키 '+(akVal?'<span style="color:var(--gn)">✓ 연결됨</span>':'<span style="color:var(--rd)">미연결</span>')+'</div>';
+h+='<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px"><input type="password" id="akInput" value="'+akVal+'" placeholder="sk-ant-..." style="flex:1;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:10px;padding:8px;border-radius:6px;outline:none"><button class="btn btn-s btn-sm" onclick="window._saveAK()">저장</button></div>';
+h+='<div style="font-size:8px;color:var(--tx3);margin-bottom:8px">anthropic.com → API Keys에서 발급. 무료 $5 크레딧 제공.</div>';
+
+// AI Form Analysis button
+if(akVal){
+h+='<div style="border-top:1px solid rgba(255,255,255,.04);padding-top:8px;margin-top:4px">';
+h+='<div style="font-size:10px;font-weight:500;color:var(--tx);margin-bottom:6px">AI 폼 분석</div>';
+h+='<div style="font-size:9px;color:var(--tx2);margin-bottom:6px">내 체형 + 러닝 데이터를 AI가 분석해서 맞춤 폼 교정 + 드릴 추천</div>';
+h+='<button class="btn btn-p" onclick="window._aiForm()" id="aiFormBtn">AI 폼 분석 시작</button>';
+h+='<div id="aiFormResult" style="margin-top:8px"></div>';
+h+='</div>'}
+h+='</div>';
+
 // Sync
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--ac)"></div>동기화</div>';
 var fbUrl=_LS?localStorage.getItem('mc_fburl')||'':'';var fbCode=_LS?localStorage.getItem('mc_sync')||'':'';
@@ -690,12 +707,26 @@ window._edit=function(){P.done=false;UI.step=0;go()};
 window._selType=function(el){document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('ac')});el.classList.add('ac')};
 window._regManual=function(){var day=parseInt((document.getElementById('regDay')||{}).value||'0');var typeEl=document.querySelector('.type-btn.ac');var type=typeEl?typeEl.dataset.type:'easy';var name=(document.getElementById('regName')||{}).value;var desc=(document.getElementById('regDesc')||{}).value;var dist=(document.getElementById('regDist')||{}).value;var pace=(document.getElementById('regPace')||{}).value;if(!name){toast('세션 이름을 입력해주세요');return}if(!P.cust)P.cust={};P.cust['w'+UI.cw+'d'+day]={type:type==='interval'?'point':type,l:name,d:desc||(name),pace:pace||''};svP();UI.regOpen=false;toast(name+' 등록 완료');go()};
 window._regAI=function(){var txt=(document.getElementById('aiText')||{}).value;if(!txt||txt.length<5){toast('텍스트를 입력해주세요');return}UI.regAI=txt;var btn=document.getElementById('aiBtn');if(btn)btn.textContent='분석 중...';var resEl=document.getElementById('aiResult');
-fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:'다음 텍스트에서 주간 훈련 프로그램을 추출해서 JSON으로 반환해. 반드시 JSON만 반환하고 다른 텍스트는 포함하지 마.\n\n형식: [{"day":0,"type":"tempo","name":"템포 12km","desc":"WU 2km → 템포 8km → CD 2km","dist":12,"pace":"4:15"}]\n\nday: 0=월~6=일, type: point/tempo/easy/long/rest 중 하나\n\n텍스트:\n'+txt}]})}).then(function(r){return r.json()}).then(function(d){
+var ak2=_LS?localStorage.getItem('mc_ak')||'':'';if(!ak2){toast('API 키를 먼저 입력해주세요 (코칭 탭 → AI 설정)');if(btn)btn.textContent='AI로 분석하기';return}fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ak2,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:'다음 텍스트에서 주간 훈련 프로그램을 추출해서 JSON으로 반환해. 반드시 JSON만 반환하고 다른 텍스트는 포함하지 마.\n\n형식: [{"day":0,"type":"tempo","name":"템포 12km","desc":"WU 2km → 템포 8km → CD 2km","dist":12,"pace":"4:15"}]\n\nday: 0=월~6=일, type: point/tempo/easy/long/rest 중 하나\n\n텍스트:\n'+txt}]})}).then(function(r){return r.json()}).then(function(d){
 var raw=d.content?d.content.map(function(c){return c.text||''}).join(''):'';
 try{var clean=raw.replace(/```json|```/g,'').trim();var arr=JSON.parse(clean);if(!Array.isArray(arr)){toast('파싱 실패');return}if(!P.cust)P.cust={};var DY2=['월','화','수','목','금','토','일'];var rhtml='<div style="font-size:10px;font-weight:500;color:var(--gn);margin-bottom:6px">✓ '+arr.length+'개 세션 인식</div>';for(var ai2=0;ai2<arr.length;ai2++){var a=arr[ai2];var dk='w'+UI.cw+'d'+(a.day||0);P.cust[dk]={type:a.type||'easy',l:a.name||'세션',d:a.desc||'',pace:a.pace||''};rhtml+='<div style="font-size:9px;padding:3px 0;color:var(--tx2)">'+DY2[a.day||0]+': <span style="color:var(--tx)">'+a.name+'</span>'+(a.pace?' · '+a.pace:'')+'</div>'}svP();if(resEl)resEl.innerHTML=rhtml+'<button class="btn btn-p" style="margin-top:8px" onclick="UI.regOpen=false;go()">확인</button>';if(btn)btn.textContent='AI로 분석하기'}catch(e){if(resEl)resEl.innerHTML='<div style="color:var(--rd);font-size:10px;margin-top:6px">파싱 실패. 다시 시도하거나 수동 입력해주세요.</div>';if(btn)btn.textContent='AI로 분석하기'}}).catch(function(e){if(resEl)resEl.innerHTML='<div style="color:var(--rd);font-size:10px;margin-top:6px">네트워크 오류. 수동 입력을 사용해주세요.</div>';if(btn)btn.textContent='AI로 분석하기'})};
 window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true;go()};
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
+window._saveAK=function(){var v=(document.getElementById('akInput')||{}).value||'';if(_LS)localStorage.setItem('mc_ak',v);toast(v?'API 키 저장 완료':'API 키 삭제됨');go()};
+window._aiForm=function(){var ak3=_LS?localStorage.getItem('mc_ak')||'':'';if(!ak3){toast('API 키를 먼저 입력해주세요');return}var btn2=document.getElementById('aiFormBtn');var res2=document.getElementById('aiFormResult');if(btn2)btn2.textContent='분석 중...';
+var allSess=[];for(var sk3 in S){if(S[sk3])allSess.push(S[sk3])}
+var avgGCT=0,avgCad=0,avgPace='',gctC=0,cadC=0,paceS=0,paceC=0;
+for(var si2=0;si2<allSess.length;si2++){if(allSess[si2].gct){avgGCT+=parseFloat(allSess[si2].gct);gctC++}if(allSess[si2].avgCad){avgCad+=parseFloat(allSess[si2].avgCad);cadC++}if(allSess[si2].pace&&allSess[si2].pace!=='--:--'){paceS+=p2s(allSess[si2].pace);paceC++}}
+avgGCT=gctC?Math.round(avgGCT/gctC):0;avgCad=cadC?Math.round(avgCad/cadC):0;avgPace=paceC?s2p(Math.round(paceS/paceC)):'';
+var prompt='당신은 러닝 바이오메카닉스 전문 코치입니다. 다음 러너의 데이터를 분석하고 맞춤형 폼 교정 조언과 드릴을 추천해주세요.\n\n[러너 프로필]\n- 키: '+P.ht+'cm, 체중: '+P.wt+'kg'+(P.mu?', 골격근량: '+P.mu+'kg':'')+(P.fat?', 체지방률: '+P.fat+'%':'')+'\n- 나이: '+P.age+'세, 성별: '+P.sex+'\n- VDOT: '+P.vd+', 목표: '+P.gt+'\n- 10K PB: '+(P.tenk||'-')+', 하프 PB: '+(P.half||'-')+', 풀 PB: '+(P.full||'-')+'\n\n[러닝 데이터 평균]\n- GCT: '+avgGCT+'ms (엘리트 Sub-3: 210ms 기준)\n- 케이던스: '+avgCad+'spm\n- 평균 페이스: '+avgPace+'/km\n- 세션 수: '+allSess.length+'회\n\n다음 항목을 분석해주세요:\n1. 현재 폼의 강점과 약점 (GCT/케이던스 기반)\n2. 체형 특성 고려한 자세 교정 포인트 3가지\n3. 맞춤 드릴 3개 (각각 이름, 방법, 주 몇회, 기대 효과)\n4. Sub-3 달성을 위한 핵심 개선 방향\n\n한국어로 간결하게 답변해주세요.';
+fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ak3,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,messages:[{role:'user',content:prompt}]})}).then(function(r){return r.json()}).then(function(d){
+var txt=d.content?d.content.map(function(c){return c.text||''}).join(''):'오류';
+txt=txt.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<span style="color:var(--ac2);font-weight:600">$1</span>').replace(/### (.*?)(<br>)/g,'<div style="font-size:11px;font-weight:600;color:var(--tx);margin:8px 0 4px">$1</div>').replace(/## (.*?)(<br>)/g,'<div style="font-size:12px;font-weight:600;color:var(--ac2);margin:10px 0 4px">$1</div>');
+if(res2)res2.innerHTML='<div style="background:var(--bg3);border-radius:8px;padding:12px;font-size:10px;color:var(--tx2);line-height:1.7">'+txt+'</div>';
+if(btn2)btn2.textContent='AI 폼 분석 시작'}).catch(function(e){
+if(res2)res2.innerHTML='<div style="color:var(--rd);font-size:10px">오류: API 키를 확인해주세요. '+e.message+'</div>';
+if(btn2)btn2.textContent='AI 폼 분석 시작'})};
 window._export=function(){var blob=new Blob([JSON.stringify({P:P,S:S},null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='marathon_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('내보내기 완료')};
 window._import=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(ev){try{var d=JSON.parse(ev.target.result);if(d.P)P=d.P;if(d.S)S=d.S;svP();svS();toast('가져오기 완료');go()}catch(err){toast('파일 형식 오류')}};r.readAsText(f)};
 window._rst=function(){P=null;S={};if(_LS){localStorage.removeItem('mc_p');localStorage.removeItem('mc_s')}UI.step=0;go()};
