@@ -133,31 +133,111 @@ if(!P||!P.rd)return{};
 var rd=new Date(P.rd),nw=new Date(),tw=Math.max(1,Math.ceil((rd-nw)/(7*864e5)));
 var w1=new Date(rd);w1.setDate(w1.getDate()-tw*7);while(w1.getDay()!==1)w1.setDate(w1.getDate()-1);
 var z=P.z||{e:'4:35',t:'3:40',mp:'3:54',i:'3:27',r:'3:09'};var SC={};
+// Evidence-based volume progression (92-plan analysis, Knopp et al. 2024)
+// Sub-3 target: peak 70-82km, start ~45km, deload every 4th week
+// Long run: start 16km, max 32km, increase ≤10% per week
+var prevLR=16;
 for(var w=1;w<=tw;w++){
-var pc=w/tw,ph,phc;
-if(pc<=0.25){ph='기초기';phc='base'}else if(pc<=0.5){ph='강화기';phc='build'}else if(pc<=0.75){ph='특이성기';phc='specific'}else if(pc<=0.9){ph='피크기';phc='peak'}else{ph='테이퍼';phc='taper'}
-var dl=w%4===0,rc=w===tw;
-var km=dl?44:rc?20:Math.min(82,Math.round(45+pc*40));
-var ek=dl?7:rc?3:Math.min(12,Math.round(7+pc*5));
-var lk=dl?15:rc?0:Math.min(32,Math.round(16+pc*18));
-var wd,wdd,wp;
-if(dl){wd='E 6km';wdd='회복주. 드릴+스트라이드.';wp=''}
-else if(rc){wd='셰이크 3km';wdd='가볍게';wp=''}
-else if(phc==='base'){var tk=Math.min(10,Math.round(5+pc*8));wd='T '+(tk+2)+'km';wdd='WU 1km → 템포 '+tk+'km @'+z.t+' → CD 1km';wp=z.t}
-else if(phc==='build'){var mk=Math.min(12,Math.round(8+pc*5));wd='MP '+(mk+2)+'km';wdd='WU 1km → MP '+mk+'km @'+z.mp+' → CD 1km';wp=z.mp}
-else if(phc==='specific'){var mk2=Math.min(14,Math.round(10+pc*5));wd='MP '+(mk2+1)+'km';wdd='MP '+mk2+'km @'+z.mp;wp=z.mp}
-else if(phc==='peak'){wd='MP 10km';wdd='감각 유지';wp=z.mp}
-else{wd='셰이크 4km';wdd='가볍게';wp=''}
+var pc=w/tw;
+// Phase determination (Filipas 2024: pyramidal first → polarized second half)
+var ph,phc;
+if(pc<=0.26){ph='기초기';phc='base'}
+else if(pc<=0.52){ph='강화기';phc='build'}
+else if(pc<=0.77){ph='특이성기';phc='specific'}
+else if(pc<=0.90){ph='피크기';phc='peak'}
+else{ph='테이퍼';phc='taper'}
+var dl=w%4===0;var rc=w===tw;
+// Volume: gradual build 45→peak, deload -30%
+var peakKm=Math.min(82,Math.round(55+pc*30));
+var km=dl?Math.round(peakKm*0.7):rc?25:peakKm;
+// Easy pace volume (80%) vs hard (20%)
+var easyPct=phc==='base'?0.85:0.80;
+var hardPct=1-easyPct;
+// Long run: 10% rule (Frandsen et al. 2025, BJSM)
+var targetLR=dl?Math.round(prevLR*0.6):rc?12:Math.min(35,Math.round(16+pc*18));
+if(!dl&&!rc&&targetLR>prevLR*1.1)targetLR=Math.round(prevLR*1.1);
+if(!dl)prevLR=targetLR;
+var ek=Math.round((km-targetLR)*0.3);ek=Math.max(5,Math.min(12,ek));
+// Session generation per phase - 80/20 polarized (Nature 2025, Seiler)
+// Mon=Quality, Tue=Easy, Wed=Quality2, Thu=Easy, Fri=Rest, Sat=Long, Sun=Recovery
+var sessions=[];
+if(rc){
+// Race week taper
+sessions=[
+{type:'easy',l:'셰이크 4km',d:'가볍게 몸 풀기',pace:z.e},
+{type:'easy',l:'E 3km',d:'스트라이드 3x100m',pace:z.e},
+{type:'easy',l:'셰이크 3km',d:'루틴 체크',pace:z.e},
+{type:'rest',l:'완전 휴식',d:'탄수화물 로딩 시작',pace:''},
+{type:'rest',l:'레이스 전날',d:'탄수화물 로딩. 충분한 수면.',pace:''},
+{type:'long',l:'🏁 RACE DAY',d:'풀마라톤 '+P.gt+' 목표. 네거티브 스플릿.',pace:z.mp},
+{type:'rest',l:'축하! 휴식',d:'완주 축하! 스트레칭만.',pace:''}];
+}else if(dl){
+// Deload week (-30%)
+var dk=Math.round(ek*0.7);
+sessions=[
+{type:'easy',l:'E '+dk+'km',d:'회복주. 강도 낮게.',pace:z.e},
+{type:'easy',l:'E '+dk+'km',d:'폼 드릴 + 스트라이드 4x100m',pace:z.e},
+{type:'easy',l:'E '+(dk+1)+'km',d:'리프레시 런',pace:z.e},
+{type:'easy',l:'E '+dk+'km',d:'가볍게',pace:z.e},
+{type:'rest',l:'완전 휴식',d:'폼롤러 + 스트레칭 + 근력(라이트)',pace:''},
+{type:'long',l:'LR '+Math.round(targetLR)+'km',d:'이지 페이스로만. 볼륨 줄인 롱런.',pace:z.e},
+{type:'easy',l:'R 4km',d:'리커버리 조깅 또는 완전 휴식',pace:''}];
+}else if(phc==='base'){
+// Base: pyramidal, build aerobic base (Filipas: pyramidal first half)
+var tk=Math.min(8,Math.round(4+pc*6));
+sessions=[
+{type:'point',l:'★ 팀 포인트',d:'코치 프로그램 또는 파틀렉 '+(tk*2)+'분',pace:''},
+{type:'easy',l:'E '+ek+'km',d:'HR Zone 1~2. 대화 가능 강도. 근력 추천.',pace:z.e},
+{type:'tempo',l:'T '+(tk+2)+'km',d:'WU 1km → 템포 '+tk+'km @'+z.t+' → CD 1km. 주 20% 하드 세션.',pace:z.t},
+{type:'easy',l:'E '+ek+'km',d:'이지 + 폼 드릴. 근력 추천.',pace:z.e},
+{type:'rest',l:'완전 휴식',d:'폼롤러 + 스트레칭. 근력(스쿼트/런지/코어) 추천.',pace:''},
+{type:'long',l:'LR '+targetLR+'km',d:'이지 페이스. 5km마다 보급 연습. 10% 룰 준수.',pace:z.e},
+{type:'easy',l:'R 5km',d:'리커버리. 완전 이지.',pace:''}];
+}else if(phc==='build'){
+// Build: transition to polarized
+var ik=Math.min(10,Math.round(6+pc*4));
+sessions=[
+{type:'point',l:'★ 팀 포인트',d:'코치 프로그램',pace:''},
+{type:'easy',l:'E '+ek+'km',d:'HR Zone 1~2 엄수. 80% 이지 세션.',pace:z.e},
+{type:'tempo',l:'인터벌 '+ik+'km',d:'WU 1.5km → 1km×'+(ik-3)+' @'+z.i+' (리커버리 400m 조깅) → CD 1.5km',pace:z.i},
+{type:'easy',l:'E '+ek+'km',d:'이지. 근력 추천 (플라이오 추가).',pace:z.e},
+{type:'rest',l:'완전 휴식',d:'근력: 스쿼트3×10 + 런지3×10 + 플랭크3×60s + 점프3×8',pace:''},
+{type:'long',l:'LR '+targetLR+'km',d:'전반 이지 → 후반 3km MP @'+z.mp+'. 보급 타이밍 확정.',pace:z.e+'→'+z.mp},
+{type:'easy',l:'R 5km',d:'리커버리 조깅.',pace:''}];
+}else if(phc==='specific'){
+// Specific: full polarized 80/20 + MP work (race-specific)
+var mpk=Math.min(16,Math.round(8+pc*8));
+sessions=[
+{type:'point',l:'★ 팀 포인트',d:'코치 프로그램 또는 MP 리허설',pace:''},
+{type:'easy',l:'E '+ek+'km',d:'완전 이지. 80% 세션.',pace:z.e},
+{type:'tempo',l:'MP '+(mpk)+'km',d:'WU 1km → MP '+(mpk-2)+'km @'+z.mp+' → CD 1km. 레이스 시뮬레이션.',pace:z.mp},
+{type:'easy',l:'E '+ek+'km',d:'이지 + 폼 드릴.',pace:z.e},
+{type:'rest',l:'완전 휴식',d:'근력: 유지 모드. 스쿼트2×8 + 코어.',pace:''},
+{type:'long',l:'LR '+targetLR+'km',d:'이지 시작 → 후반 5km MP @'+z.mp+'. 보급 리허설.',pace:z.e+'→'+z.mp},
+{type:'easy',l:'R 5km',d:'리커버리.',pace:''}];
+}else if(phc==='peak'){
+// Peak: reduced volume, maintain intensity
+sessions=[
+{type:'point',l:'★ 팀 포인트',d:'감각 유지. 볼륨은 줄이고 페이스 유지.',pace:''},
+{type:'easy',l:'E '+Math.round(ek*0.8)+'km',d:'이지.',pace:z.e},
+{type:'tempo',l:'MP 8km',d:'WU 1km → MP 6km @'+z.mp+' → CD 1km',pace:z.mp},
+{type:'easy',l:'E '+Math.round(ek*0.8)+'km',d:'이지. 근력 중단.',pace:z.e},
+{type:'rest',l:'완전 휴식',d:'스트레칭만.',pace:''},
+{type:'long',l:'LR '+Math.min(24,targetLR)+'km',d:'이지 + 마지막 3km MP.',pace:z.e},
+{type:'easy',l:'R 4km',d:'리커버리.',pace:''}];
+}else{
+// Taper
+sessions=[
+{type:'easy',l:'E 6km',d:'가볍게',pace:z.e},
+{type:'easy',l:'E 5km + 스트라이드',d:'4x100m 스트라이드',pace:z.e},
+{type:'tempo',l:'MP 4km',d:'WU 1km → MP 2km → CD 1km',pace:z.mp},
+{type:'easy',l:'E 4km',d:'셰이크 런',pace:z.e},
+{type:'rest',l:'휴식',d:'수면 + 탄수화물 점진 증가',pace:''},
+{type:'easy',l:'E 5km',d:'가볍게. 긴장 풀기.',pace:z.e},
+{type:'rest',l:'휴식',d:'충분한 수면.',pace:''}];
+}
 var d1=new Date(w1.getTime()+(w-1)*7*864e5);
-SC[w]={km:km,ph:ph,phc:phc,w1:d1,d:[
-{type:'point',l:dl?'★ 가벼운 세션':rc?'조깅 4km':'★ 팀 포인트',d:dl?'회복주':'코치 프로그램',pace:''},
-{type:'easy',l:'E '+ek+'km',d:'HR Zone 2',pace:z.e},
-{type:dl?'easy':'tempo',l:wd,d:wdd,pace:wp},
-{type:'easy',l:'E '+Math.max(3,ek-2)+'km',d:'이지런',pace:z.e},
-{type:'rest',l:rc?'레이스전날':'완전 휴식',d:rc?'탄수화물 로딩':'스트레칭',pace:''},
-{type:'long',l:rc?'🏁 RACE':'LR '+lk+'km',d:rc?'풀마라톤 목표 '+P.gt:'',pace:rc?z.mp:(lk>25?z.e+'→'+z.mp:z.e)},
-{type:rc?'rest':'easy',l:rc?'휴식':'R 5km',d:rc?'축하!':'리커버리',pace:''}
-]}
+SC[w]={km:km,ph:ph,phc:phc,w1:d1,d:sessions,lr:targetLR,easyPct:Math.round(easyPct*100)}
 }return SC}
 
 
