@@ -615,6 +615,15 @@ h+='</div>';
 
 // Pace zones
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--bl)"></div>페이스 존</div>';
+h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:12px;color:var(--tx3)">VDOT '+P.vd+' 기준'+(P.vdAll?' ('+P.vdAll[0].d+')':'')+'</span><span style="font-size:11px;color:var(--ac);cursor:pointer" onclick="document.getElementById(\'pzEdit\').style.display=document.getElementById(\'pzEdit\').style.display===\'none\'?\'block\':\'none\'">수동 조정 ▼</span></div>';
+h+='<div id="pzEdit" style="display:none;margin-bottom:8px;padding:10px;background:var(--bg3);border-radius:8px"><div style="font-size:11px;color:var(--tx2);margin-bottom:6px">페이스를 직접 수정할 수 있어요 (mm:ss)</div>';
+h+='<div style="display:grid;grid-template-columns:auto 1fr;gap:4px 8px;align-items:center;font-size:12px">';
+h+='<span style="color:var(--gn)">E</span><input type="text" id="pzE" value="'+z.e+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
+h+='<span style="color:var(--bl)">MP</span><input type="text" id="pzMP" value="'+z.mp+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
+h+='<span style="color:var(--ac)">T</span><input type="text" id="pzT" value="'+z.t+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
+h+='<span style="color:var(--am)">I</span><input type="text" id="pzI" value="'+z.i+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
+h+='<span style="color:var(--rd)">R</span><input type="text" id="pzR" value="'+z.r+'" style="background:var(--bg);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:13px;padding:6px;border-radius:6px">';
+h+='</div><button class="btn btn-p btn-sm" style="margin-top:8px" onclick="window._savePZ()">페이스존 저장</button></div>';
 var pzl=[['E (이지)',z.e,'var(--gn)'],['MP (마라톤)',z.mp,'var(--bl)'],['T (템포)',z.t,'var(--ac2)'],['I (인터벌)',z.i,'var(--am)'],['R (반복)',z.r,'var(--rd)']];
 for(var pi=0;pi<pzl.length;pi++)h+='<div class="pz"><div class="pz-n" style="color:'+pzl[pi][2]+'">'+pzl[pi][0]+'</div><div class="pz-p" style="color:'+pzl[pi][2]+'">'+pzl[pi][1]+'/km</div></div>';
 h+='</div>';
@@ -747,8 +756,9 @@ h+='<div class="btn-row"><button class="btn btn-s" id="bk2" style="flex:1">이�
 }else if(s===3){
 var z=P.z,gap=P.gap||0;
 h+='<div class="onb-step">STEP 4/4 — 결과 + 목표</div><div class="onb-title">분석 <span>결과</span></div>';
-h+='<div class="res-grid"><div class="res-sm"><div class="res-t">VDOT</div><div class="res-v" style="color:var(--ac2)">'+P.vd+'</div><div class="res-s">'+(P.vd>=55?'Sub-3 가능':'Sub-3까지 +'+(55-P.vd).toFixed(1))+'</div></div>';
+h+='<div class="res-grid"><div class="res-sm"><div class="res-t">기준 VDOT</div><div class="res-v" style="color:var(--ac)">'+P.vd+'</div><div class="res-s">'+P.vdAll[0].d+' 기록 기준</div></div>';
 h+='<div class="res-sm"><div class="res-t">예측 풀</div><div class="res-v" style="color:var(--gn)">'+s2t(z.mr)+'</div></div></div>';
+if(P.vdAll&&P.vdAll.length>1){h+='<div style="font-size:12px;color:var(--tx3);margin-bottom:8px">';for(var vi=0;vi<P.vdAll.length;vi++){h+=P.vdAll[vi].d+' VDOT: <span style="font-family:var(--m);color:var(--tx)">'+Math.round(P.vdAll[vi].v*10)/10+'</span> '}h+='<br>가장 긴 거리('+P.vdAll[0].d+') 기준으로 페이스존 설정</div>'}
 if(gap>0){h+='<div class="ins '+(gap>8?'al':gap>4?'w':'ok')+'"><div class="ins-t">Endurance gap: '+gap+'분</div><div class="ins-d">예측 '+s2t(z.mr)+' vs 실제 '+P.full+'</div></div>'}
 h+='<div class="res"><div class="res-t">페이스 존</div>';
 [['E',z.e,'var(--gn)'],['MP',z.mp,'var(--bl)'],['T',z.t,'var(--ac2)'],['I',z.i,'var(--am)'],['R',z.r,'var(--rd)']].forEach(function(x){
@@ -764,7 +774,20 @@ h+='</div>';R.innerHTML=h;
 // Bind events
 if(s===0)document.getElementById('b1').onclick=function(){P={name:document.getElementById('i_n').value||'러너',age:parseInt(document.getElementById('i_a').value)||28,sex:document.getElementById('i_sx').value,ht:parseInt(document.getElementById('i_h').value)||175,wt:parseInt(document.getElementById('i_w').value)||68};UI.step=1;go()};
 if(s===1){var fn=function(){P.mu=parseFloat((document.getElementById('i_mu')||{}).value)||0;P.fat=parseFloat((document.getElementById('i_ft')||{}).value)||0;P.rhr=parseInt((document.getElementById('i_rh')||{}).value)||0;P.mhr=parseInt((document.getElementById('i_mh')||{}).value)||(220-P.age);UI.step=2;go()};document.getElementById('b2').onclick=fn;document.getElementById('bs').onclick=fn;document.getElementById('bk').onclick=function(){UI.step=0;go()}}
-if(s===2){document.getElementById('b3').onclick=function(){var r1=document.getElementById('i_10').value,r2=document.getElementById('i_hm').value,r3=document.getElementById('i_fm').value;if(!r1&&!r2&&!r3){toast('최소 하나의 기록을 입력해주세요');return}P.tenk=r1;P.half=r2;P.full=r3;var best=0;if(r1){var v1=calcV(10,p2s(r1));if(v1>best)best=v1}if(r2){var v2=calcV(21.0975,p2s(r2));if(v2>best)best=v2}if(r3){var v3=calcV(42.195,p2s(r3));if(v3>best)best=v3}P.vd=Math.round(best*10)/10;P.z=gZ(best);if(r3){P.gap=Math.round((p2s(r3)-P.z.mr)/60)}else{P.gap=0}UI.step=3;go()};document.getElementById('bk2').onclick=function(){UI.step=1;go()}}
+if(s===2){document.getElementById('b3').onclick=function(){var r1=document.getElementById('i_10').value,r2=document.getElementById('i_hm').value,r3=document.getElementById('i_fm').value;if(!r1&&!r2&&!r3){toast('최소 하나의 기록을 입력해주세요');return}P.tenk=r1;P.half=r2;P.full=r3;
+// VDOT: prioritize longest distance for realistic marathon zones
+// Full > Half > 10K (longer = more relevant for marathon training)
+var vAll=[];
+if(r1){vAll.push({d:'10K',v:calcV(10,p2s(r1)),dist:10})}
+if(r2){vAll.push({d:'하프',v:calcV(21.0975,p2s(r2)),dist:21.1})}
+if(r3){vAll.push({d:'풀',v:calcV(42.195,p2s(r3)),dist:42.2})}
+vAll.sort(function(a,b){return b.dist-a.dist});
+// Use longest distance VDOT as primary, but show all
+var primary=vAll[0];P.vd=Math.round(primary.v*10)/10;P.vdAll=vAll;
+P.z=gZ(primary.v);
+if(r3){P.gap=Math.round((p2s(r3)-P.z.mr)/60)}
+else if(r2){var predFull=P.z.mr;var riegelFull=Math.round(p2s(r2)*Math.pow(42.195/21.0975,1.06));P.gap=Math.round((riegelFull-predFull)/60)}
+else{P.gap=0}UI.step=3;go()};document.getElementById('bk2').onclick=function(){UI.step=1;go()}}
 if(s===3){document.getElementById('b4').onclick=function(){P.rn=document.getElementById('i_rn').value||'';P.gt=document.getElementById('i_gt').value||'2:59:59';P.rd=document.getElementById('i_gd').value||'2026-11-01';P.done=true;svP();go()};document.getElementById('bk3').onclick=function(){UI.step=2;go()}}
 }
 
@@ -784,6 +807,10 @@ try{var clean=raw.replace(/```json|```/g,'').trim();var arr=JSON.parse(clean);if
 window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true;go()};
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
+window._savePZ=function(){
+var e=document.getElementById('pzE'),mp=document.getElementById('pzMP'),t=document.getElementById('pzT'),i=document.getElementById('pzI'),r=document.getElementById('pzR');
+if(e)P.z.e=e.value;if(mp)P.z.mp=mp.value;if(t)P.z.t=t.value;if(i)P.z.i=i.value;if(r)P.z.r=r.value;
+svP();toast('페이스존 저장 완료');go()};
 window._saveAK=function(){var v=(document.getElementById('akInput')||{}).value||'';if(_LS)localStorage.setItem('mc_ak',v);toast(v?'API 키 저장 완료':'API 키 삭제됨');go()};
 window._askCoach=function(type){
 var ak3=_LS?localStorage.getItem('mc_ak')||'':'';
