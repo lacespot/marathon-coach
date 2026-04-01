@@ -309,8 +309,15 @@ h+='</div>';
 
 }else if(UI.tab==='ana'){
 var dd4=new Date(wk.w1.getTime()+UI.cd*864e5);var ds4=(dd4.getMonth()+1)+'월 '+dd4.getDate()+'일 ('+DY[UI.cd]+')';
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--gn)"></div>'+ds4+' — 분석</div>';
-h+='<div style="border:1.5px dashed rgba(139,122,255,.2);border-radius:10px;padding:16px 12px;text-align:center;position:relative;margin-bottom:10px;cursor:pointer" id="uzArea"><input type="file" accept=".fit" id="fitIn" style="position:absolute;inset:0;opacity:0;cursor:pointer"><div style="font-size:12px;color:var(--tx2)">.fit 파일 업로드</div><div style="font-size:10px;color:var(--tx3);margin-top:3px">Garmin .fit 파일</div></div>';
+h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--gn)"></div>세션 분석</div>';
+h+='<div style="font-size:9px;color:var(--tx2);margin-bottom:6px">저장할 날짜:</div>';
+h+='<div style="display:flex;gap:3px;margin-bottom:8px;flex-wrap:wrap">';
+for(var ai=0;ai<7;ai++){var adn=new Date(wk.w1.getTime()+ai*864e5);
+h+='<div style="padding:4px 8px;border-radius:5px;font-size:9px;cursor:pointer;border:1px solid '+(ai===UI.cd?'var(--ac)':'rgba(255,255,255,.06)')+';background:'+(ai===UI.cd?'var(--acb)':'var(--bg3)')+';color:'+(ai===UI.cd?'var(--ac2)':'var(--tx3)')+'" onclick="window._sd('+ai+');go()">'+DY[ai]+' '+adn.getDate()+'</div>'}
+h+='</div>';
+var prevData=S['w'+cw+'d'+UI.cd];
+h+='<div style="border:1.5px dashed rgba(139,122,255,.2);border-radius:10px;padding:16px 12px;text-align:center;position:relative;margin-bottom:10px;cursor:pointer" id="uzArea"><input type="file" accept=".fit" id="fitIn" style="position:absolute;inset:0;opacity:0;cursor:pointer"><div style="font-size:12px;color:var(--tx2)">.fit 파일 업로드</div><div style="font-size:10px;color:var(--tx3);margin-top:3px">Garmin .fit 파일'+(prevData?' — 이미 저장된 기록 있음':'')+'</div></div>';
+if(prevData&&!FT.ex){h+='<div class="ins ok"><div class="ins-t">'+ds4+' 저장된 기록</div><div class="ins-d">'+prevData.distance+'km · '+prevData.pace+'/km · HR '+prevData.avgHR+(prevData.gct?' · GCT '+prevData.gct+'ms':'')+(prevData.rpe?' · RPE '+prevData.rpe+'/10':'')+'</div></div>'}
 if(FT.busy)h+='<div style="padding:12px;background:var(--acb);border-radius:8px;text-align:center;font-size:11px;color:var(--ac2)">분석 중...</div>';
 if(FT.td&&FT.tm===null&&!FT.busy){
 h+='<div style="background:var(--bg3);border:1px solid var(--ac);border-radius:12px;padding:14px;margin-bottom:10px">';
@@ -532,7 +539,7 @@ if(s===3){document.getElementById('b4').onclick=function(){P.gt=document.getElem
 
 window._tab=function(t){UI.tab=t;go()};
 window._tm=function(u){FT.tm=u;FT.ex=anaFit(FT.laps,u);go()};
-window._saveFit=function(){if(!FT.ex)return;var ex=FT.ex,k='w'+UI.cw+'d'+UI.cd;var rpe=document.getElementById('rpeSlider');S[k]={distance:ex.dist,pace:ex.pace,avgHR:ex.avgHR,maxHR:ex.maxHR,gct:ex.avgGCT,avgCad:ex.avgCad,avgPow:ex.avgPow,rpe:rpe?rpe.value:'5',notes:(ex.tk?'[트랙보정] ':'[FIT] ')+ex.laps.length+'랩'+(ex.cc?' ('+ex.cc+'랩 보정)':''),logged:new Date().toISOString()};svS();FT={laps:null,ex:null,td:false,tm:null,busy:false};toast('저장 완료');go()};
+window._saveFit=function(){if(!FT.ex)return;var ex=FT.ex,k='w'+UI.cw+'d'+UI.cd;var rpe=document.getElementById('rpeSlider');S[k]={distance:ex.dist,pace:ex.pace,avgHR:ex.avgHR,maxHR:ex.maxHR,gct:ex.avgGCT,avgCad:ex.avgCad,avgPow:ex.avgPow,rpe:rpe?rpe.value:'5',notes:(ex.tk?'[트랙보정] ':'[FIT] ')+ex.laps.length+'랩'+(ex.cc?' ('+ex.cc+'랩 보정)':''),logged:new Date().toISOString()};svS();toast('W'+UI.cw+' '+['월','화','수','목','금','토','일'][UI.cd]+' 저장 완료 — 기록 탭에서 확인 가능');go()};
 window._gw=function(w){UI.cw=w;UI.cd=0;go()};
 window._sd=function(d){UI.cd=d;go()};
 window._sleep=function(v){UI.sleep=v;go()};
