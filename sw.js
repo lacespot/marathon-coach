@@ -1,15 +1,12 @@
-const CACHE_NAME = 'marathon-coach-v42';
+const CACHE_NAME = 'marathon-coach-v46';
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll([
-        '/marathon-coach/',
-        '/marathon-coach/index.html'
-      ]);
+      return cache.addAll(['/marathon-coach/', '/marathon-coach/index.html']);
     })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -27,7 +24,8 @@ self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('firebaseio.com') ||
       event.request.url.includes('googleapis.com') ||
       event.request.url.includes('api.anthropic.com') ||
-      event.request.url.includes('open-meteo.com')) {
+      event.request.url.includes('open-meteo.com') ||
+      event.request.url.includes('pretendard')) {
     return;
   }
 
@@ -35,19 +33,14 @@ self.addEventListener('fetch', (event) => {
     fetch(event.request)
       .then((response) => {
         if (response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
       })
       .catch(() => {
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          if (event.request.destination === 'document') {
-            return caches.match('/marathon-coach/');
-          }
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match('/marathon-coach/');
         });
       })
   );
