@@ -107,7 +107,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <script>
-var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:''},_LS=false;
+var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{},regOpen:false,regMode:'manual',regAI:'',tOpen:{}},_LS=false;
 try{localStorage.setItem('_t','1');if(localStorage.getItem('_t')==='1')_LS=true;localStorage.removeItem('_t');}catch(e){}
 function ldA(){try{if(_LS){var p=localStorage.getItem('mc_p');if(p)P=JSON.parse(p);var s=localStorage.getItem('mc_s');if(s)S=JSON.parse(s);
 var _ak=_LS?localStorage.getItem('mc_ak')||'':'';if(P){if(P.raceDate&&!P.rd)P.rd=P.raceDate;if(P.targetTime&&!P.gt)P.gt=P.targetTime;if(P.vdot&&!P.vd)P.vd=P.vdot;if(P.zones&&!P.z)P.z=P.zones;if(P.weight&&!P.wt)P.wt=P.weight;if(P.height&&!P.ht)P.ht=P.height;if(P.maxHR&&!P.mhr)P.mhr=P.maxHR;if(P.vd&&P.z&&P.rd&&P.gt)P.done=true;svP()}
@@ -524,58 +524,28 @@ h+='<button class="btn btn-p" style="margin-top:10px" onclick="window._saveFit()
 h+='</div>';
 
 }else if(UI.tab==='trend'){
-// Gather all session data
-var allD=[];for(var aw=1;aw<=tw;aw++){for(var ad=0;ad<7;ad++){var ak='w'+aw+'d'+ad;if(S[ak]){allD.push({w:aw,d:ad,data:S[ak]})}}}
-
-// Weekly volume chart
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--ac)"></div>주간 주행거리</div>';
-h+='<div style="position:relative;height:140px"><canvas id="volChart"></canvas></div></div>';
-
-// GCT vs Pace
-var gctPts=allD.filter(function(x){return x.data.gct&&x.data.pace&&x.data.pace!=='--:--'});
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--ac2)"></div>GCT vs 페이스</div>';
-h+='<div style="display:flex;gap:6px;font-size:12px;color:var(--tx2);margin-bottom:6px;flex-wrap:wrap">';
-h+='<label style="display:flex;align-items:center;gap:3px;cursor:pointer"><input type="checkbox" checked id="chkElite" style="width:10px;height:10px;accent-color:var(--rd)"> 엘리트</label>';
-h+='<label style="display:flex;align-items:center;gap:3px;cursor:pointer"><input type="checkbox" checked id="chkMasters" style="width:10px;height:10px;accent-color:var(--bl)"> 마스터즈 Sub-3</label>';
-h+='<label style="display:flex;align-items:center;gap:3px;cursor:pointer"><input type="checkbox" checked id="chkMe" style="width:10px;height:10px;accent-color:var(--ac)"> 내 데이터</label></div>';
-h+='<div style="position:relative;height:180px"><canvas id="gctChart"></canvas></div>';
-h+='<div style="font-size:11px;color:var(--tx3);margin-top:4px">같은 페이스에서 GCT가 낮을수록 효율적. 점이 아래로 갈수록 좋음.</div></div>';
-
-// Race readiness
-var readiness=0,rParts={hr:0,pace:0,gct:0,vol:0};
-if(allD.length>=2){
-var totalVol=0;for(var rv=0;rv<allD.length;rv++)totalVol+=parseFloat(allD[rv].data.distance)||0;
-rParts.vol=Math.min(100,Math.round(totalVol/(wk.km*cw)*100));
-var gctD=allD.filter(function(x){return x.data.gct});
-if(gctD.length)rParts.gct=Math.min(100,Math.round((250-parseFloat(gctD[gctD.length-1].data.gct))/(250-210)*100));
-var hrD=allD.filter(function(x){return x.data.avgHR&&x.data.pace&&x.data.pace!=='--:--'});
-if(hrD.length>=2)rParts.hr=Math.min(100,Math.round(60));
-rParts.pace=Math.min(100,Math.round(P.vd/55*100));
-readiness=Math.round((rParts.vol+rParts.gct+rParts.hr+rParts.pace)/4)}
-
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--am)"></div>레이스 준비도</div>';
-h+='<div style="text-align:center;margin:6px 0"><span style="font-family:var(--m);font-size:32px;font-weight:700;color:'+(readiness>=70?'var(--gn)':readiness>=40?'var(--am)':'var(--rd)')+'">'+readiness+'</span><span style="font-size:12px;color:var(--tx3)"> / 100</span></div>';
-h+='<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin:4px 0"><div style="width:'+readiness+'%;height:100%;background:'+(readiness>=70?'var(--gn)':readiness>=40?'var(--am)':'var(--rd)')+';border-radius:3px"></div></div>';
-h+='<div class="stats" style="margin-top:8px">';
-h+='<div class="stat"><div class="stat-l">심박효율</div><div class="stat-v" style="font-size:14px">'+rParts.hr+'</div></div>';
-h+='<div class="stat"><div class="stat-l">페이스일관</div><div class="stat-v" style="font-size:14px">'+rParts.pace+'</div></div>';
-h+='<div class="stat"><div class="stat-l">이코노미</div><div class="stat-v" style="font-size:14px">'+rParts.gct+'</div></div>';
-h+='<div class="stat"><div class="stat-l">볼륨달성</div><div class="stat-v" style="font-size:14px">'+rParts.vol+'</div></div></div>';
-h+='</div>';
-
-// Training load
-h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--bl)"></div>훈련 부하</div>';
-if(allD.length<3){h+='<div style="font-size:11px;color:var(--tx3);text-align:center;padding:12px">데이터가 더 쌓이면 표시됩니다 (최소 3세션)</div>'}
+// Trends - accordion
+var allD=[];for(var aw=1;aw<=tw;aw++){for(var ad=0;ad<7;ad++){var ak='w'+aw+'d'+ad;if(S[ak])allD.push({w:aw,d:ad,data:S[ak]})}}
+var tDist=0,tSess=allD.length,tGct=0,tGctC=0;for(var ti=0;ti<allD.length;ti++){tDist+=parseFloat(allD[ti].data.distance)||0;if(allD[ti].data.gct){tGct+=parseFloat(allD[ti].data.gct);tGctC++}}
+if(!tSess){h+='<div class="cd" style="text-align:center;padding:28px"><div style="font-size:24px;margin-bottom:8px">📊</div><div style="font-size:17px;font-weight:600;color:var(--tx);margin-bottom:4px">아직 데이터가 없어요</div><div style="font-size:15px;color:var(--tx3)">분석 탭에서 .fit 파일을 올려보세요</div></div>'}
 else{
-var wkLoads=[];for(var wl=1;wl<=Math.min(cw,12);wl++){var wld=0;for(var wld2=0;wld2<7;wld2++){var wlk='w'+wl+'d'+wld2;if(S[wlk])wld+=parseFloat(S[wlk].distance)||0}wkLoads.push(wld)}
-if(wkLoads.length>=2){var acute=wkLoads[wkLoads.length-1];var chronic=wkLoads.reduce(function(s,v){return s+v},0)/wkLoads.length;var acr=chronic>0?Math.round(acute/chronic*100)/100:0;
-h+='<div style="display:flex;gap:6px;margin-bottom:8px">';
-h+='<div style="flex:1;background:var(--bg3);border-radius:7px;padding:8px;text-align:center"><div style="font-size:11px;color:var(--tx2)">이번주 (급성)</div><div style="font-family:var(--m);font-size:14px;font-weight:600">'+Math.round(acute)+'km</div></div>';
-h+='<div style="flex:1;background:var(--bg3);border-radius:7px;padding:8px;text-align:center"><div style="font-size:11px;color:var(--tx2)">4주 평균 (만성)</div><div style="font-family:var(--m);font-size:14px;font-weight:600">'+Math.round(chronic)+'km</div></div>';
-h+='<div style="flex:1;background:var(--bg3);border-radius:7px;padding:8px;text-align:center"><div style="font-size:11px;color:var(--tx2)">급성:만성</div><div style="font-family:var(--m);font-size:14px;font-weight:600;color:'+(acr>1.3?'var(--rd)':acr>=0.8?'var(--gn)':'var(--am)')+'">'+acr+'</div></div></div>';
-h+='<div class="ins '+(acr>1.3?'al':acr>=0.8?'ok':'w')+'"><div class="ins-t">'+(acr>1.3?'부상 위험 — 볼륨 급증':acr>=0.8?'안전 구간 (0.8~1.3)':'볼륨 부족 — 점진적 증가 필요')+'</div><div class="ins-d">급성:만성 비율 '+(acr>1.3?'1.3 초과 시 부상 위험 2~5배 증가.':acr>=0.8?'현재 볼륨 밸런스가 좋아.':'0.8 미만은 디트레이닝 구간.')+'</div></div>'}}
-h+='</div>';
-
+h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">';
+h+='<div style="background:var(--bg2);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--tx3)">총 거리</div><div style="font-family:var(--m);font-size:22px;font-weight:700">'+Math.round(tDist*10)/10+'<span style="font-size:12px;color:var(--tx3)">km</span></div></div>';
+h+='<div style="background:var(--bg2);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--tx3)">세션</div><div style="font-family:var(--m);font-size:22px;font-weight:700">'+tSess+'<span style="font-size:12px;color:var(--tx3)">회</span></div></div>';
+h+='<div style="background:var(--bg2);border-radius:14px;padding:14px;text-align:center"><div style="font-size:11px;color:var(--tx3)">평균 GCT</div><div style="font-family:var(--m);font-size:22px;font-weight:700;color:var(--gn)">'+(tGctC?Math.round(tGct/tGctC):'-')+'<span style="font-size:12px;color:var(--tx3)">ms</span></div></div></div>';
+var tI=[['vol','📏','주간 주행거리','목표 대비 실제 볼륨'],['gct','👟','GCT vs 페이스','엘리트·마스터즈 비교'],['ready','🎯','레이스 준비도','종합 점수 0~100'],['load','⚡','훈련 부하','급성:만성 비율']];
+for(var tii=0;tii<tI.length;tii++){var tid=tI[tii][0],tic=tI[tii][1],tit=tI[tii][2],tid2=tI[tii][3],tO=!!UI.tOpen[tid];
+h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overflow:hidden'+(tO?';border:1px solid rgba(232,255,90,.12)':'')+'">';
+h+='<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;min-height:60px" onclick="UI.tOpen.'+tid+'=!UI.tOpen.'+tid+';go()">';
+h+='<span style="font-size:24px">'+tic+'</span><div style="flex:1"><div style="font-size:17px;font-weight:600;color:var(--tx)">'+tit+'</div><div style="font-size:13px;color:var(--tx3)">'+tid2+'</div></div>';
+h+='<span style="font-size:16px;color:var(--tx3)">'+(tO?'▲':'▼')+'</span></div>';
+if(tO){h+='<div style="padding:0 18px 18px">';
+if(tid==='vol'){h+='<div style="position:relative;height:220px"><canvas id="volChart"></canvas></div>'}
+else if(tid==='gct'){h+='<div style="display:flex;gap:10px;font-size:14px;color:var(--tx2);margin-bottom:10px;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked id="chkElite" style="width:16px;height:16px;accent-color:var(--rd)"> 엘리트</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked id="chkMasters" style="width:16px;height:16px;accent-color:var(--bl)"> 마스터즈</label><label style="display:flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" checked id="chkMe" style="width:16px;height:16px;accent-color:var(--ac)"> 내 데이터</label></div><div style="position:relative;height:260px"><canvas id="gctChart"></canvas></div><div style="font-size:13px;color:var(--tx3);margin-top:8px">같은 페이스에서 GCT가 낮을수록 효율적</div>'}
+else if(tid==='ready'){var rd2=0,rP={hr:60,pace:Math.min(100,Math.round(P.vd/55*100)),gct:0,vol:0};if(allD.length>=2){var tv=0;for(var rv=0;rv<allD.length;rv++)tv+=parseFloat(allD[rv].data.distance)||0;rP.vol=Math.min(100,Math.round(tv/(wk.km*cw)*100));var gD=allD.filter(function(x){return x.data.gct});if(gD.length)rP.gct=Math.min(100,Math.round((250-parseFloat(gD[gD.length-1].data.gct))/(250-210)*100));rd2=Math.round((rP.vol+rP.gct+rP.hr+rP.pace)/4)}h+='<div style="text-align:center;margin:16px 0"><span style="font-family:var(--m);font-size:56px;font-weight:700;color:'+(rd2>=70?'var(--gn)':rd2>=40?'var(--am)':'var(--rd)')+'">'+rd2+'</span><span style="font-size:20px;color:var(--tx3)"> / 100</span></div><div style="height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin-bottom:16px"><div style="width:'+rd2+'%;height:100%;background:'+(rd2>=70?'var(--gn)':rd2>=40?'var(--am)':'var(--rd)')+';border-radius:4px"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';var rL=[['심박 효율',rP.hr],['페이스 일관',rP.pace],['이코노미',rP.gct],['볼륨 달성',rP.vol]];for(var rl=0;rl<rL.length;rl++)h+='<div style="background:var(--bg3);border-radius:12px;padding:14px"><div style="font-size:13px;color:var(--tx3)">'+rL[rl][0]+'</div><div style="font-family:var(--m);font-size:24px;font-weight:600">'+rL[rl][1]+'</div></div>';h+='</div>'}
+else if(tid==='load'){if(allD.length<3)h+='<div style="font-size:15px;color:var(--tx3);text-align:center;padding:24px">세션 3회 이상 필요</div>';else{var wL=[];for(var wl=1;wl<=Math.min(cw,12);wl++){var wd=0;for(var wd2=0;wd2<7;wd2++){var wk3='w'+wl+'d'+wd2;if(S[wk3])wd+=parseFloat(S[wk3].distance)||0}wL.push(wd)}if(wL.length>=2){var ac=wL[wL.length-1],ch=wL.reduce(function(s,v){return s+v},0)/wL.length,ar=ch>0?Math.round(ac/ch*100)/100:0;h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px"><div style="background:var(--bg3);border-radius:12px;padding:14px;text-align:center"><div style="font-size:12px;color:var(--tx3)">급성</div><div style="font-family:var(--m);font-size:22px;font-weight:600">'+Math.round(ac)+'km</div></div><div style="background:var(--bg3);border-radius:12px;padding:14px;text-align:center"><div style="font-size:12px;color:var(--tx3)">만성</div><div style="font-family:var(--m);font-size:22px;font-weight:600">'+Math.round(ch)+'km</div></div><div style="background:var(--bg3);border-radius:12px;padding:14px;text-align:center"><div style="font-size:12px;color:var(--tx3)">비율</div><div style="font-family:var(--m);font-size:22px;font-weight:600;color:'+(ar>1.3?'var(--rd)':ar>=0.8?'var(--gn)':'var(--am)')+'">'+ar+'</div></div></div><div class="ins '+(ar>1.3?'al':ar>=0.8?'ok':'w')+'"><div class="ins-t">'+(ar>1.3?'부상 위험':ar>=0.8?'안전 구간':'볼륨 부족')+'</div><div class="ins-d">'+(ar>1.3?'볼륨 급증 주의':ar>=0.8?'밸런스 양호':'점진적 증가 필요')+'</div></div>'}}}
+h+='</div>'}h+='</div>'}
+}
 }else if(UI.tab==='coach'){
 var z=P.z;
 var cues2={base:[{t:'이지런 폼 유지',d:'골반 앞으로, 시선 30m. GCT 230ms 이하.'},{t:'케이던스 180',d:'170 이하로 떨어지지 않게.'},{t:'HR Zone 2',d:'150bpm 넘으면 속도 줄여.'}],build:[{t:'MP 각인',d:z.mp+'가 편하게 힘든 느낌.'},{t:'보급 타이밍',d:'5km 물, 10km 젤.'}],specific:[{t:'MP 롱런=리허설',d:'보급/페이싱 레이스와 동일.'},{t:'30km벽=멘탈',d:'5km씩 쪼개.'}],peak:[{t:'볼륨↓강도유지',d:'날카롭게.'},{t:'자신감',d:'체력은 됐어.'}],taper:[{t:'추가훈련 금지',d:'정상이야.'},{t:'네거티브 스플릿',d:'전반 10~15초 느리게.'}]};
