@@ -252,6 +252,17 @@ SC[w]={km:km,ph:ph,phc:phc,w1:d1,d:sessions,lr:targetLR,easyPct:Math.round(easyP
 var FT={laps:null,ex:null,td:false,tm:null,busy:false};
 function parseFit(buf){var v=new DataView(buf),laps=[],recs=[],off=v.getUint8(0),defs={},ds=buf.byteLength-2;while(off<ds){try{var rh=v.getUint8(off);off++;if((rh&0x80)!==0){var d=defs[(rh>>5)&0x03];if(d){for(var x=0;x<d.f.length;x++)off+=d.f[x].s}else off+=10;continue}if((rh&0x40)!==0){off++;var ar=v.getUint8(off);off++;var li=ar===0;var gm=li?v.getUint16(off,true):v.getUint16(off,false);off+=2;var nf=v.getUint8(off);off++;var fs=[];for(var i=0;i<nf;i++){fs.push({n:v.getUint8(off),s:v.getUint8(off+1)});off+=3}defs[rh&0x0F]={gm:gm,f:fs,li:li};if((rh&0x20)!==0){var df=v.getUint8(off);off++;for(var j=0;j<df;j++)off+=3}}else{var d2=defs[rh&0x0F];if(!d2)break;var fd={};for(var k=0;k<d2.f.length;k++){var ff=d2.f[k];if(off+ff.s>buf.byteLength){off=buf.byteLength;break}var vv=null;if(ff.s===1)vv=v.getUint8(off);else if(ff.s===2)vv=v.getUint16(off,d2.li);else if(ff.s===4)vv=v.getUint32(off,d2.li);fd[ff.n]=vv;off+=ff.s}if(d2.gm===19){var dd=fd[9],tt=fd[7],hr=fd[15],mh=fd[16],ca=fd[17],gc=fd[79]||fd[78],pw=fd[19]||fd[20];var dist=dd!=null&&dd!==0xFFFFFFFF?dd/100:0;var time=tt!=null&&tt!==0xFFFFFFFF?tt/1000:0;if(dist>5)laps.push({dist:Math.round(dist),time:Math.round(time*10)/10,hr:hr!=null&&hr!==0xFF?hr:0,mh:mh!=null&&mh!==0xFF?mh:0,cad:ca!=null&&ca!==0xFF?ca*2:0,gct:gc!=null&&gc!==0xFFFF&&gc>0?Math.round(gc/10):0,pw:pw!=null&&pw!==0xFFFF?pw:0})}if(d2.gm===20){var rd=fd[5],rgc=fd[41]||fd[79]||fd[78],rvo=fd[39],rhr=fd[3],rcad=fd[4];var rdist=rd!=null&&rd!==0xFFFFFFFF?rd/100:0;var rgctV=rgc!=null&&rgc!==0xFFFF&&rgc>0?Math.round(rgc/10):0;var rvoV=rvo!=null&&rvo!==0xFFFF&&rvo>0?Math.round(rvo/10):0;if(rdist>0)recs.push({dist:rdist,gct:rgctV,vo:rvoV,hr:rhr!=null&&rhr!==0xFF?rhr:0,cad:rcad!=null&&rcad!==0xFF?rcad*2:0})}}}catch(e){break}}if(recs.length>0&&laps.length>0){var cumDist=0;for(var li=0;li<laps.length;li++){var lapEnd=cumDist+laps[li].dist;var lapRecs=recs.filter(function(r){return r.dist>=cumDist&&r.dist<lapEnd});cumDist=lapEnd;if(lapRecs.length>0){var gctR=lapRecs.filter(function(r){return r.gct>0});if(gctR.length>0&&laps[li].gct===0)laps[li].gct=Math.round(gctR.reduce(function(s,r){return s+r.gct},0)/gctR.length);var voR=lapRecs.filter(function(r){return r.vo>0});if(voR.length>0)laps[li].vo=Math.round(voR.reduce(function(s,r){return s+r.vo},0)/voR.length*10)/10}}}return laps}
 
+function matchWD(fileDate){
+// Auto-match file date to schedule week/day
+var SC2=gSC();if(!SC2||!SC2[1])return{w:UI.cw,d:UI.cd};
+var tw2=Object.keys(SC2).length;
+var fd=new Date(fileDate);fd.setHours(0,0,0,0);
+for(var w=1;w<=tw2;w++){
+var w1=new Date(SC2[w].w1);w1.setHours(0,0,0,0);
+for(var d=0;d<7;d++){
+var dd=new Date(w1.getTime()+d*864e5);dd.setHours(0,0,0,0);
+if(dd.getTime()===fd.getTime())return{w:w,d:d}}}
+return{w:UI.cw,d:UI.cd}}
 function anaFit(laps,tk){var wk=[];for(var i=0;i<laps.length;i++){var l=laps[i],c=tk&&l.dist>=370&&l.dist<=430&&l.dist!==400;wk.push({dist:c?400:l.dist,time:l.time,hr:l.hr,mh:l.mh,cad:l.cad,gct:l.gct,pw:l.pw,od:l.dist,cor:c})}
 var td=0,tt=0,hS=0,hC=0,gS=0,gC=0,cS=0,cC=0,pS=0,pC=0,cc=0;
 var hrZ=[0,0,0,0,0];var mhr=P.mhr||(220-(P.age||28));
@@ -275,7 +286,7 @@ if(stops.length)insights.push({c:'al',t:'중간 정지 '+stops.length+'회',d:'�
 if(!insights.length)insights.push({c:'ok',t:'세션 완료',d:'HR/GCT 추가 데이터로 더 자세한 피드백 가능.'});
 return{laps:wk,run:run,dist:Math.round(td/10)/100,time:tm+':'+(ts<10?'0':'')+ts,pace:s2p(Math.round(ap)),avgHR:hC?Math.round(hS/hC):0,maxHR:Math.max.apply(null,wk.map(function(x){return x.mh||0})),avgGCT:gC?Math.round(gS/gC):0,avgCad:cC?Math.round(cS/cC):0,avgPow:pC?Math.round(pS/pC):0,cc:cc,tk:tk,hrZ:hrZ,ttTime:tt,insights:insights}}
 
-function hFile(file){FT.busy=true;FT.tm=null;FT.laps=null;FT.ex=null;go();var rd=new FileReader();rd.onload=function(e){try{var laps=parseFit(e.target.result);if(!laps||!laps.length){FT.busy=false;toast('랩 데이터 없음');go();return}FT.laps=laps;FT.busy=false;var tc=0;for(var i=0;i<laps.length;i++){if(laps[i].dist>=370&&laps[i].dist<=430)tc++}FT.td=tc>=3;if(!FT.td){FT.tm=false;FT.ex=anaFit(laps,false)}go();toast('FIT: '+laps.length+'랩')}catch(err){FT.busy=false;toast('파싱 오류');go()}};rd.readAsArrayBuffer(file)}
+function hFile(file){FT.busy=true;FT.tm=null;FT.laps=null;FT.ex=null;FT.fileDate=new Date(file.lastModified);go();var rd=new FileReader();rd.onload=function(e){try{var laps=parseFit(e.target.result);if(!laps||!laps.length){FT.busy=false;toast('랩 데이터 없음');go();return}FT.laps=laps;FT.busy=false;var tc=0;for(var i=0;i<laps.length;i++){if(laps[i].dist>=370&&laps[i].dist<=430)tc++}FT.td=tc>=3;if(!FT.td){FT.tm=false;FT.ex=anaFit(laps,false)}go();toast('FIT: '+laps.length+'랩')}catch(err){FT.busy=false;toast('파싱 오류');go()}};rd.readAsArrayBuffer(file)}
 
 var R=document.getElementById('root');
 var NAV='<nav class="bnav" id="bnav"></nav>';
@@ -469,11 +480,8 @@ h+='</div>';
 }else if(UI.tab==='ana'){
 var dd4=new Date(wk.w1.getTime()+UI.cd*864e5);var ds4=(dd4.getMonth()+1)+'월 '+dd4.getDate()+'일 ('+DY[UI.cd]+')';
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--gn)"></div>세션 분석</div>';
-h+='<div style="font-size:12px;color:var(--tx2);margin-bottom:6px">저장할 날짜:</div>';
-h+='<div style="display:flex;gap:3px;margin-bottom:8px;flex-wrap:wrap">';
-for(var ai=0;ai<7;ai++){var adn=new Date(wk.w1.getTime()+ai*864e5);
-h+='<div style="padding:4px 8px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid '+(ai===UI.cd?'var(--ac)':'rgba(255,255,255,.06)')+';background:'+(ai===UI.cd?'var(--acb)':'var(--bg3)')+';color:'+(ai===UI.cd?'var(--ac2)':'var(--tx3)')+'" onclick="window._sd('+ai+');go()">'+DY[ai]+' '+adn.getDate()+'</div>'}
-h+='</div>';
+if(FT.fileDate){var md=matchWD(FT.fileDate);UI.cw=md.w;UI.cd=md.d;
+var fdd=FT.fileDate;h+='<div style="font-size:14px;color:var(--tx2);margin-bottom:8px">📅 '+(fdd.getMonth()+1)+'월 '+fdd.getDate()+'일 ('+DY[fdd.getDay()===0?6:fdd.getDay()-1]+') — <span style="color:var(--ac)">W'+md.w+' '+DY[md.d]+'</span> 자동 매칭</div>'}
 var prevData=S['w'+cw+'d'+UI.cd];
 h+='<div style="border:1.5px dashed rgba(139,122,255,.2);border-radius:10px;padding:16px 12px;text-align:center;position:relative;margin-bottom:10px;cursor:pointer" id="uzArea"><input type="file" accept=".fit" id="fitIn" style="position:absolute;inset:0;opacity:0;cursor:pointer"><div style="font-size:12px;color:var(--tx2)">.fit 파일 업로드</div><div style="font-size:13px;color:var(--tx3);margin-top:3px">Garmin .fit 파일'+(prevData?' — 이미 저장된 기록 있음':'')+'</div></div>';
 if(prevData&&!FT.ex){h+='<div class="ins ok"><div class="ins-t">'+ds4+' 저장된 기록</div><div class="ins-d">'+prevData.distance+'km · '+prevData.pace+'/km · HR '+prevData.avgHR+(prevData.gct?' · GCT '+prevData.gct+'ms':'')+(prevData.rpe?' · RPE '+prevData.rpe+'/10':'')+'</div></div>'}
@@ -762,7 +770,7 @@ if(s===3){document.getElementById('b4').onclick=function(){P.rn=document.getElem
 
 window._tab=function(t){UI.tab=t;go()};
 window._tm=function(u){FT.tm=u;FT.ex=anaFit(FT.laps,u);go()};
-window._saveFit=function(){if(!FT.ex)return;var ex=FT.ex,k='w'+UI.cw+'d'+UI.cd;var rpe=document.getElementById('rpeSlider');S[k]={distance:ex.dist,pace:ex.pace,avgHR:ex.avgHR,maxHR:ex.maxHR,gct:ex.avgGCT,avgCad:ex.avgCad,avgPow:ex.avgPow,rpe:rpe?rpe.value:'5',notes:(ex.tk?'[트랙보정] ':'[FIT] ')+ex.laps.length+'랩'+(ex.cc?' ('+ex.cc+'랩 보정)':''),logged:new Date().toISOString()};svS();toast('W'+UI.cw+' '+['월','화','수','목','금','토','일'][UI.cd]+' 저장 완료 — 기록 탭에서 확인 가능');go()};
+window._saveFit=function(){if(!FT.ex)return;var ex=FT.ex;if(FT.fileDate){var md2=matchWD(FT.fileDate);UI.cw=md2.w;UI.cd=md2.d}var k='w'+UI.cw+'d'+UI.cd;var rpe=document.getElementById('rpeSlider');S[k]={distance:ex.dist,pace:ex.pace,avgHR:ex.avgHR,maxHR:ex.maxHR,gct:ex.avgGCT,avgCad:ex.avgCad,avgPow:ex.avgPow,rpe:rpe?rpe.value:'5',notes:(ex.tk?'[트랙보정] ':'[FIT] ')+ex.laps.length+'랩'+(ex.cc?' ('+ex.cc+'랩 보정)':''),logged:new Date().toISOString()};svS();toast('W'+UI.cw+' '+DY[UI.cd]+' 저장 완료');go()};
 window._gw=function(w){UI.cw=w;UI.cd=0;go()};
 window._sd=function(d){UI.cd=d;go()};
 window._sleep=function(v){UI.sleep=v;go()};
