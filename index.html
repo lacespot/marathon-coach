@@ -375,7 +375,7 @@ h+='<div class="ws">';var pm=-1;for(var w=1;w<=tw;w++){var mo=SC[w].w1.getMonth(
 // Completion stats
 var doneCnt=0,doneKm=0;for(var sc=0;sc<7;sc++){if(S['w'+cw+'d'+sc]){doneCnt++;doneKm+=parseFloat(S['w'+cw+'d'+sc].distance)||0}}
 h+='<div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:13px;color:var(--tx2)"><span>완료 '+doneCnt+'/7</span><span style="font-family:var(--m);color:var(--ac)">'+(doneCnt?Math.round(doneKm*10)/10:'0')+' / '+wk.km+'km</span></div>';
-h+='<div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:10px"><div style="width:'+(wk.km>0?Math.round(doneKm/wk.km*100):0)+'%;height:100%;background:var(--ac);border-radius:2px"></div></div>';
+h+='<div style="height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-bottom:14px"><div style="width:'+(wk.km>0?Math.round(doneKm/wk.km*100):0)+'%;height:100%;background:var(--ac);border-radius:2px"></div></div>';
 
 // Checklist
 // Registration button + form
@@ -410,7 +410,7 @@ h+='<div style="display:flex;align-items:center;gap:8px;padding:8px;cursor:point
 h+='<div style="width:16px;height:16px;border-radius:4px;border:1.5px solid '+(isDone?'var(--gn)':'rgba(255,255,255,.1)')+';background:'+(isDone?'rgba(45,212,160,.15)':'transparent')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gn);font-weight:700">'+(isDone?'✓':'')+'</div>';
 h+='<div style="flex:1"><div style="display:flex;align-items:center;gap:4px"><span class="dc-t '+tc3+'">'+(TN[cd3.type]||'이지')+'</span><span style="font-size:13px;font-weight:500;color:var(--tx)">'+cd3.l+'</span></div>';
 h+='<div style="font-size:11px;color:var(--tx3)">'+DY[ci2]+' '+dd5.getDate()+' · '+(cd3.d||'')+(cd3.pace?' · '+cd3.pace+'/km':'')+'</div></div>';
-h+='<div style="font-size:12px;color:var(--tx3);padding:4px">'+(isOpen?'▲':'▼')+'</div></div>';
+h+='<div style="font-size:14px;color:var(--tx3);padding:4px;flex-shrink:0">'+(isOpen?'▲':'▼')+'</div></div>';
 h+='<div class="sched-expand'+(isOpen?' open':'')+'" style="padding:'+(isOpen?'0 10px 10px':'0 10px')+';border-top:'+(isOpen?'1px solid rgba(255,255,255,.03)':'none')+'">';
 if(isOpen){
 if(isDone){var sd2=S[sk2];
