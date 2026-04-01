@@ -85,7 +85,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;m
 <div id="root"></div>
 <div class="toast" id="toast"></div>
 <script>
-var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0},_LS=false;
+var P=null,S={},UI={tab:'today',cw:1,cd:0,step:0,sleep:0,sOpen:{}},_LS=false;
 try{localStorage.setItem('_t','1');if(localStorage.getItem('_t')==='1')_LS=true;localStorage.removeItem('_t');}catch(e){}
 function ldA(){try{if(_LS){var p=localStorage.getItem('mc_p');if(p)P=JSON.parse(p);var s=localStorage.getItem('mc_s');if(s)S=JSON.parse(s);
 if(P){if(P.raceDate&&!P.rd)P.rd=P.raceDate;if(P.targetTime&&!P.gt)P.gt=P.targetTime;if(P.vdot&&!P.vd)P.vd=P.vdot;if(P.zones&&!P.z)P.z=P.zones;if(P.weight&&!P.wt)P.wt=P.weight;if(P.height&&!P.ht)P.ht=P.height;if(P.maxHR&&!P.mhr)P.mhr=P.maxHR;if(P.vd&&P.z&&P.rd&&P.gt)P.done=true;svP()}
@@ -260,9 +260,9 @@ h+='<div style="display:flex;justify-content:space-between;margin-bottom:4px;fon
 h+='<div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:10px"><div style="width:'+(wk.km>0?Math.round(doneKm/wk.km*100):0)+'%;height:100%;background:var(--ac);border-radius:2px"></div></div>';
 
 // Checklist
-for(var ci2=0;ci2<7;ci2++){var cd3=wk.d[ci2];var dd5=new Date(wk.w1.getTime()+ci2*864e5);var sk2='w'+cw+'d'+ci2;var isDone=!!S[sk2];var isOpen=UI.cd===ci2;var tc3=cd3.type==='point'?'p':cd3.type==='tempo'?'t':cd3.type==='long'?'l':cd3.type==='rest'?'r':'e';
+for(var ci2=0;ci2<7;ci2++){var cd3=wk.d[ci2];var dd5=new Date(wk.w1.getTime()+ci2*864e5);var sk2='w'+cw+'d'+ci2;var isDone=!!S[sk2];var isOpen=!!UI.sOpen[ci2];var tc3=cd3.type==='point'?'p':cd3.type==='tempo'?'t':cd3.type==='long'?'l':cd3.type==='rest'?'r':'e';
 h+='<div style="background:var(--bg3);border-radius:7px;margin-bottom:3px;overflow:hidden'+(isOpen?';border:1px solid rgba(139,122,255,.2)':'')+'">';
-h+='<div style="display:flex;align-items:center;gap:8px;padding:8px;cursor:pointer" onclick="window._sd('+ci2+');go()">';
+h+='<div style="display:flex;align-items:center;gap:8px;padding:8px;cursor:pointer" onclick="window._stog('+ci2+')">';
 h+='<div style="width:16px;height:16px;border-radius:4px;border:1.5px solid '+(isDone?'var(--gn)':'rgba(255,255,255,.1)')+';background:'+(isDone?'rgba(45,212,160,.15)':'transparent')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gn);font-weight:700">'+(isDone?'✓':'')+'</div>';
 h+='<div style="flex:1"><div style="display:flex;align-items:center;gap:4px"><span class="dc-t '+tc3+'">'+(TN[cd3.type]||'이지')+'</span><span style="font-size:10px;font-weight:500;color:var(--tx)">'+cd3.l+'</span></div>';
 h+='<div style="font-size:8px;color:var(--tx3)">'+DY[ci2]+' '+dd5.getDate()+' · '+(cd3.d||'')+(cd3.pace?' · '+cd3.pace+'/km':'')+'</div></div>';
@@ -279,7 +279,7 @@ h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="
 h+='<div style="background:var(--bg);border-radius:5px;padding:5px"><div style="color:var(--tx3);font-size:7px">RPE</div><div style="font-family:var(--m);font-weight:600">'+(sd2.rpe||'-')+'/10</div></div>';
 h+='</div>';
 if(sd2.notes)h+='<div style="font-size:8px;color:var(--tx3);margin-top:4px">'+sd2.notes+'</div>';
-}else{h+='<div style="padding:8px 0;font-size:10px;color:var(--tx3);text-align:center">아직 기록이 없어요. <span style="color:var(--ac2);cursor:pointer" onclick="window._sd('+ci2+');window._tab(\'ana\')">분석 탭</span>에서 .fit 올려보세요.</div>'}
+}else{h+='<div style="padding:8px 0;font-size:10px;color:var(--tx3);text-align:center">아직 기록이 없어요. <span style="color:var(--ac2);cursor:pointer" onclick="UI.cd='+ci2+';window._tab(\'ana\')">분석 탭</span>에서 .fit 올려보세요.</div>'}
 }
 h+='</div></div>'}
 
@@ -294,7 +294,8 @@ h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-
 h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">총 거리</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+Math.round(trDist*10)/10+'<span style="font-size:9px;color:var(--tx3)">km</span></div></div>';
 h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">세션</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+trCnt+'<span style="font-size:9px;color:var(--tx3)">회</span></div></div>';
 h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">평균 GCT</div><div style="font-family:var(--m);font-size:18px;font-weight:600;color:var(--gn)">'+(trGctC?Math.round(trGct/trGctC):'-')+'<span style="font-size:9px;color:var(--tx3)">ms</span></div></div>';
-h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">평균 심박</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+(trHRC?Math.round(trHR/trHRC):'-')+'<span style="font-size:9px;color:var(--tx3)">bpm</span></div></div>';
+var trPaceS=0,trPaceC=0;for(var api=0;api<allRec.length;api++){if(allRec[api].pace&&allRec[api].pace!=='--:--'){trPaceS+=p2s(allRec[api].pace);trPaceC++}}
+h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">평균 페이스</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+(trPaceC?s2p(Math.round(trPaceS/trPaceC)):'-')+'<span style="font-size:9px;color:var(--tx3)">/km</span></div></div>';
 h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">최고 페이스</div><div style="font-family:var(--m);font-size:18px;font-weight:600;color:var(--ac2)">'+(bestPace||'-')+'<span style="font-size:9px;color:var(--tx3)">/km</span></div></div>';
 h+='<div style="background:var(--bg2);border:1px solid rgba(255,255,255,.04);border-radius:12px;padding:10px;text-align:center"><div style="font-size:8px;color:var(--tx2)">주당 평균</div><div style="font-family:var(--m);font-size:18px;font-weight:600">'+(cw>0?Math.round(trDist/cw*10)/10:'-')+'<span style="font-size:9px;color:var(--tx3)">km</span></div></div>';
 h+='</div>'}
@@ -558,6 +559,7 @@ window._gw=function(w){UI.cw=w;UI.cd=0;go()};
 window._sd=function(d){UI.cd=d;go()};
 window._sleep=function(v){UI.sleep=v;go()};
 window._edit=function(){P.done=false;UI.step=0;go()};
+window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true;go()};
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
 window._export=function(){var blob=new Blob([JSON.stringify({P:P,S:S},null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='marathon_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a);toast('내보내기 완료')};
