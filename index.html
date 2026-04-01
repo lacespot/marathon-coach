@@ -328,12 +328,14 @@ var h='<div class="app fade">';
 // NRC-style hero header
 h+='<div style="margin-bottom:14px;position:relative">';
 h+='<div style="font-size:13px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:2px">marathon coach</div>';
-h+='<div style="font-size:34px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+P.name+'의 <span style="color:var(--ac)">런</span></div>';
+h+='<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:34px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+P.name+'의 <span style="color:var(--ac)">런</span></div>';
+h+='<div style="display:flex;gap:6px;align-items:center">';
+h+='<div style="cursor:pointer;padding:10px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center" onclick="location.reload(true)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div>';
+h+='<div style="cursor:pointer;padding:10px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center" onclick="UI.settings=!UI.settings;go()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+(UI.settings?'var(--ac)':'var(--tx3)')+'" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>';
+h+='</div></div>';
 h+='<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+(P.rn||'풀마라톤')+' | '+P.gt+' 목표</div></div>';
 // Settings gear icon
-h+='<div style="position:absolute;top:30px;right:0;display:flex;gap:2px;align-items:center">';
-h+='<div style="cursor:pointer;padding:8px" onclick="location.reload(true)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx3)" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg></div>';
-h+='<div style="cursor:pointer;padding:8px" onclick="UI.settings=!UI.settings;go()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="'+(UI.settings?'var(--ac)':'var(--tx3)')+'" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div></div>';
+
 
 if(UI.settings){
 // Full page settings - Bose style
