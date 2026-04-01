@@ -328,7 +328,9 @@ var h='<div class="app fade">';
 // NRC-style hero header
 h+='<div style="margin-bottom:14px;position:relative">';
 h+='<div style="font-size:13px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:2px">marathon coach</div>';
-h+='<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:34px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+P.name+'의 <span style="color:var(--ac)">런</span></div>';
+var heroTitle=P.title||P.name+'의 런';
+var titleParts=heroTitle.split(' ');var lastWord=titleParts.pop();var firstPart=titleParts.join(' ');
+h+='<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:34px;font-weight:800;color:var(--tx);letter-spacing:-1.5px;line-height:1.1">'+(firstPart?firstPart+' ':'')+'<span style="color:var(--ac)">'+lastWord+'</span></div>';
 h+='<div style="display:flex;gap:6px;align-items:center">';
 
 h+='<div style="cursor:pointer;padding:10px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center" onclick="UI.settings=!UI.settings;go()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+(UI.settings?'var(--ac)':'var(--tx3)')+'" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>';
@@ -349,13 +351,15 @@ h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:u
 h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
 h+='<div style="display:flex;align-items:center;gap:14px;padding:16px"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--ac)">'+P.name.charAt(0)+'</div><div style="flex:1"><div style="font-size:16px;font-weight:600">'+P.name+'</div><div style="font-size:14px;color:var(--tx3)">'+P.age+'세 · '+(P.sex==="M"?"남":"여")+' · '+P.ht+'cm · '+P.wt+'kg</div></div></div>';
 h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+h+='<div style="padding:14px 16px"><div style="font-size:13px;color:var(--tx3);margin-bottom:6px">앱 타이틀</div><div style="display:flex;gap:8px;align-items:center"><input type="text" id="titleInput" value="'+(P.title||P.name+'의 런')+'" placeholder="'+P.name+'의 런" style="flex:1;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-size:15px;padding:10px 12px;border-radius:10px;outline:none"><button class="btn btn-s btn-sm" onclick="window._saveTitle()">저장</button></div></div>';
+h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
 h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="window._edit()"><span style="font-size:15px">프로필 수정</span><span style="color:var(--tx3);font-size:16px">›</span></div>';
 h+='</div>';
 
 // Body data section
 h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:24px 4px 8px">신체 정보</div>';
 h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
-var bodyItems=[['VDOT','<span style=color:var(--ac)>'+P.vd+'</span>'],['목표 기록',P.gt],['대회',(P.rn||'-')],['골격근량',(P.mu?P.mu+'kg':'-')],['체지방률',(P.fat?P.fat+'%':'-')],['10K PB',(P.tenk||'-')],['하프 PB',(P.half||'-')],['풀 PB',(P.full||'-')]];
+var bodyItems=[['VDOT','<span style=color:var(--ac)>'+P.vd+'</span> <span style=font-size:12px;color:var(--tx3)>'+vdotDesc+'</span>'],['목표 기록',P.gt],['대회',(P.rn||'-')],['골격근량',(P.mu?P.mu+'kg':'-')],['체지방률',(P.fat?P.fat+'%':'-')],['10K PB',(P.tenk||'-')],['하프 PB',(P.half||'-')],['풀 PB',(P.full||'-')]];
 for(var bi=0;bi<bodyItems.length;bi++){
 h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px">'+bodyItems[bi][0]+'</span><span style="font-size:15px;font-family:var(--m);color:var(--tx2)">'+bodyItems[bi][1]+'</span></div>';
 if(bi<bodyItems.length-1)h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>'}
@@ -797,6 +801,7 @@ var ab=document.querySelector('.wb.a');if(ab)ab.scrollIntoView({behavior:'smooth
 function goOnb(){
 var s=UI.step,h='<div class="onb fade">';
 if(s===0){
+if(UI._editMode){h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;cursor:pointer" onclick="window._editBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span style="font-size:15px;color:var(--tx2)">설정으로 돌아가기</span></div>'}
 h+='<div class="onb-step">STEP 1/4 — 기본 정보</div><div class="onb-title">Marathon <span>Coach</span></div><div class="onb-sub">당신만의 마라톤 코치를 만들어보세요</div>';
 h+='<div class="fg"><label>이름</label><input type="text" id="i_n" placeholder="이름"></div>';
 h+='<div class="fg-row"><div class="fg"><label>나이</label><input type="number" id="i_a" placeholder="28"></div><div class="fg"><label>성별</label><select id="i_sx"><option value="M">남성</option><option value="F">여성</option></select></div></div>';
@@ -879,6 +884,7 @@ try{var clean=raw.replace(/```json|```/g,'').trim();var arr=JSON.parse(clean);if
 window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true;go()};
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
+window._saveTitle=function(){var v=(document.getElementById('titleInput')||{}).value;if(v){P.title=v;svP();toast('타이틀 저장 완료');go()}};
 window._saveCue=function(){var inp=document.getElementById('cueInput');if(!inp||!inp.value||!inp.value.trim()){toast('큐잉 내용을 입력해주세요');return}if(!P.cues)P.cues=[];P.cues.push({t:inp.value.trim(),d:new Date().toISOString().slice(0,10)});if(P.cues.length>10)P.cues=P.cues.slice(-10);svP();toast('큐잉 저장 완료 — 오늘 탭에서 확인');go()};
 window._delCue=function(i){if(P.cues)P.cues.splice(i,1);svP();go()};
 
