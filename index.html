@@ -460,7 +460,7 @@ h+='<div id="weatherCard" style="background:var(--bg2);border:1px solid rgba(255
 // Today session card
 var cd=(P.cust&&P.cust['w'+UI.cw+'d'+UI.cd])?P.cust['w'+UI.cw+'d'+UI.cd]:wk.d[UI.cd];
 var dd=new Date(wk.w1.getTime()+UI.cd*864e5);
-h+='<div class="cd" style="border-color:rgba(255,255,255,.04);position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+stGrad+'"></div>';
+h+='<div class="cd" style="position:relative;overflow:hidden;border-left:3px solid '+stx+'"><div style="position:absolute;top:0;right:0;background:var(--ac);color:#000;font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 0 0 10px;font-family:var(--f)">TODAY</div>';
 h+='<div style="font-size:11px;color:var(--tx2);margin-bottom:6px">'+(dd.getMonth()+1)+'월 '+dd.getDate()+'일 ('+DY[UI.cd]+') — 오늘</div>';
 var stGrad=cd.type==='tempo'?'linear-gradient(90deg,#5BA4F5,#70C4FF)':cd.type==='long'?'linear-gradient(90deg,#2DD4A0,#5EFCE8)':cd.type==='point'?'linear-gradient(90deg,#FF4757,#FF6B81)':cd.type==='rest'?'linear-gradient(90deg,#444,#555)':'linear-gradient(90deg,#FFB347,#FFD93D)';
 var stc=cd.type==='tempo'?'var(--blb)':cd.type==='long'?'var(--gnb)':cd.type==='point'?'var(--rdb)':cd.type==='rest'?'rgba(255,255,255,.04)':'var(--amb)';
@@ -482,7 +482,7 @@ h+='</div>';
 h+='<div style="font-size:13px;color:var(--tx2);margin:8px 0 4px">코칭 큐</div>';
 if(P.cues&&P.cues.length>0){
 for(var pci=0;pci<P.cues.length;pci++){
-h+='<div style="border-left:2px solid var(--ac);padding:10px 14px;margin-bottom:6px;background:rgba(232,255,90,.03);display:flex;align-items:flex-start;gap:8px;border-radius:0 8px 8px 0"><div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ac)">'+P.cues[pci].t+'</div><div style="font-size:11px;color:var(--tx3);margin-top:2px">갈치냐옹 · '+P.cues[pci].d+'</div></div><div style="font-size:12px;color:var(--tx3);cursor:pointer;padding:4px" onclick="window._delCue('+pci+')">✕</div></div>'}}
+h+='<div style="border-left:3px solid var(--ac);padding:12px 16px;margin-bottom:8px;background:rgba(207,239,78,.04);display:flex;align-items:flex-start;gap:10px;border-radius:0 12px 12px 0;box-shadow:0 1px 4px rgba(0,0,0,.15)"><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--ac)">'+P.cues[pci].t+'</div><div style="font-size:12px;color:var(--tx3);margin-top:2px">🐟 갈치냐옹 · '+P.cues[pci].d+'</div></div><div style="font-size:14px;color:var(--tx3);cursor:pointer;padding:6px" onclick="window._delCue('+pci+')">✕</div></div>'}}
 else{var cues={base:['이지런 폼 유지 — 골반 앞으로, 시선 30m','케이던스 180 유지 — 170 이하 금지'],build:['MP 각인 — '+P.z.mp+'가 편하게 힘든 느낌','보급 타이밍 확정 — 5km 물, 10km 젤'],specific:['MP 롱런 = 리허설','30km 벽은 멘탈 — 5km씩 쪼개'],peak:['볼륨↓ 강도 유지','자신감 — 체력은 됐어'],taper:['추가 훈련 금지','네거티브 스플릿 — 전반 느리게']};
 var cc=cues[wk.phc]||cues.base;
 for(var ci=0;ci<cc.length;ci++)h+='<div class="cue"><div class="cue-d">'+cc[ci]+'</div></div>';
@@ -643,7 +643,7 @@ h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--gn)
 if(FT.fileDate){var md=matchWD(FT.fileDate);UI.cw=md.w;UI.cd=md.d;
 var fdd=FT.fileDate;h+='<div style="font-size:14px;color:var(--tx2);margin-bottom:8px">📅 '+(fdd.getMonth()+1)+'월 '+fdd.getDate()+'일 ('+DY[fdd.getDay()===0?6:fdd.getDay()-1]+') — <span style="color:var(--ac)">W'+md.w+' '+DY[md.d]+'</span> 자동 매칭</div>'}
 var prevData=S['w'+cw+'d'+UI.cd];
-h+='<div style="border:1.5px dashed rgba(139,122,255,.2);border-radius:10px;padding:16px 12px;text-align:center;position:relative;margin-bottom:10px;cursor:pointer" id="uzArea"><input type="file" accept=".fit" id="fitIn" style="position:absolute;inset:0;opacity:0;cursor:pointer"><div style="font-size:12px;color:var(--tx2)">.fit 파일 업로드</div><div style="font-size:13px;color:var(--tx3);margin-top:3px">Garmin .fit 파일'+(prevData?' — 이미 저장된 기록 있음':'')+'</div></div>';
+h+='<div style="border:1.5px dashed rgba(207,239,78,.2);border-radius:14px;padding:24px 16px;text-align:center;position:relative;margin-bottom:12px;cursor:pointer;background:rgba(207,239,78,.02);box-shadow:0 2px 6px rgba(0,0,0,.15)" id="uzArea"><input type="file" accept=".fit" id="fitIn" style="position:absolute;inset:0;opacity:0;cursor:pointer"><div style="font-size:24px;margin-bottom:4px">📂</div><div style="font-size:15px;color:var(--ac);font-weight:600">.fit 파일 업로드</div><div style="font-size:13px;color:var(--tx3);margin-top:4px">Garmin .fit 파일 터치해서 선택'+(prevData?' — 기존 기록 있음':'')+'</div></div>';
 if(prevData&&!FT.ex){h+='<div class="ins ok"><div class="ins-t">'+ds4+' 저장된 기록</div><div class="ins-d">'+prevData.distance+'km · '+prevData.pace+'/km · HR '+prevData.avgHR+(prevData.gct?' · GCT '+prevData.gct+'ms':'')+(prevData.rpe?' · RPE '+prevData.rpe+'/10':'')+'</div></div>'}
 if(FT.busy)h+='<div style="padding:12px;background:var(--acb);border-radius:8px;text-align:center;font-size:11px;color:var(--ac2)">분석 중...</div>';
 if(FT.td&&FT.tm===null&&!FT.busy){
@@ -824,15 +824,15 @@ h+='<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidd
 h+='<div style="font-size:11px;color:var(--tx3)">'+(shoePct>85?'교체 시기가 다가왔어요!':shoePct>60?'절반 이상 사용. 상태 체크.':'아직 여유 있어요.')+'</div></div>';
 
 // 갈치냐옹 코치
-h+='<div class="cd" style="border-color:rgba(255,255,255,.04);position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+stGrad+'"></div>';
+h+='<div class="cd" style="position:relative;overflow:hidden;border-left:3px solid '+stx+'"><div style="position:absolute;top:0;right:0;background:var(--ac);color:#000;font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 0 0 10px;font-family:var(--f)">TODAY</div>';
 h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--acb);display:flex;align-items:center;justify-content:center;font-size:16px">🐟</div><div><div style="font-size:12px;font-weight:600;color:var(--tx)">갈치냐옹 코치</div><div style="font-size:11px;color:var(--tx3)">너의 러닝 파트너</div></div></div>';
 
 // Quick action buttons
 h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">';
-h+='<div style="padding:6px 10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'form\')">폼 분석해줘</div>';
-h+='<div style="padding:6px 10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'drill\')">드릴 추천</div>';
-h+='<div style="padding:6px 10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'injury\')">부상 예방</div>';
-h+='<div style="padding:6px 10px;background:var(--bg3);border-radius:6px;font-size:12px;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'nutrition\')">보급 전략</div></div>';
+h+='<div style="padding:10px 14px;background:rgba(207,239,78,.06);border-radius:10px;font-size:13px;font-weight:500;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'form\')">폼 분석해줘</div>';
+h+='<div style="padding:10px 14px;background:rgba(207,239,78,.06);border-radius:10px;font-size:13px;font-weight:500;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'drill\')">드릴 추천</div>';
+h+='<div style="padding:10px 14px;background:rgba(207,239,78,.06);border-radius:10px;font-size:13px;font-weight:500;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'injury\')">부상 예방</div>';
+h+='<div style="padding:10px 14px;background:rgba(207,239,78,.06);border-radius:10px;font-size:13px;font-weight:500;color:var(--ac);cursor:pointer;border:none;border-left:2px solid var(--ac)" onclick="window._askCoach(\'nutrition\')">보급 전략</div></div>';
 
 // Free text question
 h+='<div style="display:flex;gap:4px;margin-bottom:6px"><input type="text" id="coachQ" placeholder="갈치냐옹에게 물어보세요..." style="flex:1;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-size:11px;padding:10px;border-radius:8px;outline:none"><button style="background:var(--ac);color:#fff;border:none;border-radius:8px;padding:0 14px;font-size:12px;cursor:pointer" onclick="window._askCoach(\'custom\')">→</button></div>';
