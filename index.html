@@ -15,7 +15,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--bg:#0A0A0A;--bg2:#111111;--bg3:#1A1A1A;--bg4:#232323;--tx:#F5F5F5;--tx2:#999;--tx3:#555;--ac:#E8FF5A;--ac2:#E8FF5A;--acb:rgba(232,255,90,.08);--gn:#2DD4A0;--gnb:rgba(45,212,160,.1);--rd:#FF6B6B;--rdb:rgba(255,107,107,.1);--am:#FFB347;--amb:rgba(255,179,71,.1);--bl:#5BA4F5;--blb:rgba(91,164,245,.1);--f:'Outfit',sans-serif;--m:'JetBrains Mono',monospace;--r:12px;--rl:16px}
 body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;min-height:100dvh;padding-top:env(safe-area-inset-top);overflow-x:hidden}
-.app{max-width:480px;margin:0 auto;padding:16px 16px 90px}
+.app{max-width:480px;margin:0 auto;padding:16px 16px 100px}
 .onb{min-height:90dvh;display:flex;flex-direction:column;justify-content:center;padding:24px 20px;max-width:480px;margin:0 auto}
 .onb-title{font-size:28px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}.onb-title span{color:var(--ac2)}
 .onb-sub{font-size:14px;color:var(--tx2);margin-bottom:28px}
@@ -42,10 +42,10 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.6;m
 .ins.w{border-left:3px solid var(--am);background:rgba(255,179,71,.03)}
 .ins.al{border-left:3px solid var(--rd);background:rgba(255,107,107,.03)}
 .ins-t{font-weight:600;margin-bottom:2px}.ins-d{color:var(--tx2)}
-.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid rgba(255,255,255,.04);display:flex;justify-content:center;padding:6px 0;padding-bottom:max(10px,env(safe-area-inset-bottom));z-index:50}
-.bnav-i{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 8px;font-size:8px;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,.95);border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:center;padding:6px 0;padding-bottom:max(14px,env(safe-area-inset-bottom));z-index:50}
+.bnav-i{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px;font-size:9px;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
 .bnav-i.ac{color:var(--ac)}
-.bnav-i svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5}
+.bnav-i svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}
 .ws{display:flex;gap:3px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:8px}
 .ws::-webkit-scrollbar{display:none}
 .wb{background:var(--bg3);border:1px solid transparent;color:var(--tx3);font-family:var(--m);font-size:10px;padding:5px 7px;border-radius:7px;cursor:pointer;flex-shrink:0;min-width:28px;text-align:center}
@@ -575,16 +575,35 @@ var cc2=cues2[wk.phc]||cues2.base;
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--am)"></div>'+wk.ph+' 코칭</div>';
 for(var ci2=0;ci2<cc2.length;ci2++)h+='<div class="cue"><div class="cue-t">'+cc2[ci2].t+'</div><div class="cue-d">'+cc2[ci2].d+'</div></div>';h+='</div>';
 
-// Predicted finish
-h+='<div class="cd" style="text-align:center"><div class="st" style="justify-content:center"><div class="dot" style="background:var(--ac)"></div>예상 기록</div>';
-h+='<div style="font-size:10px;color:var(--tx2);margin-bottom:4px">현재 피트니스 기반</div>';
-h+='<div style="font-family:var(--m);font-size:32px;font-weight:700;letter-spacing:-1px">'+s2t(z.mr)+'</div>';
+// Realistic predicted finish based on training data + endurance gap
+var predSec=z.mr; // VDOT theoretical
+var pbSec=P.full?p2s(P.full):0;
+var endurGap=pbSec>0?pbSec-z.mr:0; // how much slower than VDOT prediction
+// Adjust prediction: start from PB, then improve based on training volume
+var allSessCount=0,allSessDist=0;for(var pk in S){if(S[pk]){allSessCount++;allSessDist+=parseFloat(S[pk].distance)||0}}
+var improvement=0;
+if(allSessCount>=2){
+// Each session contributes to closing the endurance gap
+// Roughly: 30+ quality sessions can close 50% of the gap
+improvement=Math.min(endurGap*0.6,endurGap*(allSessCount/50));
+}
+var realisticPred=pbSec>0?Math.round(pbSec-improvement):predSec;
+if(realisticPred<predSec)realisticPred=predSec; // can't be faster than VDOT limit
+var predDisplay=s2t(realisticPred);
+var gapToGoal=Math.round((realisticPred-p2s(P.gt))/60);
+
+h+='<div class="cd" style="text-align:center"><div class="st" style="justify-content:center"><div class="dot" style="background:var(--ac)"></div>현실 예상 기록</div>';
+h+='<div style="font-size:9px;color:var(--tx3);margin-bottom:4px">훈련 데이터 + PB 기반 예측</div>';
+h+='<div style="font-family:var(--m);font-size:32px;font-weight:700;letter-spacing:-1px;color:'+(gapToGoal<=0?'var(--gn)':gapToGoal<=5?'var(--am)':'var(--tx)')+'">'+predDisplay+'</div>';
+if(allSessCount<3)h+='<div style="font-size:8px;color:var(--tx3);margin-top:2px">세션 '+allSessCount+'회 — 데이터가 쌓이면 더 정확해져요</div>';
 h+='<div style="display:flex;gap:6px;justify-content:center;margin-top:8px">';
 h+='<div style="background:var(--bg3);border-radius:6px;padding:5px 10px;font-size:9px;text-align:center"><div style="color:var(--tx3)">목표</div><div style="font-family:var(--m);font-weight:600;color:var(--gn)">'+P.gt+'</div></div>';
-var gapMin=Math.round((z.mr-p2s(P.gt))/60);
-h+='<div style="background:var(--bg3);border-radius:6px;padding:5px 10px;font-size:9px;text-align:center"><div style="color:var(--tx3)">갭</div><div style="font-family:var(--m);font-weight:600;color:'+(gapMin>0?'var(--rd)':'var(--gn)')+'">'+(gapMin>0?'+':'')+gapMin+'분</div></div>';
-h+='<div style="background:var(--bg3);border-radius:6px;padding:5px 10px;font-size:9px;text-align:center"><div style="color:var(--tx3)">실제 PB</div><div style="font-family:var(--m);font-weight:600">'+(P.full||'-')+'</div></div>';
-h+='</div></div>';
+h+='<div style="background:var(--bg3);border-radius:6px;padding:5px 10px;font-size:9px;text-align:center"><div style="color:var(--tx3)">현실 예측</div><div style="font-family:var(--m);font-weight:600;color:'+(gapToGoal<=0?'var(--gn)':'var(--am)')+'">'+predDisplay+'</div></div>';
+h+='<div style="background:var(--bg3);border-radius:6px;padding:5px 10px;font-size:9px;text-align:center"><div style="color:var(--tx3)">갭</div><div style="font-family:var(--m);font-weight:600;color:'+(gapToGoal>0?'var(--rd)':'var(--gn)')+'">'+(gapToGoal>0?'+':'')+gapToGoal+'분</div></div>';
+h+='<div style="background:var(--bg3);border-radius:6px;padding:5px 10px;font-size:9px;text-align:center"><div style="color:var(--tx3)">PB</div><div style="font-family:var(--m);font-weight:600">'+(P.full||'-')+'</div></div>';
+h+='</div>';
+if(pbSec>0&&endurGap>0){h+='<div style="font-size:8px;color:var(--tx3);margin-top:6px;border-top:1px solid rgba(255,255,255,.03);padding-top:4px">VDOT 이론: '+s2t(predSec)+' | 지구력 갭: +'+Math.round(endurGap/60)+'분 | 훈련으로 '+Math.round(improvement/60)+'분 개선 중</div>'}
+h+='</div>';
 
 // Pace zones
 h+='<div class="cd"><div class="st"><div class="dot" style="background:var(--bl)"></div>페이스 존</div>';
