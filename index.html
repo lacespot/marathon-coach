@@ -13,7 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#000;--bg2:#1C1C1E;--bg3:#2C2C2E;--bg4:#3A3A3C;--tx:#F5F5F7;--tx2:#AEAEB2;--tx3:#636366;--ac:#E8FF5A;--ac2:#E8FF5A;--acb:rgba(232,255,90,.08);--gn:#30D158;--gnb:rgba(48,209,88,.12);--rd:#FF453A;--rdb:rgba(255,69,58,.12);--am:#FFD60A;--amb:rgba(255,214,10,.12);--bl:#0A84FF;--blb:rgba(10,132,255,.12);--f:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;--m:'SF Mono','JetBrains Mono','Menlo',monospace;--r:12px;--rl:16px}
+:root{--bg:#000;--bg2:#1C1C1E;--bg3:#2C2C2E;--bg4:#3A3A3C;--tx:#F5F5F7;--tx2:#AEAEB2;--tx3:#636366;--ac:#CFEF4E;--ac2:#CFEF4E;--acb:rgba(232,255,90,.08);--gn:#30D158;--gnb:rgba(48,209,88,.12);--rd:#FF453A;--rdb:rgba(255,69,58,.12);--am:#FFD60A;--amb:rgba(255,214,10,.12);--bl:#0A84FF;--blb:rgba(10,132,255,.12);--f:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;--m:'SF Mono','JetBrains Mono','Menlo',monospace;--r:12px;--rl:16px}
 body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;font-size:17px;min-height:100dvh;padding-top:env(safe-area-inset-top);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .app{max-width:480px;margin:0 auto;padding:20px 20px 120px}
 .onb{min-height:90dvh;display:flex;flex-direction:column;justify-content:center;padding:24px 24px;max-width:480px;margin:0 auto}
@@ -25,7 +25,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 .fg input::placeholder{color:var(--tx3)}.fg input:focus,.fg select:focus{border-color:var(--ac)}
 .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn{font-family:var(--f);font-size:17px;font-weight:600;padding:16px 28px;border-radius:14px;min-height:50px;cursor:pointer;border:none;width:100%;margin-top:12px}
-.btn-p{background:var(--ac);color:#fff}.btn-p:active{transform:scale(.97)}
+.btn-p{background:#D4E157;color:#1a1a1a;font-weight:700}.btn-p:active{transform:scale(.97)}
 .btn-s{background:var(--bg3);color:var(--tx2);border:1px solid rgba(255,255,255,.06)}
 .btn-d{background:var(--rdb);color:var(--rd)}
 .btn-sm{padding:10px 16px;font-size:12px;width:auto;margin-top:0}
@@ -314,7 +314,7 @@ if(!P||!P.done){goOnb();return}
 var SC=gSC(),tw=Object.keys(SC).length;
 if(!tw){R.innerHTML='<div class="app">대회 날짜를 확인해주세요</div>';return}
 var rd=new Date(P.rd),dday=Math.ceil((rd-new Date())/(864e5));
-var w1d=SC[1].w1,diff=Math.floor((new Date()-w1d)/(7*864e5))+1;
+var w1d=SC[1].w1,now2=new Date(),diff=Math.max(1,Math.floor((now2-w1d)/(7*864e5))+1);
 if(UI.cw<1||UI.cw>tw)UI.cw=Math.max(1,Math.min(tw,diff));
 var cw=UI.cw,wk=SC[cw];if(!wk){UI.cw=1;wk=SC[1]}
 
@@ -336,6 +336,12 @@ h+='<div style="flex:1;padding:8px 6px;text-align:center;background:var(--bg2);b
 h+='</div>';
 
 if(UI.tab==='today'){
+// Auto-detect today's day within the week
+var realToday=new Date();realToday.setHours(0,0,0,0);
+var weekStart=new Date(wk.w1);weekStart.setHours(0,0,0,0);
+var dayDiff=Math.floor((realToday-weekStart)/(864e5));
+if(dayDiff>=0&&dayDiff<7)UI.cd=dayDiff;
+
 // Phase bar
 h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">';
 h+='<span style="font-family:var(--m);font-size:13px;color:var(--tx2)">W'+cw+'</span>';
@@ -412,7 +418,7 @@ if(UI.regMode==='manual'){
 h+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px">';
 for(var ci3=0;ci3<7;ci3++){var cdd=new Date(wk.w1.getTime()+ci3*864e5);
 var cSel=UI.regDay===ci3;
-h+='<div style="text-align:center;padding:10px 4px;border-radius:12px;cursor:pointer;'+(cSel?'background:var(--ac);color:#000':'background:var(--bg3);color:var(--tx2)')+'" onclick="UI.regDay='+ci3+';go()">';
+h+='<div style="text-align:center;padding:10px 4px;border-radius:12px;cursor:pointer;'+(cSel?'background:var(--ac);color:#1a1a1a;font-weight:600':'background:var(--bg3);color:var(--tx2)')+'" onclick="UI.regDay='+ci3+';go()">';
 h+='<div style="font-size:11px;font-weight:500">'+DY[ci3]+'</div>';
 h+='<div style="font-size:18px;font-weight:700">'+cdd.getDate()+'</div></div>'}
 h+='</div>';
@@ -435,7 +441,7 @@ h+='<div style="font-size:13px;color:var(--tx3);margin-bottom:6px;margin-top:4px
 h+='<div style="display:flex;gap:4px;margin-bottom:12px">';
 var repOpts=[['once','이번만'],['weekly','매주'],['biweekly','격주'],['monthly','매달']];
 if(!UI.regRepeat)UI.regRepeat='once';
-for(var rp=0;rp<repOpts.length;rp++){h+='<div style="flex:1;text-align:center;padding:10px 6px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.regRepeat===repOpts[rp][0]?'background:var(--ac);color:#000':'background:var(--bg3);color:var(--tx2)')+'" onclick="UI.regRepeat=\''+repOpts[rp][0]+'\';go()">'+repOpts[rp][1]+'</div>'}
+for(var rp=0;rp<repOpts.length;rp++){h+='<div style="flex:1;text-align:center;padding:10px 6px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.regRepeat===repOpts[rp][0]?'background:var(--ac);color:#1a1a1a;font-weight:600':'background:var(--bg3);color:var(--tx2)')+'" onclick="UI.regRepeat=\''+repOpts[rp][0]+'\';go()">'+repOpts[rp][1]+'</div>'}
 h+='</div>';
 
 if(UI.regRepeat!=='once'){h+='<div style="font-size:13px;color:var(--ac);background:var(--acb);padding:10px;border-radius:10px;margin-bottom:12px">';
