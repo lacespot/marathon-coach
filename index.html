@@ -307,6 +307,9 @@ h+='<button class="bnav-i'+(UI.tab===TABS[i].id?' ac':'')+'" onclick="window._ta
 var el=document.getElementById('bnav');if(el)el.innerHTML=h;
 }
 
+// Korean Standard Time helper
+function kstNow(){var d=new Date();return new Date(d.getTime()+(d.getTimezoneOffset()*60000)+(9*3600000))}
+function kstDate(d){var dt=new Date(d);return new Date(dt.getTime()+(dt.getTimezoneOffset()*60000)+(9*3600000))}
 var DY=['월','화','수','목','금','토','일'];
 var TN={point:'포인트',tempo:'템포',long:'롱런',rest:'휴식',easy:'이지'};
 function go(){var _sp=window.scrollY;
@@ -314,7 +317,7 @@ if(!P||!P.done){goOnb();return}
 var SC=gSC(),tw=Object.keys(SC).length;
 if(!tw){R.innerHTML='<div class="app">대회 날짜를 확인해주세요</div>';return}
 var rd=new Date(P.rd),dday=Math.ceil((rd-new Date())/(864e5));
-var w1d=SC[1].w1,now2=new Date(),diff=Math.max(1,Math.floor((now2-w1d)/(7*864e5))+1);
+var w1d=SC[1].w1,now2=new Date(),diff=Math.max(1,Math.min(tw,Math.floor((now2-w1d)/(7*864e5))+1));UI.cw=diff;
 if(UI.cw<1||UI.cw>tw)UI.cw=Math.max(1,Math.min(tw,diff));
 var cw=UI.cw,wk=SC[cw];if(!wk){UI.cw=1;wk=SC[1]}
 
@@ -406,11 +409,13 @@ h+='<div style="flex:1;padding:8px 6px;text-align:center;background:var(--bg2);b
 h+='</div>';
 
 if(UI.tab==='today'){
-// Auto-detect today's day within the week
+// Auto-detect today's day within the week (KST)
 var realToday=new Date();realToday.setHours(0,0,0,0);
 var weekStart=new Date(wk.w1);weekStart.setHours(0,0,0,0);
-var dayDiff=Math.floor((realToday-weekStart)/(864e5));
+var dayDiff=Math.round((realToday-weekStart)/(864e5));
 if(dayDiff>=0&&dayDiff<7)UI.cd=dayDiff;
+else if(dayDiff<0)UI.cd=0;
+else UI.cd=6;
 
 // Phase bar
 h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">';
