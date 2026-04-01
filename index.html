@@ -371,11 +371,15 @@ if(steps.length){h+='<div style="font-size:13px;font-weight:500;color:var(--ac2)
 if(cd.pace)h+='<div style="background:var(--bg3);border-radius:8px;padding:12px;text-align:center;margin-top:4px"><div style="color:var(--gn);font-size:12px;font-weight:600;margin-bottom:4px">목표 페이스</div><span style="font-family:var(--m);font-size:24px;font-weight:700">'+cd.pace+'</span><span style="font-size:12px;color:var(--tx2)"> /km</span></div>';
 h+='</div>';
 
-// Coaching cues
-var cues={base:['이지런 폼 유지 — 골반 앞으로, 시선 30m','케이던스 180 유지 — 170 이하 금지'],build:['MP 각인 — '+P.z.mp+'가 편하게 힘든 느낌','보급 타이밍 확정 — 5km 물, 10km 젤'],specific:['MP 롱런 = 리허설','30km 벽은 멘탈 — 5km씩 쪼개'],peak:['볼륨↓ 강도 유지','자신감 — 체력은 됐어'],taper:['추가 훈련 금지','네거티브 스플릿 — 전반 느리게']};
-var cc=cues[wk.phc]||cues.base;
+// Coaching cues - personal first, then phase defaults
 h+='<div style="font-size:13px;color:var(--tx2);margin:8px 0 4px">코칭 큐</div>';
+if(P.cues&&P.cues.length>0){
+for(var pci=0;pci<P.cues.length;pci++){
+h+='<div style="border-left:2px solid var(--ac);padding:10px 14px;margin-bottom:6px;background:rgba(232,255,90,.03);display:flex;align-items:flex-start;gap:8px;border-radius:0 8px 8px 0"><div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--ac)">'+P.cues[pci].t+'</div><div style="font-size:11px;color:var(--tx3);margin-top:2px">갈치냐옹 · '+P.cues[pci].d+'</div></div><div style="font-size:12px;color:var(--tx3);cursor:pointer;padding:4px" onclick="window._delCue('+pci+')">✕</div></div>'}}
+else{var cues={base:['이지런 폼 유지 — 골반 앞으로, 시선 30m','케이던스 180 유지 — 170 이하 금지'],build:['MP 각인 — '+P.z.mp+'가 편하게 힘든 느낌','보급 타이밍 확정 — 5km 물, 10km 젤'],specific:['MP 롱런 = 리허설','30km 벽은 멘탈 — 5km씩 쪼개'],peak:['볼륨↓ 강도 유지','자신감 — 체력은 됐어'],taper:['추가 훈련 금지','네거티브 스플릿 — 전반 느리게']};
+var cc=cues[wk.phc]||cues.base;
 for(var ci=0;ci<cc.length;ci++)h+='<div class="cue"><div class="cue-d">'+cc[ci]+'</div></div>';
+h+='<div style="font-size:11px;color:var(--tx3);margin-top:4px">갈치냐옹에게 질문하면 맞춤 큐잉이 여기에 표시돼요</div>'}
 
 h+='<div style="margin-top:10px;text-align:center;padding:10px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--tx3);border:1px dashed rgba(139,122,255,.12)">훈련 끝나면 → <span style="color:var(--ac);cursor:pointer" onclick="window._tab(\'ana\')">분석 탭</span>에서 .fit 업로드</div>';
 
@@ -784,6 +788,8 @@ try{var clean=raw.replace(/```json|```/g,'').trim();var arr=JSON.parse(clean);if
 window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true;go()};
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
+window._saveCue=function(){var inp=document.getElementById('cueInput');if(!inp||!inp.value||!inp.value.trim()){toast('큐잉 내용을 입력해주세요');return}if(!P.cues)P.cues=[];P.cues.push({t:inp.value.trim(),d:new Date().toISOString().slice(0,10)});if(P.cues.length>10)P.cues=P.cues.slice(-10);svP();toast('큐잉 저장 완료 — 오늘 탭에서 확인');go()};
+window._delCue=function(i){if(P.cues)P.cues.splice(i,1);svP();go()};
 window._savePZ=function(){
 var e=document.getElementById('pzE'),mp=document.getElementById('pzMP'),t=document.getElementById('pzT'),i=document.getElementById('pzI'),r=document.getElementById('pzR');
 if(e)P.z.e=e.value;if(mp)P.z.mp=mp.value;if(t)P.z.t=t.value;if(i)P.z.i=i.value;if(r)P.z.r=r.value;
