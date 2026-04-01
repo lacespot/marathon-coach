@@ -331,18 +331,71 @@ h+='<div style="font-size:11px;color:var(--tx3);margin-top:2px">'+(P.rn||'풀마
 h+='<div style="position:absolute;top:0;right:0;cursor:pointer;padding:8px" onclick="UI.settings=!UI.settings;go()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="'+(UI.settings?'var(--ac)':'var(--tx3)')+'" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>';
 
 if(UI.settings){
-h+='<div style="background:var(--bg2);border-radius:16px;padding:16px;margin-bottom:12px">';
-h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-size:18px;font-weight:600">설정</span><span style="font-size:20px;color:var(--tx3);cursor:pointer" onclick="UI.settings=false;go()">✕</span></div>';
-h+='<div style="padding:14px 0;border-bottom:0.5px solid rgba(255,255,255,.06)"><div style="font-size:15px;font-weight:600;margin-bottom:8px">신체 정보</div>';
-h+='<div style="font-size:14px;color:var(--tx2);line-height:2">'+P.name+' · '+P.age+'세 · '+(P.sex==="M"?"남":"여")+'<br>'+P.ht+'cm · '+P.wt+'kg'+(P.mu?' · 골격근 '+P.mu+'kg':'')+(P.fat?' · 체지방 '+P.fat+'%':'')+'<br>VDOT <span style="font-family:var(--m);color:var(--ac)">'+P.vd+'</span> · 목표 <span style="font-family:var(--m);color:var(--gn)">'+P.gt+'</span>'+(P.rn?' · '+P.rn:'')+'</div></div>';
-var fbU=_LS?localStorage.getItem('mc_fburl')||'':'',fbC=_LS?localStorage.getItem('mc_sync')||'':'';
-h+='<div style="padding:14px 0;border-bottom:0.5px solid rgba(255,255,255,.06)"><div style="font-size:15px;font-weight:600;margin-bottom:8px">동기화</div>';
-if(fbU&&fbC){h+='<div style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--tx2)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gn)"></span>활성 — <span style="font-family:var(--m);color:var(--ac)">'+fbC+'</span></div><button class="btn btn-s btn-sm" style="margin-top:6px" onclick="syncFB();toast(\'동기화 완료\')">수동 동기화</button>'}
-else{h+='<input type="text" id="fbUrlIn" placeholder="Firebase URL" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:14px;padding:12px;border-radius:10px;outline:none;margin-bottom:6px"><input type="text" id="fbCodeIn" placeholder="동기화 코드" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:14px;padding:12px;border-radius:10px;outline:none;letter-spacing:2px;margin-bottom:6px" maxlength="6"><button class="btn btn-p btn-sm" onclick="window._setupFB()">연결</button>'}
+// Full page settings - Bose style
+h+='<div style="min-height:80vh;padding-bottom:40px">';
+
+// Header
+h+='<div style="display:flex;align-items:center;justify-content:center;position:relative;padding:12px 0;margin-bottom:8px"><div style="position:absolute;left:0;font-size:22px;color:var(--tx2);cursor:pointer;padding:8px" onclick="UI.settings=false;go()">✕</div><span style="font-size:17px;font-weight:600">설정</span></div>';
+
+// Profile section
+h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:16px 4px 8px">내 프로필</div>';
+h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
+h+='<div style="display:flex;align-items:center;gap:14px;padding:16px"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--ac)">'+P.name.charAt(0)+'</div><div style="flex:1"><div style="font-size:16px;font-weight:600">'+P.name+'</div><div style="font-size:14px;color:var(--tx3)">'+P.age+'세 · '+(P.sex==="M"?"남":"여")+' · '+P.ht+'cm · '+P.wt+'kg</div></div></div>';
+h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="window._edit()"><span style="font-size:15px">프로필 수정</span><span style="color:var(--tx3);font-size:16px">›</span></div>';
 h+='</div>';
-h+='<div style="padding:14px 0;border-bottom:0.5px solid rgba(255,255,255,.06)"><div style="font-size:15px;font-weight:600;margin-bottom:8px">데이터 관리</div><div style="display:flex;gap:8px"><button class="btn btn-s btn-sm" onclick="window._export()">내보내기</button><button class="btn btn-s btn-sm" onclick="document.getElementById(\'impFile\').click()">가져오기</button><input type="file" accept=".json" id="impFile" style="display:none" onchange="window._import(event)"></div></div>';
-h+='<div style="padding:14px 0"><div style="font-size:15px;font-weight:600;margin-bottom:8px">프로필</div><div style="display:flex;gap:8px"><button class="btn btn-s btn-sm" onclick="window._edit()">수정</button><button class="btn btn-sm" style="background:var(--rdb);color:var(--rd);border:none" onclick="window._rst()">초기화</button></div></div>';
-h+='</div>'}
+
+// Body data section
+h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:24px 4px 8px">신체 정보</div>';
+h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
+var bodyItems=[['VDOT','<span style=color:var(--ac)>'+P.vd+'</span>'],['목표 기록',P.gt],['대회',(P.rn||'-')],['골격근량',(P.mu?P.mu+'kg':'-')],['체지방률',(P.fat?P.fat+'%':'-')],['10K PB',(P.tenk||'-')],['하프 PB',(P.half||'-')],['풀 PB',(P.full||'-')]];
+for(var bi=0;bi<bodyItems.length;bi++){
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px">'+bodyItems[bi][0]+'</span><span style="font-size:15px;font-family:var(--m);color:var(--tx2)">'+bodyItems[bi][1]+'</span></div>';
+if(bi<bodyItems.length-1)h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>'}
+h+='</div>';
+
+// Sync section
+h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:24px 4px 8px">동기화</div>';
+h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
+var fbU3=_LS?localStorage.getItem('mc_fburl')||'':'',fbC3=_LS?localStorage.getItem('mc_sync')||'':'';
+if(fbU3&&fbC3){
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px">상태</span><span style="display:flex;align-items:center;gap:6px;font-size:14px;color:var(--gn)"><span style="width:8px;height:8px;border-radius:50%;background:var(--gn)"></span>연결됨</span></div>';
+h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px">동기화 코드</span><span style="font-family:var(--m);font-size:15px;color:var(--ac);letter-spacing:2px">'+fbC3+'</span></div>';
+h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="syncFB();toast(\'동기화 완료\')"><span style="font-size:15px">수동 동기화</span><span style="color:var(--tx3);font-size:16px">›</span></div>'}
+else{
+h+='<div style="padding:16px"><input type="text" id="fbUrlIn" placeholder="Firebase URL" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:14px;padding:12px;border-radius:10px;outline:none;margin-bottom:8px"><input type="text" id="fbCodeIn" placeholder="동기화 코드" style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:14px;padding:12px;border-radius:10px;outline:none;letter-spacing:2px;margin-bottom:8px" maxlength="6"><button class="btn btn-p btn-sm" onclick="window._setupFB()">연결하기</button></div>'}
+h+='</div>';
+
+// Data management section
+h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:24px 4px 8px">데이터 관리</div>';
+h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="window._export()"><span style="font-size:15px">데이터 내보내기</span><span style="color:var(--tx3);font-size:16px">›</span></div>';
+h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="document.getElementById(\'impFile2\').click()"><span style="font-size:15px">데이터 가져오기</span><span style="color:var(--tx3);font-size:16px">›</span></div><input type="file" accept=".json" id="impFile2" style="display:none" onchange="window._import(event)">';
+h+='</div>';
+
+// AI section
+h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:24px 4px 8px">AI 설정</div>';
+h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
+var akV2=_LS?localStorage.getItem('mc_ak')||'':'';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px">AI 계정</span><span style="font-size:14px;color:'+(akV2?'var(--gn)':'var(--tx3)')+'">'+(akV2?'연결됨':'미연결')+'</span></div>';
+h+='<div style="height:0.5px;background:rgba(255,255,255,.06);margin:0 16px"></div>';
+h+='<div style="padding:16px"><input type="password" id="akInput" value="'+akV2+'" placeholder="sk-ant-..." style="width:100%;background:var(--bg3);border:1px solid rgba(255,255,255,.06);color:var(--tx);font-family:var(--m);font-size:14px;padding:12px;border-radius:10px;outline:none;margin-bottom:8px"><button class="btn btn-s btn-sm" onclick="window._saveAK()">'+(akV2?'변경':'연결')+'</button><div style="font-size:12px;color:var(--tx3);margin-top:6px">anthropic.com → API Keys (무료 $5)</div></div>';
+h+='</div>';
+
+// Danger zone
+h+='<div style="font-size:13px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:24px 4px 8px">위험 구역</div>';
+h+='<div style="background:var(--bg2);border-radius:14px;overflow:hidden">';
+h+='<div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="window._rst()"><span style="font-size:15px;color:var(--rd)">모든 데이터 초기화</span><span style="color:var(--tx3);font-size:16px">›</span></div>';
+h+='</div>';
+
+// App info
+h+='<div style="text-align:center;padding:24px;font-size:13px;color:var(--tx3)">Marathon Coach v1.0<br>Built with ♥ by 갈치냐옹</div>';
+
+h+='</div>';
+return}
 
 // Stat strip
 h+='<div style="display:flex;gap:0;margin-bottom:12px;border-radius:10px;overflow:hidden">';
