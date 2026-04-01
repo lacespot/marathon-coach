@@ -317,7 +317,7 @@ if(!P||!P.done){goOnb();return}
 var SC=gSC(),tw=Object.keys(SC).length;
 if(!tw){R.innerHTML='<div class="app">대회 날짜를 확인해주세요</div>';return}
 var rd=new Date(P.rd),dday=Math.ceil((rd-new Date())/(864e5));
-var w1d=SC[1].w1,now2=new Date(),diff=Math.max(1,Math.min(tw,Math.floor((now2-w1d)/(7*864e5))+1));UI.cw=diff;
+var w1d=SC[1].w1,now2=new Date(),diff=Math.max(1,Math.min(tw,Math.floor((now2-w1d)/(7*864e5))+1));if(!UI._cwInit){UI.cw=diff;UI._cwInit=true}
 if(UI.cw<1||UI.cw>tw)UI.cw=Math.max(1,Math.min(tw,diff));
 var cw=UI.cw,wk=SC[cw];if(!wk){UI.cw=1;wk=SC[1]}
 
@@ -413,13 +413,15 @@ h+='<div style="flex:1;padding:8px 6px;text-align:center;background:var(--bg2);b
 h+='</div>';
 
 if(UI.tab==='today'){
-// Auto-detect today's day within the week (KST)
+// Auto-detect today's day within the week - only on first load
+if(!UI._cdInit){
 var realToday=new Date();realToday.setHours(0,0,0,0);
 var weekStart=new Date(wk.w1);weekStart.setHours(0,0,0,0);
 var dayDiff=Math.round((realToday-weekStart)/(864e5));
 if(dayDiff>=0&&dayDiff<7)UI.cd=dayDiff;
 else if(dayDiff<0)UI.cd=0;
 else UI.cd=6;
+UI._cdInit=true}
 
 // Phase bar
 h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">';
