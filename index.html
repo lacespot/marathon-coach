@@ -133,10 +133,18 @@ if(!P||!P.rd)return{};
 var rd=new Date(P.rd),nw=new Date(),tw=Math.max(1,Math.ceil((rd-nw)/(7*864e5)));
 var w1=new Date(rd);w1.setDate(w1.getDate()-tw*7);while(w1.getDay()!==1)w1.setDate(w1.getDate()-1);
 var z=P.z||{e:'4:35',t:'3:40',mp:'3:54',i:'3:27',r:'3:09'};var SC={};
-// Evidence-based volume progression (92-plan analysis, Knopp et al. 2024)
-// Sub-3 target: peak 70-82km, start ~45km, deload every 4th week
-// Long run: start 16km, max 32km, increase ≤10% per week
-var prevLR=16;
+// Volume scaling based on VDOT (92-plan analysis, Knopp 2024)
+// VDOT <35: beginner (peak 40-50km, LR max 26km)
+// VDOT 35-42: intermediate (peak 50-60km, LR max 28km)
+// VDOT 42-50: advanced (peak 60-72km, LR max 30km)
+// VDOT 50+: elite-rec (peak 70-85km, LR max 35km)
+var vd=P.vd||40;
+var volStart,volPeak,lrStart,lrMax,hardPctBase;
+if(vd>=50){volStart=50;volPeak=82;lrStart=16;lrMax=35;hardPctBase=0.20}
+else if(vd>=42){volStart=40;volPeak=70;lrStart=14;lrMax=30;hardPctBase=0.18}
+else if(vd>=35){volStart=35;volPeak=58;lrStart=12;lrMax=28;hardPctBase=0.15}
+else{volStart=25;volPeak=45;lrStart=10;lrMax=26;hardPctBase=0.12}
+var prevLR=lrStart;
 for(var w=1;w<=tw;w++){
 var pc=w/tw;
 // Phase determination (Filipas 2024: pyramidal first → polarized second half)
@@ -148,16 +156,16 @@ else if(pc<=0.90){ph='피크기';phc='peak'}
 else{ph='테이퍼';phc='taper'}
 var dl=w%4===0;var rc=w===tw;
 // Volume: gradual build 45→peak, deload -30%
-var peakKm=Math.min(82,Math.round(55+pc*30));
-var km=dl?Math.round(peakKm*0.7):rc?25:peakKm;
+var peakKm=Math.min(volPeak,Math.round(volStart+pc*(volPeak-volStart)));
+var km=dl?Math.round(peakKm*0.7):rc?Math.round(volStart*0.5):peakKm;
 // Easy pace volume (80%) vs hard (20%)
-var easyPct=phc==='base'?0.85:0.80;
+var easyPct=phc==='base'?1-hardPctBase+0.05:1-hardPctBase;
 var hardPct=1-easyPct;
 // Long run: 10% rule (Frandsen et al. 2025, BJSM)
-var targetLR=dl?Math.round(prevLR*0.6):rc?12:Math.min(35,Math.round(16+pc*18));
+var targetLR=dl?Math.round(prevLR*0.6):rc?Math.round(lrStart*0.8):Math.min(lrMax,Math.round(lrStart+pc*(lrMax-lrStart)));
 if(!dl&&!rc&&targetLR>prevLR*1.1)targetLR=Math.round(prevLR*1.1);
 if(!dl)prevLR=targetLR;
-var ek=Math.round((km-targetLR)*0.3);ek=Math.max(5,Math.min(12,ek));
+var ek=Math.round((km-targetLR)*0.3);ek=Math.max(Math.round(lrStart*0.4),Math.min(Math.round(volPeak*0.15),ek));
 // Session generation per phase - 80/20 polarized (Nature 2025, Seiler)
 // Mon=Quality, Tue=Easy, Wed=Quality2, Thu=Easy, Fri=Rest, Sat=Long, Sun=Recovery
 var sessions=[];
@@ -184,7 +192,7 @@ sessions=[
 {type:'easy',l:'R 4km',d:'리커버리 조깅 또는 완전 휴식',pace:''}];
 }else if(phc==='base'){
 // Base: pyramidal, build aerobic base (Filipas: pyramidal first half)
-var tk=Math.min(8,Math.round(4+pc*6));
+var tk=Math.min(Math.round(volPeak*0.1),Math.round(3+pc*5));
 sessions=[
 {type:'point',l:'★ 팀 포인트',d:'코치 프로그램 또는 파틀렉 '+(tk*2)+'분',pace:''},
 {type:'easy',l:'E '+ek+'km',d:'HR Zone 1~2. 대화 가능 강도. 근력 추천.',pace:z.e},
@@ -195,7 +203,7 @@ sessions=[
 {type:'easy',l:'R 5km',d:'리커버리. 완전 이지.',pace:''}];
 }else if(phc==='build'){
 // Build: transition to polarized
-var ik=Math.min(10,Math.round(6+pc*4));
+var ik=Math.min(Math.round(volPeak*0.12),Math.round(4+pc*4));
 sessions=[
 {type:'point',l:'★ 팀 포인트',d:'코치 프로그램',pace:''},
 {type:'easy',l:'E '+ek+'km',d:'HR Zone 1~2 엄수. 80% 이지 세션.',pace:z.e},
@@ -206,7 +214,7 @@ sessions=[
 {type:'easy',l:'R 5km',d:'리커버리 조깅.',pace:''}];
 }else if(phc==='specific'){
 // Specific: full polarized 80/20 + MP work (race-specific)
-var mpk=Math.min(16,Math.round(8+pc*8));
+var mpk=Math.min(Math.round(volPeak*0.18),Math.round(6+pc*8));
 sessions=[
 {type:'point',l:'★ 팀 포인트',d:'코치 프로그램 또는 MP 리허설',pace:''},
 {type:'easy',l:'E '+ek+'km',d:'완전 이지. 80% 세션.',pace:z.e},
