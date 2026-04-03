@@ -53,7 +53,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 .ins-t{font-weight:600;margin-bottom:2px}.ins-d{color:var(--tx2)}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:0.5px solid rgba(255,255,255,.08);box-shadow:0 -2px 12px rgba(0,0,0,.4);display:flex;justify-content:space-around;padding:8px 0 0;padding-bottom:max(20px,env(safe-area-inset-bottom));z-index:50}
 .bnav-i{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;flex:1;min-height:44px;justify-content:center;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
-.bnav-i.ac{color:var(--ac);background:rgba(207,239,78,.1);border-radius:20px;padding:6px 12px}
+.bnav-i.ac{color:var(--ac);background:rgba(207,239,78,.1);border-radius:16px;padding:6px 12px}
 .bnav-i svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.5}
 .ws{display:flex;gap:3px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:8px}
 .ws::-webkit-scrollbar{display:none}
@@ -84,7 +84,7 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 .sleep-btn{flex:1;text-align:center;padding:14px;border-radius:12px;font-size:15px;min-height:44px;cursor:pointer;border:1px solid rgba(255,255,255,.04);background:var(--bg3);color:var(--tx3);transition:all .12s}
 .sleep-btn.ac{border-color:var(--ac);color:var(--ac2);background:var(--acb)}
 .phase-bar{display:flex;height:4px;border-radius:2px;overflow:hidden;margin:4px 0}
-.toast{position:fixed;bottom:max(90px,calc(80px + env(safe-area-inset-bottom)));left:50%;transform:translateX(-50%) translateY(80px);background:var(--gnb);border:1px solid rgba(45,212,160,.3);color:var(--gn);padding:8px 20px;border-radius:20px;font-size:12px;font-weight:500;opacity:0;transition:all .3s;z-index:100}
+.toast{position:fixed;bottom:max(90px,calc(80px + env(safe-area-inset-bottom)));left:50%;transform:translateX(-50%) translateY(80px);background:var(--gnb);border:1px solid rgba(45,212,160,.3);color:var(--gn);padding:8px 20px;border-radius:16px;font-size:12px;font-weight:500;opacity:0;transition:all .3s;z-index:100}
 .toast.sh{transform:translateX(-50%) translateY(0);opacity:1}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.fade{animation:fi .25s ease}
 .reg-overlay{background:var(--bg);border:1px solid rgba(139,122,255,.2);border-radius:var(--rl);padding:16px;margin-bottom:10px}
@@ -124,8 +124,8 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 </head>
 <body>
 <div id="splash" style="position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity .4s">
-<div style="font-size:32px;font-weight:800;color:#CFEF4E;font-family:'Pretendard',sans-serif;letter-spacing:-1px">Marathon Coach</div>
-<div style="font-size:14px;color:#636366;margin-top:8px;font-family:'Pretendard',sans-serif">데이터 분석 중...</div>
+<div style="font-family:var(--fh);font-size:28px;font-weight:900;color:#CFEF4E;letter-spacing:0.2em;text-transform:uppercase">MARATHON</div>
+<div style="font-size:11px;color:#75757b;margin-top:8px;font-family:var(--f);letter-spacing:0.15em;text-transform:uppercase">Performance Analysis</div>
 <div style="width:120px;height:3px;background:#1C1C1E;border-radius:2px;margin-top:16px;overflow:hidden"><div style="width:0%;height:100%;background:#CFEF4E;border-radius:2px;animation:loadBar 1s ease-out forwards"></div></div>
 </div>
 <style>@keyframes loadBar{0%{width:0%}50%{width:70%}100%{width:100%}}</style>
@@ -381,7 +381,7 @@ h2+='<div style="width:40px"></div></div>';
 
 // Account Identity
 h2+='<div style="font-size:10px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.2em;margin:24px 0 12px">Account Identity</div>';
-h2+='<div style="background:#1b1b1d;border-radius:24px;padding:20px;display:flex;align-items:center;gap:16px;outline:1px solid rgba(255,255,255,.05);cursor:pointer" onclick="UI._editMode=true;UI.step=1;goOnb()">';
+h2+='<div style="background:#1b1b1d;border-radius:16px;padding:20px;display:flex;align-items:center;gap:16px;outline:1px solid rgba(255,255,255,.05);cursor:pointer" onclick="UI._editMode=true;UI.step=1;goOnb()">';
 h2+='<div style="width:56px;height:56px;border-radius:50%;background:#2a2a2c;border:2px solid rgba(207,239,78,.2);display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:22px;font-weight:800;color:#CFEF4E">'+(P.name?P.name.charAt(0):'R')+'</div>';
 h2+='<div style="flex:1"><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#e4e2e4">'+(P.name||'러너')+'</div>';
 h2+='<div style="font-size:13px;color:#90937c">'+(P.age||'-')+'세 · '+(P.sex==='F'?'여':'남')+'</div></div>';
@@ -390,7 +390,7 @@ h2+='<span class="material-symbols-outlined" style="color:#90937c">chevron_right
 // Biometrics & VDOT
 h2+='<div style="font-size:10px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.2em;margin:24px 0 12px">Biometrics & VDOT</div>';
 var bioItems=[['Running VDOT',P.vd||'-','#CFEF4E'],['Body Weight',(P.wt||'-')+' kg',''],['Height',(P.ht||'-')+' cm',''],['Goal Time',P.gt||'-',''],['Race Name',P.rn||'-',''],['10K PB',P.tenk||'-',''],['Half PB',P.half||'-',''],['Full PB',P.full||'-','']];
-h2+='<div style="background:#1b1b1d;border-radius:24px;overflow:hidden;outline:1px solid rgba(255,255,255,.05)">';
+h2+='<div style="background:#1b1b1d;border-radius:16px;overflow:hidden;outline:1px solid rgba(255,255,255,.05)">';
 for(var bi=0;bi<bioItems.length;bi++){
 if(bi>0)h2+='<div style="height:1px;background:linear-gradient(90deg,transparent,#2a2a2c 10%,#2a2a2c 90%,transparent);margin:0 16px"></div>';
 h2+='<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px"><span style="font-size:15px;color:#e4e2e4">'+bioItems[bi][0]+'</span><span style="font-size:15px;font-weight:600;color:'+(bioItems[bi][2]||'#c6c9b0')+'">'+bioItems[bi][1]+'</span></div>'}
@@ -401,33 +401,33 @@ h2+='<div style="font-size:10px;font-weight:700;color:#CFEF4E;text-transform:upp
 h2+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
 // Firebase
 var fbUrl=_LS?localStorage.getItem('mc_fburl')||'':'';
-h2+='<div style="background:'+(fbUrl?'#2a2a2c':'#1b1b1d')+';padding:16px;border-radius:24px;outline:1px solid rgba(255,255,255,.05)">';
+h2+='<div style="background:'+(fbUrl?'#2a2a2c':'#1b1b1d')+';padding:16px;border-radius:16px;outline:1px solid rgba(255,255,255,.05)">';
 h2+='<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px"><div style="width:40px;height:40px;background:#131315;border-radius:12px;display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="color:#CFEF4E">cloud_sync</span></div>';
 if(fbUrl)h2+='<span style="font-size:9px;background:#CFEF4E;color:#2a3400;padding:2px 8px;border-radius:9999px;font-weight:700">CONNECTED</span>';
 h2+='</div><div style="font-size:14px;font-weight:700;color:#e4e2e4">Firebase</div><div style="font-size:11px;color:#90937c;margin-top:2px">'+(fbUrl?'동기화 중':'연결 안 됨')+'</div></div>';
 // Strava
 var strTk=_LS?localStorage.getItem('mc_strava_token')||'':'';
-h2+='<div style="background:'+(strTk?'#2a2a2c':'#1b1b1d')+';padding:16px;border-radius:24px;outline:1px solid rgba(255,255,255,.05)">';
+h2+='<div style="background:'+(strTk?'#2a2a2c':'#1b1b1d')+';padding:16px;border-radius:16px;outline:1px solid rgba(255,255,255,.05)">';
 h2+='<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px"><div style="width:40px;height:40px;background:#131315;border-radius:12px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 16 16"><path d="M8 0L10.2 5.2H16L11.2 8.4L13 14L8 10.8L3 14L4.8 8.4L0 5.2H5.8L8 0Z" fill="#FC4C02"/></svg></div>';
 if(strTk)h2+='<span style="font-size:9px;background:#FC4C02;color:#fff;padding:2px 8px;border-radius:9999px;font-weight:700">CONNECTED</span>';
 h2+='</div><div style="font-size:14px;font-weight:700;color:#e4e2e4">Strava</div><div style="font-size:11px;color:#90937c;margin-top:2px">'+(strTk?'연결됨':'연결 안 됨')+'</div></div></div>';
 
 // Strava connect input (if not connected)
 if(!strTk){
-h2+='<div style="background:#1b1b1d;border-radius:20px;padding:16px;margin-top:8px;outline:1px solid rgba(255,255,255,.05)">';
+h2+='<div style="background:#1b1b1d;border-radius:16px;padding:16px;margin-top:8px;outline:1px solid rgba(255,255,255,.05)">';
 h2+='<input type="text" id="stravaTokenIn" placeholder="Strava Access Token" style="width:100%;background:#1f1f21;border:1px solid rgba(255,255,255,.05);color:#e4e2e4;font-size:14px;padding:12px;border-radius:10px;outline:none;margin-bottom:8px;font-family:var(--f)">';
 h2+='<button style="width:100%;background:#FC4C02;color:#fff;padding:14px;border-radius:9999px;font-weight:800;font-size:14px;border:none;cursor:pointer" onclick="window._stravaConnect()">Strava 연결하기</button></div>'}
 else{h2+='<button style="width:100%;background:#1b1b1d;color:#e4e2e4;padding:14px;border-radius:9999px;font-weight:600;font-size:14px;border:none;cursor:pointer;outline:1px solid rgba(255,255,255,.05);margin-top:8px" onclick="window._stravaSync()">활동 동기화</button>'}
 
 // Firebase setup
-h2+='<div style="background:#1b1b1d;border-radius:20px;padding:16px;margin-top:8px;outline:1px solid rgba(255,255,255,.05)">';
+h2+='<div style="background:#1b1b1d;border-radius:16px;padding:16px;margin-top:8px;outline:1px solid rgba(255,255,255,.05)">';
 h2+='<div style="font-size:12px;color:#90937c;margin-bottom:8px">Firebase URL</div>';
 h2+='<input type="text" id="fbUrlIn" value="'+(fbUrl||'')+'" placeholder="project.firebaseio.com" style="width:100%;background:#1f1f21;border:1px solid rgba(255,255,255,.05);color:#e4e2e4;font-size:14px;padding:12px;border-radius:10px;outline:none;margin-bottom:8px;font-family:var(--f)">';
 h2+='<button style="width:100%;background:#2a2a2c;color:#e4e2e4;padding:12px;border-radius:9999px;font-weight:600;font-size:13px;border:none;cursor:pointer" onclick="window._setupFB()">Firebase 연결</button></div>';
 
 // System & Intelligence
 h2+='<div style="font-size:10px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.2em;margin:24px 0 12px">System & Intelligence</div>';
-h2+='<div style="background:#0e0e10;border-radius:24px;overflow:hidden">';
+h2+='<div style="background:#0e0e10;border-radius:16px;overflow:hidden">';
 h2+='<div style="display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer" onclick="var d=document.getElementById(\'dms\');d.style.display=d.style.display===\'block\'?\'none\':\'block\'"><span class="material-symbols-outlined" style="color:#90937c">database</span><div style="flex:1"><div style="font-size:15px;font-weight:600;color:#e4e2e4">Data Management</div><div style="font-size:12px;color:#90937c">내보내기 & 가져오기</div></div><span class="material-symbols-outlined" style="color:#90937c">chevron_right</span></div>';
 h2+='<div id="dms" style="display:none;padding:0 16px 16px"><button class="btn" style="width:100%;margin-bottom:6px;background:#1b1b1d;border-radius:12px;font-size:14px" onclick="window._export()">📤 내보내기 (JSON)</button><div style="position:relative"><button class="btn" style="width:100%;background:#1b1b1d;border-radius:12px;font-size:14px">📥 가져오기</button><input type="file" accept=".json" style="position:absolute;inset:0;opacity:0;cursor:pointer" onchange="window._import(event)"></div></div>';
 h2+='<div style="height:1px;background:rgba(255,255,255,.05);margin:0 16px"></div>';
@@ -437,11 +437,11 @@ h2+='<div id="ais" style="display:none;padding:0 16px 16px"><input type="passwor
 h2+='</div>';
 
 // App title
-h2+='<div style="background:#1b1b1d;border-radius:20px;padding:16px;margin-top:12px;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:12px;color:#90937c;margin-bottom:8px">앱 타이틀 (오늘 탭 히어로)</div><input type="text" id="titleIn" value="'+(P.title||'')+'" placeholder="영성의 런" style="width:100%;background:#1f1f21;border:1px solid rgba(255,255,255,.05);color:#e4e2e4;font-size:15px;padding:12px;border-radius:10px;outline:none;margin-bottom:8px;font-family:var(--fh);font-weight:700"><button style="width:100%;background:#2a2a2c;color:#e4e2e4;padding:12px;border-radius:9999px;font-weight:600;font-size:13px;border:none;cursor:pointer" onclick="window._saveTitle()">저장</button></div>';
+h2+='<div style="background:#1b1b1d;border-radius:16px;padding:16px;margin-top:12px;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:12px;color:#90937c;margin-bottom:8px">앱 타이틀 (오늘 탭 히어로)</div><input type="text" id="titleIn" value="'+(P.title||'')+'" placeholder="영성의 런" style="width:100%;background:#1f1f21;border:1px solid rgba(255,255,255,.05);color:#e4e2e4;font-size:15px;padding:12px;border-radius:10px;outline:none;margin-bottom:8px;font-family:var(--fh);font-weight:700"><button style="width:100%;background:#2a2a2c;color:#e4e2e4;padding:12px;border-radius:9999px;font-weight:600;font-size:13px;border:none;cursor:pointer" onclick="window._saveTitle()">저장</button></div>';
 
 // Danger Zone
 h2+='<div style="font-size:10px;font-weight:700;color:#ffb4ab;text-transform:uppercase;letter-spacing:0.2em;margin:24px 0 12px">Risk Management</div>';
-h2+='<button style="width:100%;background:rgba(147,0,10,.15);color:#ffb4ab;font-weight:700;padding:18px;border-radius:24px;border:1px solid rgba(255,180,171,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px" onclick="if(confirm(\'모든 데이터가 삭제됩니다. 계속할까요?\')){window._rst()}"><span class="material-symbols-outlined">logout</span>모든 데이터 초기화</button>';
+h2+='<button style="width:100%;background:rgba(147,0,10,.15);color:#ffb4ab;font-weight:700;padding:18px;border-radius:16px;border:1px solid rgba(255,180,171,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px" onclick="if(confirm(\'모든 데이터가 삭제됩니다. 계속할까요?\')){window._rst()}"><span class="material-symbols-outlined">logout</span>모든 데이터 초기화</button>';
 
 // Version
 h2+='<div style="text-align:center;padding:24px 0;font-size:10px;color:#454936;text-transform:uppercase;letter-spacing:0.1em">Marathon Coach v52 (Stitch Build)</div>';
@@ -747,12 +747,12 @@ h+='</div>';
 var allD=[];for(var aw=1;aw<=tw;aw++){for(var ad=0;ad<7;ad++){var ak='w'+aw+'d'+ad;if(S[ak])allD.push({w:aw,d:ad,data:S[ak]})}}
 var tDist=0,tSess=allD.length,tGct=0,tGctC=0,tCad=0,tCadC=0,tPace=0,tPaceC=0;
 for(var ti=0;ti<allD.length;ti++){tDist+=parseFloat(allD[ti].data.distance)||0;if(allD[ti].data.gct){tGct+=parseFloat(allD[ti].data.gct);tGctC++}if(allD[ti].data.avgCad){tCad+=parseFloat(allD[ti].data.avgCad);tCadC++}if(allD[ti].data.pace&&allD[ti].data.pace!=='--:--'){tPace+=p2s(allD[ti].data.pace);tPaceC++}}
-if(!tSess){h+='<div style="background:#1b1b1d;border-radius:24px;padding:40px 20px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:32px;margin-bottom:8px">📊</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;color:#fff">데이터를 기다리고 있어요</div><div style="font-size:14px;color:var(--tx3)">분석 탭에서 .fit 파일을 올려보세요</div></div>'}
+if(!tSess){h+='<div style="background:#1b1b1d;border-radius:16px;padding:40px 20px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:32px;margin-bottom:8px">📊</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;color:#fff">데이터를 기다리고 있어요</div><div style="font-size:14px;color:var(--tx3)">분석 탭에서 .fit 파일을 올려보세요</div></div>'}
 else{
-h+='<div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px">';
-h+='<div style="background:#1b1b1d;border-radius:24px;padding:20px;outline:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;justify-content:space-between"><div><div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--tx3);text-transform:uppercase;margin-bottom:4px">총 누적 거리</div><div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--fh);font-size:42px;font-weight:900;color:#CFEF4E;letter-spacing:-0.03em;line-height:1">'+Math.round(tDist*10)/10+'</span><span style="font-size:14px;font-weight:700;color:var(--tx3)">KM</span></div></div><div style="position:relative;height:80px;margin-top:12px"><canvas id="volChart"></canvas></div></div>';
+h+='<div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-bottom:12px">';
+h+='<div style="background:#1b1b1d;border-radius:16px;padding:20px;outline:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;justify-content:space-between"><div><div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--tx3);text-transform:uppercase;margin-bottom:4px">총 누적 거리</div><div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:var(--fh);font-size:42px;font-weight:900;color:#CFEF4E;letter-spacing:-0.03em;line-height:1">'+Math.round(tDist*10)/10+'</span><span style="font-size:14px;font-weight:700;color:var(--tx3)">KM</span></div></div><div style="position:relative;height:80px;margin-top:12px"><canvas id="volChart"></canvas></div></div>';
 var avgP=tPaceC?s2p(Math.round(tPace/tPaceC)):'--:--';
-h+='<div style="background:#CFEF4E;border-radius:24px;padding:20px;display:flex;flex-direction:column;justify-content:space-between"><div><div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:#2a3400;text-transform:uppercase;opacity:.7;margin-bottom:4px">평균 페이스</div><div style="font-family:var(--fh);font-size:32px;font-weight:900;color:#2a3400;letter-spacing:-0.03em;line-height:1">'+avgP.replace(":","\'")+'&quot;</div><div style="font-size:10px;font-weight:700;color:#2a3400;opacity:.6;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">'+tSess+'회 기록</div></div><div style="height:6px;background:rgba(42,52,0,.1);border-radius:3px;overflow:hidden;margin-top:12px"><div style="height:100%;background:#2a3400;border-radius:3px;width:'+Math.min(100,Math.round(tSess/20*100))+'%"></div></div></div></div>';
+h+='<div style="background:#CFEF4E;border-radius:16px;padding:20px;display:flex;flex-direction:column;justify-content:space-between"><div><div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:#2a3400;text-transform:uppercase;opacity:.7;margin-bottom:4px">평균 페이스</div><div style="font-family:var(--fh);font-size:32px;font-weight:900;color:#2a3400;letter-spacing:-0.03em;line-height:1">'+avgP.replace(":","\'")+'&quot;</div><div style="font-size:10px;font-weight:700;color:#2a3400;opacity:.6;text-transform:uppercase;letter-spacing:0.1em;margin-top:4px">'+tSess+'회 기록</div></div><div style="height:6px;background:rgba(42,52,0,.1);border-radius:3px;overflow:hidden;margin-top:12px"><div style="height:100%;background:#2a3400;border-radius:3px;width:'+Math.min(100,Math.round(tSess/20*100))+'%"></div></div></div></div>';
 h+='<div style="font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;color:var(--tx3);margin:14px 0 6px">고급 러닝 다이내믹스</div>';
 h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px">';
 var dd2=[['케이던스',tCadC?Math.round(tCad/tCadC):'-','spm'],['GCT',tGctC?Math.round(tGct/tGctC):'-','ms'],['세션',tSess,'회']];
@@ -761,7 +761,7 @@ h+='</div>';
 h+='<div style="font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;color:var(--tx3);margin:14px 0 6px">인사이트</div>';
 var tI=[['gct','speed','GCT vs 페이스','비교 분석'],['ready','emoji_events','레이스 준비도','종합 점수'],['load','electric_bolt','훈련 부하','급성:만성']];
 for(var tii=0;tii<tI.length;tii++){var tid=tI[tii][0],tic=tI[tii][1],tit=tI[tii][2],tid2=tI[tii][3],tO=!!UI.tOpen[tid];
-h+='<div style="background:#1b1b1d;border-radius:20px;margin-bottom:8px;overflow:hidden;outline:1px solid rgba(255,255,255,'+(tO?'.1':'.05')+')">';
+h+='<div style="background:#1b1b1d;border-radius:16px;margin-bottom:8px;overflow:hidden;outline:1px solid rgba(255,255,255,'+(tO?'.1':'.05')+')">';
 h+='<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer" onclick="UI.tOpen.'+tid+'=!UI.tOpen.'+tid+';go()"><div style="width:36px;height:36px;border-radius:10px;background:rgba(207,239,78,.08);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:18px;color:#CFEF4E">'+tic+'</span></div><div style="flex:1"><div style="font-size:14px;font-weight:700;color:#fff">'+tit+'</div><div style="font-size:11px;color:var(--tx3)">'+tid2+'</div></div><span class="material-symbols-outlined" style="font-size:18px;color:var(--tx3)">'+(tO?'expand_less':'expand_more')+'</span></div>';
 if(tO){h+='<div style="padding:0 16px 16px">';
 if(tid==='gct'){h+='<div style="position:relative;height:200px"><canvas id="gctChart"></canvas></div>'}
@@ -771,7 +771,7 @@ h+='</div>'}h+='</div>'}
 // Recent
 var rcL=[];for(var rw2=1;rw2<=tw;rw2++){for(var rd4=0;rd4<7;rd4++){var rk2='w'+rw2+'d'+rd4;if(S[rk2]){rcL.push({date:new Date(SC[rw2].w1.getTime()+rd4*864e5),data:S[rk2]})}}}rcL.sort(function(a,b){return b.date-a.date});
 if(rcL.length){h+='<div style="font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;color:var(--tx3);margin:14px 0 6px">최근 활동</div>';
-for(var ri2=0;ri2<Math.min(rcL.length,4);ri2++){var rc2=rcL[ri2];h+='<div style="background:#1b1b1d;border-radius:20px;padding:14px 16px;margin-bottom:6px;outline:1px solid rgba(255,255,255,.05);display:flex;gap:12px;align-items:center"><div style="min-width:40px;text-align:center"><div style="font-family:var(--fh);font-size:16px;font-weight:800;color:#fff">'+rc2.date.getDate()+'</div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase">'+(rc2.date.getMonth()+1)+'월</div></div><div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px"><div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em">거리</div><div style="font-family:var(--fh);font-size:15px;font-weight:800;color:#fff">'+(rc2.data.distance||'-')+' km</div></div><div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em">페이스</div><div style="font-family:var(--fh);font-size:15px;font-weight:800;color:#fff">'+(rc2.data.pace||'-')+'</div></div><div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em">GCT</div><div style="font-family:var(--fh);font-size:15px;font-weight:800;color:#CFEF4E">'+(rc2.data.gct||'-')+'</div></div></div><span class="material-symbols-outlined" style="font-size:16px;color:var(--tx3)">chevron_right</span></div>'}}
+for(var ri2=0;ri2<Math.min(rcL.length,4);ri2++){var rc2=rcL[ri2];h+='<div style="background:#1b1b1d;border-radius:16px;padding:14px 16px;margin-bottom:6px;outline:1px solid rgba(255,255,255,.05);display:flex;gap:12px;align-items:center"><div style="min-width:40px;text-align:center"><div style="font-family:var(--fh);font-size:16px;font-weight:800;color:#fff">'+rc2.date.getDate()+'</div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase">'+(rc2.date.getMonth()+1)+'월</div></div><div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px"><div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em">거리</div><div style="font-family:var(--fh);font-size:15px;font-weight:800;color:#fff">'+(rc2.data.distance||'-')+' km</div></div><div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em">페이스</div><div style="font-family:var(--fh);font-size:15px;font-weight:800;color:#fff">'+(rc2.data.pace||'-')+'</div></div><div><div style="font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.05em">GCT</div><div style="font-family:var(--fh);font-size:15px;font-weight:800;color:#CFEF4E">'+(rc2.data.gct||'-')+'</div></div></div><span class="material-symbols-outlined" style="font-size:16px;color:var(--tx3)">chevron_right</span></div>'}}
 }
 }else if(UI.tab==='coach'){
 var z=P.z;
@@ -926,7 +926,7 @@ h+='<div style="position:absolute;inset:0;overflow:hidden"><div style="position:
 h+='<div style="position:absolute;top:30%;left:50%;transform:translateX(-50%);font-family:var(--fh);font-size:120px;font-weight:900;color:rgba(207,239,78,.03);letter-spacing:-5px;white-space:nowrap">MARATHON</div></div>';
 h+='<div style="position:relative;z-index:1">';
 h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px"><span style="width:8px;height:8px;border-radius:50%;background:#CFEF4E"></span><span style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.15em">marathon coach</span></div>';
-h+='<h1 style="font-family:var(--fh);font-size:44px;font-weight:900;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:12px">당신만의<br><span style="color:#CFEF4E">마라톤 코치</span></h1>';
+h+='<h1 style="font-family:var(--fh);font-size:44px;font-weight:900;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:12px">YOUR<br><span style="color:#CFEF4E">MARATHON</span><br>COACH</h1>';
 h+='<p style="font-size:15px;color:var(--tx3);line-height:1.6;margin-bottom:32px;max-width:280px">AI 기반 맞춤 훈련 프로그램.<br>데이터로 증명하는 서브-3 여정.</p>';
 h+='<button class="btn btn-p" style="width:100%;font-family:var(--fh);font-size:16px;padding:18px;border-radius:9999px" onclick="UI.step=1;goOnb()">시작하기</button>';
 h+='</div></div>';
@@ -969,7 +969,7 @@ h+='<button class="btn btn-p" style="flex:2;border-radius:9999px;font-family:var
 var z=P.z;var vdotDesc=P.vd>=55?'엘리트':P.vd>=50?'상급자':P.vd>=45?'중상급':P.vd>=40?'중급':P.vd>=35?'초중급':'입문';
 h+='<div style="margin-bottom:20px"><div style="font-size:11px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">분석 결과</div><h2 style="font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.02em">목표를 설정하세요</h2></div>';
 if(P.assess){h+='<div style="background:rgba(207,239,78,.05);border:1px solid rgba(207,239,78,.15);border-radius:14px;padding:12px;margin-bottom:12px;font-size:13px;color:var(--tx2)"><span style="color:#CFEF4E;font-weight:700">평가 모드</span> — 데이터가 쌓이면 자동 업그레이드</div>'}
-h+='<div style="background:#1b1b1d;border-radius:20px;padding:20px;margin-bottom:12px;outline:1px solid rgba(255,255,255,.05);text-align:center"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.1em">YOUR VDOT</div><div style="font-family:var(--fh);font-size:52px;font-weight:900;color:#CFEF4E;line-height:1">'+P.vd+'</div><div style="font-size:14px;font-weight:600;color:var(--tx2);margin-top:2px">'+vdotDesc+'</div></div>';
+h+='<div style="background:#1b1b1d;border-radius:16px;padding:20px;margin-bottom:12px;outline:1px solid rgba(255,255,255,.05);text-align:center"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.1em">YOUR VDOT</div><div style="font-family:var(--fh);font-size:52px;font-weight:900;color:#CFEF4E;line-height:1">'+P.vd+'</div><div style="font-size:14px;font-weight:600;color:var(--tx2);margin-top:2px">'+vdotDesc+'</div></div>';
 h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px"><div style="background:#1b1b1d;border-radius:12px;padding:10px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase">이지</div><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#30D158">'+z.e+'</div></div><div style="background:#1b1b1d;border-radius:12px;padding:10px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase">마라톤</div><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#0A84FF">'+z.mp+'</div></div><div style="background:#1b1b1d;border-radius:12px;padding:10px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase">인터벌</div><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#FF453A">'+z.i+'</div></div></div>';
 h+='<div class="fg"><label>대회 이름</label><input type="text" id="i_rn" placeholder="서울 마라톤 2026"></div>';
 h+='<div class="fg"><label>목표 기록</label><input type="text" id="i_gt" value="2:59:59"></div>';
