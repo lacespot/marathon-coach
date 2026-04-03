@@ -1,48 +1,5 @@
-const CACHE_NAME = 'marathon-coach-v53';
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(['/marathon-coach/', '/marathon-coach/index.html']);
-    })
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
-  );
-  self.clients.claim();
-});
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('firebaseio.com') ||
-      event.request.url.includes('googleapis.com') ||
-      event.request.url.includes('api.anthropic.com') ||
-      event.request.url.includes('open-meteo.com') ||
-      event.request.url.includes('strava.com') ||
-      event.request.url.includes('pretendard') ||
-      event.request.url.includes('fonts.googleapis.com')) {
-    return;
-  }
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response.status === 200) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match('/marathon-coach/');
-        });
-      })
-  );
-});
+const CACHE_NAME='marathon-coach-v55';
+self.addEventListener('install',(e)=>{self.skipWaiting();e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(['/marathon-coach/','/marathon-coach/index.html'])))});
+self.addEventListener('activate',(e)=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE_NAME).map(x=>caches.delete(x)))));self.clients.claim()});
+self.addEventListener('fetch',(e)=>{if(['firebaseio.com','googleapis.com','api.anthropic.com','open-meteo.com','strava.com','fonts.googleapis.com','cdn.jsdelivr.net'].some(d=>e.request.url.includes(d)))return;
+e.respondWith(fetch(e.request).then(r=>{if(r.status===200){var c=r.clone();caches.open(CACHE_NAME).then(ca=>ca.put(e.request,c))}return r}).catch(()=>caches.match(e.request).then(c=>c||caches.match('/marathon-coach/'))))});
