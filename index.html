@@ -985,6 +985,62 @@ try{var clean=raw.replace(/```json|```/g,'').trim();var arr=JSON.parse(clean);if
 window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true;go()};
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
+window._stravaConnect=function(){
+var token=(document.getElementById('stravaTokenIn')||{}).value;
+if(!token){toast('토큰을 입력해주세요');return}
+toast('Strava 연결 확인 중...');
+fetch('https://www.strava.com/api/v3/athlete',{headers:{'Authorization':'Bearer '+token}})
+.then(function(r){if(!r.ok)throw new Error('Invalid');return r.json()})
+.then(function(d){
+localStorage.setItem('mc_strava_token',token);
+localStorage.setItem('mc_strava_athlete',JSON.stringify({id:d.id,name:d.firstname+' '+d.lastname}));
+toast('Strava 연결 완료! '+d.firstname);go()})
+.catch(function(e){toast('토큰이 유효하지 않아요. 다시 확인해주세요.')})};
+
+window._stravaSync=function(){
+var token=localStorage.getItem('mc_strava_token');
+if(!token){toast('Strava 연결이 필요해요');return}
+toast('활동 데이터 가져오는 중...');
+var SC2=gSC();var tw2=Object.keys(SC2).length;
+// Fetch last 30 activities
+fetch('https://www.strava.com/api/v3/athlete/activities?per_page=30',{headers:{'Authorization':'Bearer '+token}})
+.then(function(r){if(!r.ok)throw new Error('Auth');return r.json()})
+.then(function(activities){
+var imported=0;
+for(var i=0;i<activities.length;i++){
+var act=activities[i];
+if(act.type!=='Run')continue;
+var actDate=new Date(act.start_date_local);actDate.setHours(0,0,0,0);
+// Match to schedule week/day
+for(var w=1;w<=tw2;w++){var ws=SC2[w].w1;
+for(var d=0;d<7;d++){var dd=new Date(ws.getTime()+d*864e5);dd.setHours(0,0,0,0);
+if(dd.getTime()===actDate.getTime()){
+var key='w'+w+'d'+d;
+if(!S[key]){
+var dist=Math.round(act.distance/100)/10;
+var paceS=act.moving_time/(act.distance/1000);
+var paceM=Math.floor(paceS/60);var paceSs=Math.round(paceS%60);
+S[key]={
+distance:dist,
+pace:paceM+':'+(paceSs<10?'0':'')+paceSs,
+avgHR:act.average_heartrate?Math.round(act.average_heartrate):'',
+maxHR:act.max_heartrate?Math.round(act.max_heartrate):'',
+avgCad:act.average_cadence?Math.round(act.average_cadence*2):'',
+gct:'',
+rpe:'',
+notes:'[Strava] '+act.name,
+logged:new Date().toISOString()};
+imported++}
+break}}}
+}
+svS();
+toast(imported+'개 활동 가져옴'+(imported===0?' (새 데이터 없음)':''));
+go()})
+.catch(function(e){
+if(e.message==='Auth'){toast('토큰이 만료됐어요. 재연결 필요.');localStorage.removeItem('mc_strava_token')}
+else{toast('데이터 가져오기 실패: '+e.message)}
+go()})};
+
 window._saveTitle=function(){var v=(document.getElementById('titleInput')||{}).value;if(v){P.title=v;svP();toast('타이틀 저장 완료');go()}};
 window._saveCue=function(){var inp=document.getElementById('cueInput');if(!inp||!inp.value||!inp.value.trim()){toast('큐잉 내용을 입력해주세요');return}if(!P.cues)P.cues=[];P.cues.push({t:inp.value.trim(),d:new Date().toISOString().slice(0,10)});if(P.cues.length>10)P.cues=P.cues.slice(-10);svP();toast('큐잉 저장 완료 — 오늘 탭에서 확인');go()};
 window._delCue=function(i){if(P.cues)P.cues.splice(i,1);svP();go()};
@@ -1116,6 +1172,9 @@ if(cme)cme.onchange=function(){window._gc.data.datasets[0].hidden=!this.checked;
 if(FT.ex&&FT.ex.run&&FT.ex.run.length>=2){setTimeout(function(){var cv=document.getElementById('anaC');if(!cv)return;var run=FT.ex.run,hrs=[],paces=[],labs=[];for(var i=0;i<run.length;i++){hrs.push(run[i].hr||null);paces.push(Math.round(run[i].time/run[i].dist*1000));labs.push(''+(i+1))}var bg=paces.map(function(p){return p>280?'rgba(255,179,71,.4)':p<248?'rgba(255,107,107,.35)':'rgba(45,212,160,.5)'});if(window._ch)window._ch.destroy();var pMn=Math.min.apply(null,paces)-10,pMx=Math.max.apply(null,paces)+10;var h2=hrs.filter(function(x){return x>0});var hMn=h2.length?Math.min.apply(null,h2)-10:120,hMx=h2.length?Math.max.apply(null,h2)+10:200;window._ch=new Chart(cv,{type:'bar',data:{labels:labs,datasets:[{label:'페이스',type:'bar',data:paces,backgroundColor:bg,borderRadius:2,yAxisID:'y2',barPercentage:.55},{label:'심박수',type:'line',data:hrs,borderColor:'#FF6B6B',borderWidth:2,pointRadius:2,pointBackgroundColor:'#FF6B6B',yAxisID:'y',tension:.2,spanGaps:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{color:'#888',font:{size:9},boxWidth:12,padding:8}},tooltip:{callbacks:{label:function(ctx){if(ctx.dataset.label==='페이스'){var v=ctx.raw;var m=Math.floor(v/60);var s=v%60;return '페이스: '+m+':'+(s<10?'0':'')+s+'/km'}if(ctx.dataset.label==='심박수')return '심박: '+ctx.raw+'bpm';return ctx.raw}}}},interaction:{mode:'index',intersect:false},scales:{y:{position:'left',min:hMn,max:hMx,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#888',font:{size:8},callback:function(v){return v+'bpm'}}},y2:{position:'right',reverse:true,min:pMn,max:pMx,grid:{display:false},ticks:{color:'#888',font:{size:8},callback:function(v){var m=Math.floor(v/60);var s=v%60;return v>360?'':m+':'+(s<10?'0':'')+s}}}}}})},100)}}
 var _origGo=go;go=function(){_origGo();postRender()};
 ldA();initFB();go();
+// Auto Strava sync on load
+if(localStorage.getItem('mc_strava_token')&&navigator.onLine){
+setTimeout(function(){window._stravaSync()},2000)}
 setTimeout(function(){var sp=document.getElementById('splash');if(sp){sp.style.opacity='0';setTimeout(function(){sp.remove()},400)}},800);
 (function(){var ptr=document.getElementById('ptr'),startY=0,pulling=false;
 document.addEventListener('touchstart',function(e){if(window.scrollY===0&&e.touches[0].clientY<80){startY=e.touches[0].clientY;pulling=true}else{pulling=false}},{passive:true});
