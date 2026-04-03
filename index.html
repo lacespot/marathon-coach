@@ -111,6 +111,10 @@ body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;f
 .ai-result{background:var(--bg3);border-radius:8px;padding:10px;margin-top:8px;font-size:13px}
 .sched-expand.open{max-height:300px;opacity:1}
 .btn:active{transform:scale(.97);opacity:.85}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes tabIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.app{animation:tabIn .2s ease-out}
+.bnav-i{transition:all .2s ease}
 .cd:active{opacity:.92}
 .bnav-i:active{transform:scale(.92);opacity:.7}
 .sleep-btn:active{transform:scale(.96);opacity:.85}
@@ -443,6 +447,14 @@ h2+='<button style="width:100%;background:rgba(147,0,10,.15);color:#ffb4ab;font-
 h2+='<div style="text-align:center;padding:24px 0;font-size:10px;color:#454936;text-transform:uppercase;letter-spacing:0.1em">Marathon Coach v52 (Stitch Build)</div>';
 h2+='</div>';
 R.innerHTML=h2;return}
+
+// Sync status indicator
+var straTk=_LS?localStorage.getItem('mc_strava_token')||'':'';
+var lastSync=_LS?localStorage.getItem('mc_strava_last')||'':'';
+if(straTk){
+var syncAgo='';
+if(lastSync){var diff2=Math.round((Date.now()-new Date(lastSync).getTime())/60000);syncAgo=diff2<1?'방금':diff2<60?diff2+'분 전':Math.floor(diff2/60)+'시간 전'}
+h+='<div id="syncStatus" style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding:8px 12px;background:rgba(252,76,2,.06);border-radius:12px;font-size:12px"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 0L10.2 5.2H16L11.2 8.4L13 14L8 10.8L3 14L4.8 8.4L0 5.2H5.8L8 0Z" fill="#FC4C02"/></svg><span style="color:#FC4C02;font-weight:600">Strava</span><span style="color:var(--tx3)">'+(syncAgo?syncAgo+' 동기화':'연결됨')+'</span><span style="margin-left:auto;cursor:pointer;color:var(--tx3)" onclick="window._stravaSync()"><span class="material-symbols-outlined" style="font-size:16px">sync</span></span></div>'}
 
 // Stat strip
 h+='<div style="display:flex;gap:6px;margin-bottom:14px">';
@@ -901,7 +913,7 @@ h+='</div>';
 
 h+='</div>'+NAV;
 R.innerHTML=h;
-renderNav();window.scrollTo(0,_sp);
+renderNav();if(UI._tabChanged){window.scrollTo(0,0);UI._tabChanged=false}else{window.scrollTo(0,_sp)}
 var ab=document.querySelector('.wb.a');if(ab)ab.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
 }
 
@@ -967,7 +979,7 @@ R.innerHTML=h}
 
 
 window._calTap=function(ts){var SC2=gSC();for(var fw=1;fw<=Object.keys(SC2).length;fw++){var fws=SC2[fw].w1;for(var fd=0;fd<7;fd++){var fdd=new Date(fws.getTime()+fd*864e5);fdd.setHours(0,0,0,0);if(fdd.getTime()===ts){UI.cw=fw;UI._cwInit=true;UI.schedView='week';go();return}}}};
-window._tab=function(t){UI.tab=t;go()};
+window._tab=function(t){if(UI.tab!==t){UI.tab=t;UI._tabChanged=true}go()};
 window._tm=function(u){FT.tm=u;FT.ex=anaFit(FT.laps,u);go()};
 window._saveFit=function(){if(!FT.ex)return;var ex=FT.ex;if(FT.fileDate){var md2=matchWD(FT.fileDate);UI.cw=md2.w;UI.cd=md2.d}var k='w'+UI.cw+'d'+UI.cd;var rpe=document.getElementById('rpeSlider');S[k]={distance:ex.dist,pace:ex.pace,avgHR:ex.avgHR,maxHR:ex.maxHR,gct:ex.avgGCT,avgCad:ex.avgCad,avgPow:ex.avgPow,rpe:rpe?rpe.value:'5',notes:(ex.tk?'[트랙보정] ':'[FIT] ')+ex.laps.length+'랩'+(ex.cc?' ('+ex.cc+'랩 보정)':''),logged:new Date().toISOString()};svS();toast('W'+UI.cw+' '+DY[UI.cd]+' 저장 완료');go()};
 window._gw=function(w){UI.cw=w;UI.cd=0;go()};
@@ -992,7 +1004,7 @@ window._stog=function(d){if(UI.sOpen[d])delete UI.sOpen[d];else UI.sOpen[d]=true
 window._logWt=function(){var inp=document.getElementById('wtInput');if(!inp||!inp.value)return;if(!P.wtLog)P.wtLog=[];P.wtLog.push({v:parseFloat(inp.value),d:new Date().toISOString().slice(0,10)});P.wt=parseFloat(inp.value);svP();toast('체중 기록 완료');go()};
 window._setupFB=function(){var url=(document.getElementById('fbUrlIn')||{}).value;if(!url||url.indexOf('firebaseio.com')<0){toast('Firebase URL을 입력해주세요');return}var code=((document.getElementById('fbCodeIn')||{}).value||'').toUpperCase();if(!code)code=genCode();setupFB(url,code);go()};
 window._stravaConnect=function(){
-var token=(document.getElementById('stravaTokenIn')||{}).value;
+var token=(document.getElementById('stravaTokenIn')||{}).value||'';
 if(!token){toast('토큰을 입력해주세요');return}
 toast('Strava 연결 확인 중...');
 fetch('https://www.strava.com/api/v3/athlete',{headers:{'Authorization':'Bearer '+token}})
@@ -1006,7 +1018,10 @@ toast('Strava 연결 완료! '+d.firstname);go()})
 window._stravaSync=function(){
 var token=localStorage.getItem('mc_strava_token');
 if(!token){toast('Strava 연결이 필요해요');return}
-toast('활동 데이터 가져오는 중...');
+// Show sync indicator
+var syncEl=document.getElementById('syncStatus');
+if(syncEl){syncEl.innerHTML='<span class="material-symbols-outlined" style="font-size:14px;color:#CFEF4E;animation:spin 1s linear infinite">sync</span> 동기화 중...';syncEl.style.display='flex'}
+toast('Strava 활동 가져오는 중...');
 var SC2=gSC();var tw2=Object.keys(SC2).length;
 // Fetch last 30 activities
 fetch('https://www.strava.com/api/v3/athlete/activities?per_page=30',{headers:{'Authorization':'Bearer '+token}})
@@ -1040,6 +1055,7 @@ imported++}
 break}}}
 }
 svS();
+localStorage.setItem('mc_strava_last',new Date().toISOString());
 toast(imported+'개 활동 가져옴'+(imported===0?' (새 데이터 없음)':''));
 go()})
 .catch(function(e){
