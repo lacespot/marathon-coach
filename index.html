@@ -520,7 +520,7 @@ var cw=UI.cw,wk=SC[cw];if(!wk){UI.cw=1;cw=1;wk=SC[1]}
 // Schedule header with view toggle
 h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
 if(UI.schedView==='month'){h+='<div><div style="font-family:var(--fh);font-size:28px;font-weight:800;letter-spacing:-0.03em;text-transform:uppercase;color:#fff">'+(new Date(wk.w1).getMonth()+1)+'월</div><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--tx3)">마라톤 단계: '+wk.ph+'</div></div>'}
-else{h+='<div><div style="font-family:var(--fh);font-size:28px;font-weight:800;letter-spacing:-0.03em;text-transform:uppercase;color:#fff">W'+cw+'</div><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--tx3)">'+wk.ph+' · '+wk.km+'km 목표</div></div>'}
+else{h+='<div><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--tx3)">현재 단계: '+wk.ph+'</div><div style="font-family:var(--fh);font-size:26px;font-weight:800;letter-spacing:-0.03em;color:#fff;margin-top:2px">'+cw+'주차: '+(wk.phc==="base"?"기초 체력 단련":wk.phc==="build"?"강도 구축":wk.phc==="specific"?"레이스 특이성":wk.phc==="peak"?"피크 트레이닝":"테이퍼")+'</div><div style="display:flex;align-items:center;gap:6px;margin-top:4px"><span style="font-size:11px;color:var(--tx3)">주간 목표</span><span style="font-family:var(--fh);font-size:14px;font-weight:800;color:#CFEF4E">'+wk.km+' KM</span></div></div>'}
 h+='<div style="display:flex;gap:2px;background:var(--bg2);border-radius:10px;padding:2px">';
 h+='<div style="padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.schedView==='week'?'background:var(--bg3);color:var(--tx)':'color:var(--tx3)')+'" onclick="UI.schedView=\'week\';go()">주간</div>';
 h+='<div style="padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.schedView==='month'?'background:var(--bg3);color:var(--tx)':'color:var(--tx3)')+'" onclick="UI.schedView=\'month\';go()">월간</div>';
@@ -609,7 +609,8 @@ var isOpen=!!UI.sOpen[ci2];
 var isToday2=ci2===todayIdx;
 var sessData=S['w'+cw+'d'+ci2];
 var stcl2=cd3.type==='point'?'#FF453A':cd3.type==='tempo'?'#0A84FF':cd3.type==='long'?'#30D158':cd3.type==='rest'?'#636366':'#FFD60A';
-var matIcon2=cd3.type==='point'?'repeat':cd3.type==='tempo'?'bolt':cd3.type==='long'?'distance':cd3.type==='rest'?'bedtime':'timer';
+var matIcon2=cd3.type==='point'?'repeat':cd3.type==='tempo'?'bolt':cd3.type==='long'?'distance':cd3.type==='rest'?'self_improvement':'timer';
+var isStrength=cd3.type==='rest'&&cd3.d&&(cd3.d.indexOf('근력')>=0||cd3.d.indexOf('스쿼트')>=0||cd3.d.indexOf('플라이오')>=0||cd3.d.indexOf('코어')>=0);
 var isCustom=P.cust&&P.cust['w'+cw+'d'+ci2];
 
 h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.25);border-left:3px solid '+stcl2+';'+(isToday2?'border:2px solid var(--ac);border-left:3px solid var(--ac)':'')+'">';
@@ -618,17 +619,17 @@ h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overf
 h+='<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer" onclick="window._stog('+ci2+')">';
 
 // Date
-h+='<div style="min-width:40px;text-align:center"><div style="font-size:10px;color:'+(isToday2?'var(--ac)':'var(--tx3)')+';font-weight:600">'+DY[ci2]+'</div><div style="font-size:20px;font-weight:700;color:'+(isToday2?'var(--ac)':isDone?'var(--gn)':'var(--tx)')+'">'+dd5.getDate()+'</div></div>';
+h+='<div style="min-width:40px;text-align:center"><div style="font-size:10px;color:'+(isStrength?'#2a3400':isToday2?'var(--ac)':'var(--tx3)')+';font-weight:700">'+DY[ci2]+'</div><div style="font-size:20px;font-weight:800;color:'+(isStrength?'#2a3400':isToday2?'var(--ac)':isDone?'var(--gn)':'var(--tx)')+'">'+dd5.getDate()+'</div></div>';
 
 // Session info
 h+='<div style="flex:1;min-width:0">';
 h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:1px">';
 if(isToday2)h+='<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--ac);color:#1a1a1a">TODAY</span>';
 h+='<span class="material-symbols-outlined" style="font-size:16px;color:#CFEF4E'+(cd3.type==='rest'?';opacity:.4':'')+'"'+(isDone?' style="font-variation-settings:\'FILL\' 1;font-size:16px;color:#CFEF4E"':'')+'>'+matIcon2+'</span>';
-h+='<span style="font-size:11px;font-weight:700;color:'+stcl2+';text-transform:uppercase;letter-spacing:0.05em">'+(isCustom?'커스텀':(TN[cd3.type]||'이지'))+'</span>';
-if(isDone)h+='<span style="font-size:10px;color:var(--gn)">✓</span>';
+h+='<span style="font-size:11px;font-weight:700;color:'+(isStrength?'#2a3400':stcl2)+';text-transform:uppercase;letter-spacing:0.05em">'+(isStrength?'보강 운동':isCustom?'커스텀':(TN[cd3.type]||'이지'))+'</span>';
+if(isDone)h+='<span class="material-symbols-outlined" style="font-size:18px;color:#30D158;font-variation-settings:\'FILL\' 1">check_circle</span>';
 h+='</div>';
-h+='<div style="font-size:16px;font-weight:600;color:var(--tx)">'+cd3.l+'</div>';
+h+='<div style="font-family:var(--fh);font-size:16px;font-weight:700;color:'+(isStrength?'#2a3400':'#fff')+';letter-spacing:-0.02em">'+cd3.l+'</div>';
 
 // Plan vs Actual comparison (if done)
 if(isDone&&sessData){
