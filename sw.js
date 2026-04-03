@@ -1,4 +1,4 @@
-const CACHE_NAME = 'marathon-coach-v46';
+const CACHE_NAME = 'marathon-coach-v53';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -25,10 +25,11 @@ self.addEventListener('fetch', (event) => {
       event.request.url.includes('googleapis.com') ||
       event.request.url.includes('api.anthropic.com') ||
       event.request.url.includes('open-meteo.com') ||
-      event.request.url.includes('pretendard')) {
+      event.request.url.includes('strava.com') ||
+      event.request.url.includes('pretendard') ||
+      event.request.url.includes('fonts.googleapis.com')) {
     return;
   }
-
   event.respondWith(
     fetch(event.request)
       .then((response) => {
