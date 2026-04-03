@@ -898,67 +898,64 @@ var ab=document.querySelector('.wb.a');if(ab)ab.scrollIntoView({behavior:'smooth
 }
 
 function goOnb(){
-var s=UI.step,h='<div class="onb fade">';
+var R=document.getElementById('root'),h='',s=UI.step;
 if(s===0){
-if(UI._editMode){h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;cursor:pointer" onclick="window._editBack()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--tx2)" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span style="font-size:15px;color:var(--tx2)">설정으로 돌아가기</span></div>'}
-h+='<div class="onb-step">STEP 1/4 — 기본 정보</div><div class="onb-title">Marathon <span>Coach</span></div><div class="onb-sub">당신만의 마라톤 코치를 만들어보세요</div>';
-h+='<div class="fg"><label>이름</label><input type="text" id="i_n" placeholder="이름"></div>';
-h+='<div class="fg-row"><div class="fg"><label>나이</label><input type="number" id="i_a" placeholder="28"></div><div class="fg"><label>성별</label><select id="i_sx"><option value="M">남성</option><option value="F">여성</option></select></div></div>';
-h+='<div class="fg-row"><div class="fg"><label>키(cm)</label><input type="number" id="i_h" placeholder="175"></div><div class="fg"><label>체중(kg)</label><input type="number" id="i_w" placeholder="68"></div></div>';
-h+='<button class="btn btn-p" id="b1">다음</button>';
-}else if(s===1){
-h+='<div class="onb-step">STEP 2/4 — 인바디 (선택)</div><div class="onb-title">신체 <span>데이터</span></div><div class="onb-sub">없으면 건너뛰기</div>';
-h+='<div class="fg-row"><div class="fg"><label>골격근량(kg)</label><input type="number" step="0.1" id="i_mu" placeholder="32.5"></div><div class="fg"><label>체지방률(%)</label><input type="number" step="0.1" id="i_ft" placeholder="12.5"></div></div>';
-h+='<div class="fg-row"><div class="fg"><label>안정시 심박</label><input type="number" id="i_rh" placeholder="55"></div><div class="fg"><label>최대 심박수</label><input type="number" id="i_mh" placeholder="192"></div></div>';
-h+='<div class="btn-row"><button class="btn btn-s" id="bk" style="flex:1">이전</button><button class="btn btn-p" id="b2" style="flex:2">다음</button></div>';
-h+='<button class="btn btn-s" id="bs">건너뛰기</button>';
-}else if(s===2){
-h+='<div class="onb-step">STEP 3/4 — 대회 기록</div><div class="onb-title">레이스 <span>기록</span></div><div class="onb-sub">최소 하나 입력</div>';
-h+='<div style="background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--tx2);line-height:1.6"><span style="color:var(--ac);font-weight:600">대회 기록이 없다면?</span><br>괜찮아요! 일단 건너뛰고 1주일 동안 평소대로 조깅하면서 .fit 파일을 기록해주세요. 데이터가 3회 이상 쌓이면 자동으로 분석해서 맞춤 훈련 프로그램을 만들어줘요.</div>';
-h+='<div class="fg"><label>10K (mm:ss)</label><input type="text" id="i_10" placeholder="40:06"></div>';
-h+='<div class="fg"><label>하프마라톤 (h:mm:ss)</label><input type="text" id="i_hm" placeholder="1:27:55"></div>';
-h+='<div class="fg"><label>풀마라톤 (h:mm:ss)</label><input type="text" id="i_fm" placeholder="3:13:00"></div>';
-h+='<div class="btn-row"><button class="btn btn-s" id="bk2" style="flex:1">이전</button><button class="btn btn-p" id="b3" style="flex:2">분석하기</button></div>';
-}else if(s===3){
-var z=P.z,gap=P.gap||0;
-h+='<div class="onb-step">STEP 4/4 — 결과 + 목표</div><div class="onb-title">분석 <span>결과</span></div>';
-if(P.assess){h+='<div style="background:rgba(232,255,90,.05);border:1px solid rgba(232,255,90,.15);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;color:var(--tx2);line-height:1.6"><span style="color:var(--ac);font-weight:600">평가 모드</span><br>대회 기록이 없어서 기본값(VDOT 35)으로 시작해요. 1주일 동안 조깅하고 .fit 파일을 올리면 실제 데이터로 자동 업그레이드돼요!</div>'}
-h+='<div class="res-grid"><div class="res-sm"><div class="res-t">기준 VDOT</div><div class="res-v" style="color:var(--ac)">'+P.vd+'</div><div class="res-s">'+P.vdAll[0].d+' 기록 기준</div></div>';
-h+='<div class="res-sm"><div class="res-t">예측 풀</div><div class="res-v" style="color:var(--gn)">'+s2t(z.mr)+'</div></div></div>';
-if(P.vdAll&&P.vdAll.length>1){h+='<div style="font-size:12px;color:var(--tx3);margin-bottom:8px">';for(var vi=0;vi<P.vdAll.length;vi++){h+=P.vdAll[vi].d+' VDOT: <span style="font-family:var(--m);color:var(--tx)">'+Math.round(P.vdAll[vi].v*10)/10+'</span> '}h+='<br>가장 긴 거리('+P.vdAll[0].d+') 기준으로 페이스존 설정</div>'}
-if(gap>0){h+='<div class="ins '+(gap>8?'al':gap>4?'w':'ok')+'"><div class="ins-t">Endurance gap: '+gap+'분</div><div class="ins-d">예측 '+s2t(z.mr)+' vs 실제 '+P.full+'</div></div>'}
-h+='<div class="res"><div class="res-t">페이스 존</div>';
-[['E',z.e,'var(--gn)'],['MP',z.mp,'var(--bl)'],['T',z.t,'var(--ac2)'],['I',z.i,'var(--am)'],['R',z.r,'var(--rd)']].forEach(function(x){
-h+='<div class="pz"><div class="pz-n" style="color:'+x[2]+'">'+x[0]+'</div><div class="pz-p" style="color:'+x[2]+'">'+x[1]+'/km</div></div>'});
-h+='</div>';
-h+='<div class="fg"><label>대회 이름</label><input type="text" id="i_rn" placeholder="예: 서울 마라톤 2026"></div>';
-h+='<div class="fg"><label>목표 기록</label><input type="text" id="i_gt" value="2:59:59"></div>';
-h+='<div class="fg"><label>대회 날짜</label><input type="date" id="i_gd" value="2026-11-01"></div>';
-h+='<div class="btn-row"><button class="btn btn-s" id="bk3" style="flex:1">이전</button><button class="btn btn-p" id="b4" style="flex:2">훈련 시작하기 →</button></div>';
-}
-h+='</div>';R.innerHTML=h;
+h='<div style="min-height:100dvh;display:flex;flex-direction:column;justify-content:flex-end;padding:32px 24px 48px;position:relative;background:#0a0a0a">';
+h+='<div style="position:absolute;inset:0;overflow:hidden"><div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(207,239,78,.08) 0%,transparent 70%);border-radius:50%"></div>';
+h+='<div style="position:absolute;top:30%;left:50%;transform:translateX(-50%);font-family:var(--fh);font-size:120px;font-weight:900;color:rgba(207,239,78,.03);letter-spacing:-5px;white-space:nowrap">MARATHON</div></div>';
+h+='<div style="position:relative;z-index:1">';
+h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:16px"><span style="width:8px;height:8px;border-radius:50%;background:#CFEF4E"></span><span style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.15em">marathon coach</span></div>';
+h+='<h1 style="font-family:var(--fh);font-size:44px;font-weight:900;color:#fff;letter-spacing:-0.03em;line-height:1.05;margin-bottom:12px">당신만의<br><span style="color:#CFEF4E">마라톤 코치</span></h1>';
+h+='<p style="font-size:15px;color:var(--tx3);line-height:1.6;margin-bottom:32px;max-width:280px">AI 기반 맞춤 훈련 프로그램.<br>데이터로 증명하는 서브-3 여정.</p>';
+h+='<button class="btn btn-p" style="width:100%;font-family:var(--fh);font-size:16px;padding:18px;border-radius:9999px" onclick="UI.step=1;goOnb()">시작하기</button>';
+h+='</div></div>';
+R.innerHTML=h;return}
 
-// Bind events
-if(s===0)document.getElementById('b1').onclick=function(){P={name:document.getElementById('i_n').value||'러너',age:parseInt(document.getElementById('i_a').value)||28,sex:document.getElementById('i_sx').value,ht:parseInt(document.getElementById('i_h').value)||175,wt:parseInt(document.getElementById('i_w').value)||68};UI.step=1;go()};
-if(s===1){var fn=function(){P.mu=parseFloat((document.getElementById('i_mu')||{}).value)||0;P.fat=parseFloat((document.getElementById('i_ft')||{}).value)||0;P.rhr=parseInt((document.getElementById('i_rh')||{}).value)||0;P.mhr=parseInt((document.getElementById('i_mh')||{}).value)||(220-P.age);UI.step=2;go()};document.getElementById('b2').onclick=fn;document.getElementById('bs').onclick=fn;document.getElementById('bk').onclick=function(){UI.step=0;go()}}
-if(s===2){document.getElementById('b3').onclick=function(){var r1=document.getElementById('i_10').value,r2=document.getElementById('i_hm').value,r3=document.getElementById('i_fm').value;if(!r1&&!r2&&!r3){
-// Assessment mode - no race records
-P.tenk='';P.half='';P.full='';P.vd=35;P.z=gZ(35);P.gap=0;P.vdAll=[{d:'추정',v:35,dist:0}];P.assess=true;UI.step=3;go();return}P.tenk=r1;P.half=r2;P.full=r3;
-// VDOT: prioritize longest distance for realistic marathon zones
-// Full > Half > 10K (longer = more relevant for marathon training)
-var vAll=[];
-if(r1){vAll.push({d:'10K',v:calcV(10,p2s(r1)),dist:10})}
-if(r2){vAll.push({d:'하프',v:calcV(21.0975,p2s(r2)),dist:21.1})}
-if(r3){vAll.push({d:'풀',v:calcV(42.195,p2s(r3)),dist:42.2})}
-vAll.sort(function(a,b){return b.dist-a.dist});
-// Use longest distance VDOT as primary, but show all
-var primary=vAll[0];P.vd=Math.round(primary.v*10)/10;P.vdAll=vAll;
-P.z=gZ(primary.v);
-if(r3){P.gap=Math.round((gt2s(r3)-P.z.mr)/60)}
-else if(r2){var predFull=P.z.mr;var riegelFull=Math.round(gt2s(r2)*Math.pow(42.195/21.0975,1.06));P.gap=Math.round((riegelFull-predFull)/60)}
-else{P.gap=0}UI.step=3;go()};document.getElementById('bk2').onclick=function(){UI.step=1;go()}}
-if(s===3){document.getElementById('b4').onclick=function(){P.rn=document.getElementById('i_rn').value||'';var gtv=document.getElementById('i_gt').value||'2:59:59';if(gtv.split(':').length===2)gtv=gtv+':00';P.gt=gtv;P.rd=document.getElementById('i_gd').value||'2026-11-01';P.done=true;svP();go()};document.getElementById('bk3').onclick=function(){UI.step=2;go()}}
-}
+var totalSteps=4;
+h='<div style="min-height:100dvh;padding:24px 24px 40px;display:flex;flex-direction:column;background:#131315">';
+h+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">';
+if(s>1||UI._editMode){h+='<div style="cursor:pointer;padding:8px;margin:-8px" onclick="'+(UI._editMode?'window._editBack()':'UI.step='+(s-1)+';goOnb()')+'"><span class="material-symbols-outlined" style="font-size:22px;color:var(--tx2)">arrow_back</span></div>'}
+h+='<div style="flex:1;display:flex;gap:4px">';for(var pi=1;pi<=totalSteps;pi++){h+='<div style="flex:1;height:3px;border-radius:2px;background:'+(pi<=s?'#CFEF4E':'#2a2a2c')+'"></div>'}
+h+='</div><span style="font-size:12px;font-weight:700;color:var(--tx3)">'+s+'/'+totalSteps+'</span></div>';
+
+if(s===1){
+h+='<div style="margin-bottom:24px"><div style="font-size:11px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">기본 정보</div><h2 style="font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.02em">당신에 대해<br>알려주세요</h2></div>';
+h+='<div class="fg"><label>이름</label><input type="text" id="i_n" placeholder="홍길동"></div>';
+h+='<div class="fg"><label>나이</label><input type="number" id="i_a" placeholder="30"></div>';
+h+='<div class="fg"><label>성별</label><select id="i_sx"><option value="M">남성</option><option value="F">여성</option></select></div>';
+h+='<div style="flex:1"></div>';
+h+='<button class="btn btn-p" style="width:100%;margin-top:16px;border-radius:9999px;font-family:var(--fh);font-weight:800" onclick="P={};P.name=document.getElementById(\'i_n\').value||\'러너\';P.age=document.getElementById(\'i_a\').value||30;P.sex=document.getElementById(\'i_sx\').value;UI.step=2;goOnb()">다음</button>';
+
+}else if(s===2){
+h+='<div style="margin-bottom:24px"><div style="font-size:11px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">신체 정보</div><h2 style="font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.02em">체형 데이터를<br>입력해주세요</h2></div>';
+h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>키 (cm)</label><input type="number" id="i_h" placeholder="175"></div><div class="fg"><label>체중 (kg)</label><input type="number" step="0.1" id="i_w" placeholder="70"></div></div>';
+h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>골격근량 (kg)</label><input type="number" step="0.1" id="i_mu" placeholder="선택"></div><div class="fg"><label>체지방률 (%)</label><input type="number" step="0.1" id="i_ft" placeholder="선택"></div></div>';
+h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="fg"><label>안정시 심박</label><input type="number" id="i_rh" placeholder="60"></div><div class="fg"><label>최대 심박</label><input type="number" id="i_mh" placeholder="190"></div></div>';
+h+='<div style="flex:1"></div>';
+h+='<button class="btn btn-p" style="width:100%;margin-top:16px;border-radius:9999px;font-family:var(--fh);font-weight:800" onclick="P.ht=document.getElementById(\'i_h\').value||175;P.wt=document.getElementById(\'i_w\').value||70;P.mu=document.getElementById(\'i_mu\').value||\'\';P.fat=document.getElementById(\'i_ft\').value||\'\';P.rhr=document.getElementById(\'i_rh\').value||60;P.mhr=document.getElementById(\'i_mh\').value||\'\';UI.step=3;goOnb()">다음</button>';
+
+}else if(s===3){
+h+='<div style="margin-bottom:24px"><div style="font-size:11px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">대회 기록</div><h2 style="font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.02em">최근 레이스<br>기록을 입력해주세요</h2></div>';
+h+='<div style="background:#1b1b1d;border-radius:16px;padding:14px;margin-bottom:14px;outline:1px solid rgba(207,239,78,.08)"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span class="material-symbols-outlined" style="font-size:18px;color:#CFEF4E">info</span><span style="font-size:13px;color:var(--tx2)">기록이 없어도 괜찮아요</span></div><div style="font-size:12px;color:var(--tx3);line-height:1.6">1주일 조깅 후 Strava 또는 .fit 데이터로 자동 분석</div></div>';
+h+='<div class="fg"><label>10K 기록</label><input type="text" id="i_10" placeholder="40:06 (MM:SS)"></div>';
+h+='<div class="fg"><label>하프마라톤 기록</label><input type="text" id="i_hm" placeholder="1:27:54 (H:MM:SS)"></div>';
+h+='<div class="fg"><label>풀마라톤 기록</label><input type="text" id="i_fm" placeholder="3:13:00 (H:MM:SS)"></div>';
+h+='<div style="display:flex;gap:8px;margin-top:16px">';
+h+='<button class="btn" style="flex:1;border-radius:9999px;background:#2a2a2c;color:var(--tx2);font-weight:700" onclick="P.tenk=\'\';P.half=\'\';P.full=\'\';P.vd=35;P.z=gZ(35);P.vdAll=[{d:\'추정\',v:35,dist:0}];P.assess=true;UI.step=4;goOnb()">건너뛰기</button>';
+h+='<button class="btn btn-p" style="flex:2;border-radius:9999px;font-family:var(--fh);font-weight:800" onclick="var r1=document.getElementById(\'i_10\').value,r2=document.getElementById(\'i_hm\').value,r3=document.getElementById(\'i_fm\').value;if(!r1&&!r2&&!r3){P.tenk=\'\';P.half=\'\';P.full=\'\';P.vd=35;P.z=gZ(35);P.vdAll=[{d:\'추정\',v:35,dist:0}];P.assess=true}else{P.tenk=r1;P.half=r2;P.full=r3;var vAll=[];if(r1)vAll.push({d:\'10K\',v:calcV(10,p2s(r1)),dist:10});if(r2)vAll.push({d:\'하프\',v:calcV(21.0975,p2s(r2)),dist:21.1});if(r3)vAll.push({d:\'풀\',v:calcV(42.195,p2s(r3)),dist:42.2});vAll.sort(function(a,b){return b.dist-a.dist});P.vd=Math.round(vAll[0].v*10)/10;P.vdAll=vAll;P.z=gZ(vAll[0].v)}UI.step=4;goOnb()">다음</button></div>';
+
+}else if(s===4){
+var z=P.z;var vdotDesc=P.vd>=55?'엘리트':P.vd>=50?'상급자':P.vd>=45?'중상급':P.vd>=40?'중급':P.vd>=35?'초중급':'입문';
+h+='<div style="margin-bottom:20px"><div style="font-size:11px;font-weight:700;color:#CFEF4E;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">분석 결과</div><h2 style="font-family:var(--fh);font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.02em">목표를 설정하세요</h2></div>';
+if(P.assess){h+='<div style="background:rgba(207,239,78,.05);border:1px solid rgba(207,239,78,.15);border-radius:14px;padding:12px;margin-bottom:12px;font-size:13px;color:var(--tx2)"><span style="color:#CFEF4E;font-weight:700">평가 모드</span> — 데이터가 쌓이면 자동 업그레이드</div>'}
+h+='<div style="background:#1b1b1d;border-radius:20px;padding:20px;margin-bottom:12px;outline:1px solid rgba(255,255,255,.05);text-align:center"><div style="font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:0.1em">YOUR VDOT</div><div style="font-family:var(--fh);font-size:52px;font-weight:900;color:#CFEF4E;line-height:1">'+P.vd+'</div><div style="font-size:14px;font-weight:600;color:var(--tx2);margin-top:2px">'+vdotDesc+'</div></div>';
+h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px"><div style="background:#1b1b1d;border-radius:12px;padding:10px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase">이지</div><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#30D158">'+z.e+'</div></div><div style="background:#1b1b1d;border-radius:12px;padding:10px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase">마라톤</div><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#0A84FF">'+z.mp+'</div></div><div style="background:#1b1b1d;border-radius:12px;padding:10px;text-align:center;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:9px;color:var(--tx3);font-weight:700;text-transform:uppercase">인터벌</div><div style="font-family:var(--fh);font-size:18px;font-weight:800;color:#FF453A">'+z.i+'</div></div></div>';
+h+='<div class="fg"><label>대회 이름</label><input type="text" id="i_rn" placeholder="서울 마라톤 2026"></div>';
+h+='<div class="fg"><label>목표 기록</label><input type="text" id="i_gt" value="2:59:59"></div>';
+h+='<div class="fg"><label>대회 날짜</label><input type="date" id="i_gd"></div>';
+h+='<button class="btn btn-p" style="width:100%;margin-top:16px;border-radius:9999px;font-family:var(--fh);font-size:16px;padding:18px;font-weight:800;text-transform:uppercase" onclick="P.rn=document.getElementById(\'i_rn\').value||\'\';var gtv=document.getElementById(\'i_gt\').value||\'2:59:59\';if(gtv.split(\':\').length===2)gtv=gtv+\':00\';P.gt=gtv;P.rd=document.getElementById(\'i_gd\').value;if(!P.rd){toast(\'대회 날짜를 선택해주세요\');return}P.done=true;svP();UI._cwInit=false;UI._cdInit=false;go()">완료 — 훈련 시작!</button>'}
+h+='</div>';
+R.innerHTML=h}
 
 window._calTap=function(ts){var SC2=gSC();for(var fw=1;fw<=Object.keys(SC2).length;fw++){var fws=SC2[fw].w1;for(var fd=0;fd<7;fd++){var fdd=new Date(fws.getTime()+fd*864e5);fdd.setHours(0,0,0,0);if(fdd.getTime()===ts){UI.cw=fw;UI._cwInit=true;UI.schedView='week';go();return}}}};
 window._tab=function(t){UI.tab=t;go()};
