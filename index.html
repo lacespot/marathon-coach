@@ -519,7 +519,8 @@ var cw=UI.cw,wk=SC[cw];if(!wk){UI.cw=1;cw=1;wk=SC[1]}
 
 // Schedule header with view toggle
 h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
-h+='<div style="font-size:20px;font-weight:700">'+(UI.schedView==='month'?(new Date(wk.w1).getMonth()+1)+'월':'W'+cw+' · '+wk.ph)+'</div>';
+if(UI.schedView==='month'){h+='<div><div style="font-family:var(--fh);font-size:28px;font-weight:800;letter-spacing:-0.03em;text-transform:uppercase;color:#fff">'+(new Date(wk.w1).getMonth()+1)+'월</div><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--tx3)">마라톤 단계: '+wk.ph+'</div></div>'}
+else{h+='<div><div style="font-family:var(--fh);font-size:28px;font-weight:800;letter-spacing:-0.03em;text-transform:uppercase;color:#fff">W'+cw+'</div><div style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--tx3)">'+wk.ph+' · '+wk.km+'km 목표</div></div>'}
 h+='<div style="display:flex;gap:2px;background:var(--bg2);border-radius:10px;padding:2px">';
 h+='<div style="padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.schedView==='week'?'background:var(--bg3);color:var(--tx)':'color:var(--tx3)')+'" onclick="UI.schedView=\'week\';go()">주간</div>';
 h+='<div style="padding:8px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;'+(UI.schedView==='month'?'background:var(--bg3);color:var(--tx)':'color:var(--tx3)')+'" onclick="UI.schedView=\'month\';go()">월간</div>';
@@ -558,9 +559,11 @@ for(var sd=0;sd<7;sd++){var sdd=new Date(sws.getTime()+sd*864e5);sdd.setHours(0,
 if(sdd.getTime()===cellDate.getTime()){
 var ck='w'+sw+'d'+sd;cellSess=(P.cust&&P.cust[ck])?P.cust[ck]:SC[sw].d[sd];cellType=cellSess.type;cellDone=!!S[ck];break}}if(cellSess)break}
 var cellColor=cellType==='point'?'#FF453A':cellType==='tempo'?'#0A84FF':cellType==='long'?'#30D158':cellType==='rest'?'#3A3A3C':'#FFD60A';
-h+='<div style="aspect-ratio:1;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.15);'+(isToday?'border:2px solid var(--ac);':'')+(isThisMonth?'':'opacity:.3;')+'background:'+(cellDone?cellColor+'22':'var(--bg2)')+'" onclick="window._calTap('+cellDate.getTime()+')">';
+h+='<div style="aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;position:relative;'+(isToday?'border:2px solid #CFEF4E;box-shadow:0 0 20px rgba(207,239,78,.1);':'')+(isThisMonth?'':'opacity:.3;')+'background:'+(cellDone?cellColor+'22':'var(--bg2)')+'" onclick="window._calTap('+cellDate.getTime()+')">';
 h+='<div style="font-weight:'+(isToday?'700':'500')+';color:'+(isToday?'var(--ac)':'var(--tx)')+'">'+cellDate.getDate()+'</div>';
-if(cellSess&&cellType!=='rest'){h+='<div style="width:6px;height:6px;border-radius:50%;background:'+cellColor+';margin-top:2px;'+(cellDone?'':'opacity:.5')+'"></div>'}
+if(cellSess&&cellType!=='rest'){
+var matIcon=cellType==='point'?'repeat':cellType==='tempo'?'bolt':cellType==='long'?'distance':'timer';
+h+='<span class="material-symbols-outlined" style="font-size:14px;color:#CFEF4E;margin-top:2px;'+(cellDone?'font-variation-settings:\'FILL\' 1':'opacity:.5')+'">'+matIcon+'</span>'}
 h+='</div>'}
 h+='</div>';
 
@@ -606,6 +609,7 @@ var isOpen=!!UI.sOpen[ci2];
 var isToday2=ci2===todayIdx;
 var sessData=S['w'+cw+'d'+ci2];
 var stcl2=cd3.type==='point'?'#FF453A':cd3.type==='tempo'?'#0A84FF':cd3.type==='long'?'#30D158':cd3.type==='rest'?'#636366':'#FFD60A';
+var matIcon2=cd3.type==='point'?'repeat':cd3.type==='tempo'?'bolt':cd3.type==='long'?'distance':cd3.type==='rest'?'bedtime':'timer';
 var isCustom=P.cust&&P.cust['w'+cw+'d'+ci2];
 
 h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.25);border-left:3px solid '+stcl2+';'+(isToday2?'border:2px solid var(--ac);border-left:3px solid var(--ac)':'')+'">';
@@ -620,7 +624,8 @@ h+='<div style="min-width:40px;text-align:center"><div style="font-size:10px;col
 h+='<div style="flex:1;min-width:0">';
 h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:1px">';
 if(isToday2)h+='<span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--ac);color:#1a1a1a">TODAY</span>';
-h+='<span style="font-size:11px;font-weight:600;color:'+stcl2+'">'+(isCustom?'커스텀':(TN[cd3.type]||'이지'))+'</span>';
+h+='<span class="material-symbols-outlined" style="font-size:16px;color:#CFEF4E'+(cd3.type==='rest'?';opacity:.4':'')+'"'+(isDone?' style="font-variation-settings:\'FILL\' 1;font-size:16px;color:#CFEF4E"':'')+'>'+matIcon2+'</span>';
+h+='<span style="font-size:11px;font-weight:700;color:'+stcl2+';text-transform:uppercase;letter-spacing:0.05em">'+(isCustom?'커스텀':(TN[cd3.type]||'이지'))+'</span>';
 if(isDone)h+='<span style="font-size:10px;color:var(--gn)">✓</span>';
 h+='</div>';
 h+='<div style="font-size:16px;font-weight:600;color:var(--tx)">'+cd3.l+'</div>';
@@ -640,7 +645,7 @@ h+='<span style="font-size:14px;color:var(--tx3);padding:4px;flex-shrink:0">'+(i
 
 // Expanded detail
 if(isOpen){
-h+='<div style="padding:0 16px 14px;border-top:0.5px solid rgba(255,255,255,.04)">';
+h+='<div style="padding:0 16px 14px;border-top:0.5px solid rgba(255,255,255,.04);position:relative"><div style="position:absolute;top:0;right:0;width:120px;height:120px;background:rgba(207,239,78,.03);border-radius:50%;filter:blur(40px);pointer-events:none"></div>';
 
 // Session steps
 if(cd3.type!=='rest'){
