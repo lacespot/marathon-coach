@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <link rel="manifest" href="manifest.json">
@@ -21,19 +22,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--bg:#000;--bg2:#1C1C1E;--bg3:#2C2C2E;--bg4:#3A3A3C;--tx:#F5F5F7;--tx2:#AEAEB2;--tx3:#636366;--ac:#CFEF4E;--ac2:#CFEF4E;--acb:rgba(232,255,90,.08);--gn:#30D158;--gnb:rgba(48,209,88,.12);--rd:#FF453A;--rdb:rgba(255,69,58,.12);--am:#FFD60A;--amb:rgba(255,214,10,.12);--bl:#0A84FF;--blb:rgba(10,132,255,.12);--f:'Pretendard',-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;--m:'SF Mono','JetBrains Mono','Menlo',monospace;--r:12px;--rl:16px}
-body{font-family:var(--f);background:#131315;color:#e4e2e4;line-height:1.5;font-size:17px;min-height:100dvh;padding-top:env(safe-area-inset-top);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+:root{--bg:#000;--bg2:#1C1C1E;--bg3:#2C2C2E;--bg4:#3A3A3C;--tx:#F5F5F7;--tx2:#AEAEB2;--tx3:#636366;--ac:#CFEF4E;--ac2:#CFEF4E;--acb:rgba(232,255,90,.08);--gn:#30D158;--gnb:rgba(48,209,88,.12);--rd:#FF453A;--rdb:rgba(255,69,58,.12);--am:#FFD60A;--amb:rgba(255,214,10,.12);--bl:#0A84FF;--blb:rgba(10,132,255,.12);--f:'Inter','Pretendard',-apple-system,sans-serif;--fh:'Plus Jakarta Sans','Pretendard',sans-serif;--m:'SF Mono','JetBrains Mono','Menlo',monospace;--r:12px;--rl:16px}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);line-height:1.5;font-size:15px;min-height:100dvh;padding-top:env(safe-area-inset-top);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 .app{max-width:480px;margin:0 auto;padding:20px 20px 120px}
 .onb{min-height:90dvh;display:flex;flex-direction:column;justify-content:center;padding:24px 24px;max-width:480px;margin:0 auto}
 .onb-title{font-size:34px;font-weight:700;letter-spacing:-1px;margin-bottom:4px}.onb-title span{color:var(--ac2)}
 .onb-sub{font-size:17px;color:var(--tx2);margin-bottom:28px}
 .onb-step{font-size:13px;color:var(--ac);font-weight:600;margin-bottom:14px;letter-spacing:1px}
-.fg{margin-bottom:12px}.fg label{display:block;font-size:10px;color:var(--tx3);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em}
-.fg input,.fg select{width:100%;background:#1f1f21;border:1px solid rgba(255,255,255,.05);color:#e4e2e4;font-family:var(--f);font-size:16px;padding:14px 16px;border-radius:12px;min-height:44px;outline:none;-webkit-appearance:none}
+.fg{margin-bottom:12px}.fg label{display:block;font-size:13px;color:var(--tx2);font-weight:500;margin-bottom:6px}
+.fg input,.fg select{width:100%;background:var(--bg2);border:1px solid rgba(255,255,255,.08);color:var(--tx);font-family:var(--m);font-size:17px;padding:14px 16px;border-radius:12px;min-height:44px;outline:none;-webkit-appearance:none}
 .fg input::placeholder{color:var(--tx3)}.fg input:focus,.fg select:focus{border-color:var(--ac)}
 .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn{font-family:var(--f);font-size:17px;font-weight:600;padding:16px 28px;border-radius:14px;min-height:50px;transition:transform .1s,opacity .1s;cursor:pointer;border:none;width:100%;margin-top:12px}
-.btn-p{background:#CFEF4E;color:#2a3400;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;border-radius:9999px}.btn-p:active{transform:scale(.97)}
+.btn-p{background:#D4E157;color:#1a1a1a;font-weight:700}.btn-p:active{transform:scale(.97)}
 .btn-s{background:var(--bg3);color:var(--tx2);border:1px solid rgba(255,255,255,.06)}
 .btn-d{background:var(--rdb);color:var(--rd)}
 .btn-sm{padding:10px 16px;font-size:12px;width:auto;margin-top:0}
@@ -51,8 +52,8 @@ body{font-family:var(--f);background:#131315;color:#e4e2e4;line-height:1.5;font-
 .ins.al{border-left:3px solid var(--rd);background:rgba(255,107,107,.03)}
 .ins-t{font-weight:600;margin-bottom:2px}.ins-d{color:var(--tx2)}
 .bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(28,28,30,.92);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:0.5px solid rgba(255,255,255,.08);box-shadow:0 -2px 12px rgba(0,0,0,.4);display:flex;justify-content:space-around;padding:8px 0 0;padding-bottom:max(20px,env(safe-area-inset-bottom));z-index:50}
-.bnav-i{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;flex:1;min-height:44px;justify-content:center;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
-.bnav-i.ac{color:var(--ac);background:rgba(207,239,78,.1);border-radius:9999px;padding:6px 16px}
+.bnav-i{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;flex:1;min-height:44px;justify-content:center;color:var(--tx3);cursor:pointer;border:none;background:none;font-family:var(--f)}
+.bnav-i.ac{color:var(--ac);background:rgba(207,239,78,.1);border-radius:20px;padding:6px 12px}
 .bnav-i svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.5}
 .ws{display:flex;gap:3px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin-bottom:8px}
 .ws::-webkit-scrollbar{display:none}
@@ -69,8 +70,8 @@ body{font-family:var(--f);background:#131315;color:#e4e2e4;line-height:1.5;font-
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
 .stat{background:var(--bg2);border-radius:12px;padding:12px 8px}
 .stat-l{font-size:11px;color:var(--tx2);margin-bottom:1px}.stat-v{font-family:var(--m);font-size:22px;font-weight:600}
-.cd{background:#1b1b1d;border:none;border-radius:24px;padding:20px;margin-bottom:12px;box-shadow:none;outline:1px solid rgba(255,255,255,.05)}
-.st{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--tx2);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cd{background:var(--bg3);border:none;border-radius:12px;padding:16px;margin-bottom:10px}
+.st{font-family:var(--fh);font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:-.3px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .st .dot{width:5px;height:5px;border-radius:2px}
 .detail{background:rgba(255,255,255,.04);border-radius:12px;padding:14px;margin-bottom:8px;font-size:15px;line-height:1.5}
 .detail-h{font-weight:600;margin-bottom:3px;font-size:13px}.detail-d{color:var(--tx2)}
@@ -357,7 +358,7 @@ h+='<div style="margin-bottom:14px;position:relative">';
 h+='<div style="font-size:13px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:2px">marathon coach</div>';
 var heroTitle=P.title||P.name+'의 런';
 var titleParts=heroTitle.split(' ');var lastWord=titleParts.pop();var firstPart=titleParts.join(' ');
-h+='<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:36px;font-weight:800;color:#fff;letter-spacing:-0.03em;line-height:1.05;font-family:var(--fh)">'+(firstPart?firstPart+' ':'')+'<span style="color:var(--ac)">'+lastWord+'</span></div>';
+h+='<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-family:var(--fh);font-size:32px;font-weight:800;color:var(--tx);letter-spacing:-1px;line-height:1.1">'+(firstPart?firstPart+' ':'')+'<span style="color:var(--ac)">'+lastWord+'</span></div>';
 h+='<div style="display:flex;gap:6px;align-items:center">';
 
 h+='<div style="cursor:pointer;padding:10px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center" onclick="UI.settings=!UI.settings;go()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+(UI.settings?'var(--ac)':'var(--tx3)')+'" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>';
@@ -436,11 +437,11 @@ h+='</div>';
 R.innerHTML='<div class="app">'+h+'</div>';renderNav();return}
 
 // Stat strip
-h+='<div style="display:flex;gap:6px;margin-bottom:12px">';
-h+='<div style="flex:1;padding:12px 8px;text-align:center;background:#1b1b1d;border-radius:16px;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">VDOT</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;color:#CFEF4E;letter-spacing:-0.02em">'+P.vd+'</div></div>';
-h+='<div style="flex:1;padding:8px 6px;text-align:center;background:#1b1b1d;border-radius:16px;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">D-DAY</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.02em">'+dday+'</div></div>';
-h+='<div style="flex:1;padding:8px 6px;text-align:center;background:#1b1b1d;border-radius:16px;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">이번주</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.02em">W'+cw+'</div></div>';
-h+='<div style="flex:1;padding:8px 6px;text-align:center;background:#1b1b1d;border-radius:16px;outline:1px solid rgba(255,255,255,.05)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">페이즈</div><div style="font-size:13px;font-weight:700;color:var(--ac)">'+wk.ph.replace('기','')+'</div></div>';
+h+='<div style="display:flex;gap:6px;margin-bottom:14px">';
+h+='<div style="flex:1;padding:12px 8px;text-align:center;background:var(--bg3);border-radius:12px"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">VDOT</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;color:var(--ac);letter-spacing:-1px">'+P.vd+'</div></div>';
+h+='<div style="flex:1;padding:8px 6px;text-align:center;background:var(--bg2);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.3)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">D-DAY</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;letter-spacing:-1px">'+dday+'</div></div>';
+h+='<div style="flex:1;padding:8px 6px;text-align:center;background:var(--bg2);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.3)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">이번주</div><div style="font-family:var(--fh);font-size:20px;font-weight:800;letter-spacing:-1px">W'+cw+'</div></div>';
+h+='<div style="flex:1;padding:8px 6px;text-align:center;background:var(--bg2);border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,.3)"><div style="font-size:13px;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px">페이즈</div><div style="font-size:13px;font-weight:700;color:var(--ac)">'+wk.ph.replace('기','')+'</div></div>';
 h+='</div>';
 
 if(UI.tab==='today'){
@@ -474,7 +475,16 @@ h+='<div id="weatherCard" style="background:var(--bg2);border:1px solid rgba(255
 // Today session card
 var cd=(P.cust&&P.cust['w'+UI.cw+'d'+UI.cd])?P.cust['w'+UI.cw+'d'+UI.cd]:wk.d[UI.cd];
 var dd=new Date(wk.w1.getTime()+UI.cd*864e5);
-h+='<div class="cd" style="position:relative;overflow:hidden;border-left:3px solid '+stx+'"><div style="position:absolute;top:0;right:0;background:var(--ac);color:#000;font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 0 0 10px;font-family:var(--f)">TODAY</div>';
+var isToday3=(function(){var rt=new Date();rt.setHours(0,0,0,0);var dd6=new Date(wk.w1.getTime()+UI.cd*864e5);dd6.setHours(0,0,0,0);return rt.getTime()===dd6.getTime()})();
+if(isToday3){
+h+='<div style="background:var(--ac);color:#000;border-radius:12px;padding:20px;margin-bottom:10px;position:relative;overflow:hidden">';
+h+='<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:2px;opacity:.7">'+(new Date().getMonth()+1)+'월 '+(new Date().getDate())+'일 • 오늘</div>';
+h+='<div style="font-family:var(--fh);font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:4px">'+cd.l+'</div></div>';
+h+='<div style="background:rgba(0,0,0,.15);padding:8px;border-radius:50%"><span class="material-symbols-outlined" style="font-size:20px">'+
+(cd.type==='tempo'?'speed':cd.type==='point'?'bolt':cd.type==='long'?'route':cd.type==='rest'?'bedtime':'directions_run')+'</span></div></div>';
+}else{
+h+='<div class="cd" style="position:relative;overflow:hidden;border-left:3px solid '+stx+'">';
+}
 h+='<div style="font-size:11px;color:var(--tx2);margin-bottom:6px">'+(dd.getMonth()+1)+'월 '+dd.getDate()+'일 ('+DY[UI.cd]+') — 오늘</div>';
 var stGrad=cd.type==='tempo'?'linear-gradient(90deg,#5BA4F5,#70C4FF)':cd.type==='long'?'linear-gradient(90deg,#2DD4A0,#5EFCE8)':cd.type==='point'?'linear-gradient(90deg,#FF4757,#FF6B81)':cd.type==='rest'?'linear-gradient(90deg,#444,#555)':'linear-gradient(90deg,#FFB347,#FFD93D)';
 var stc=cd.type==='tempo'?'var(--blb)':cd.type==='long'?'var(--gnb)':cd.type==='point'?'var(--rdb)':cd.type==='rest'?'rgba(255,255,255,.04)':'var(--amb)';
@@ -574,7 +584,7 @@ h+='</div>';
 // Week info + progress
 var doneCnt=0,doneKm=0;for(var dc=0;dc<7;dc++){var dk2='w'+cw+'d'+dc;if(S[dk2]){doneCnt++;doneKm+=parseFloat(S[dk2].distance)||0}}
 h+='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><span style="font-size:14px;color:var(--tx2)">완료 '+doneCnt+'/7</span><span style="font-family:var(--m);font-size:14px;color:var(--ac)">'+(doneCnt?Math.round(doneKm*10)/10:'0')+' / '+wk.km+'km</span></div>';
-h+='<div style="height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-bottom:14px"><div style="width:'+Math.round(doneCnt/7*100)+'%;height:100%;background:linear-gradient(135deg,#CFEF4E,#b4d333);border-radius:3px;box-shadow:0 0 15px rgba(207,239,78,.3)"></div></div>';
+h+='<div style="height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-bottom:14px"><div style="width:'+Math.round(doneCnt/7*100)+'%;height:100%;background:var(--gn);border-radius:3px"></div></div>';
 
 // Today highlight + next session preview
 var todayIdx=-1;var realToday2=new Date();realToday2.setHours(0,0,0,0);
@@ -598,7 +608,7 @@ var sessData=S['w'+cw+'d'+ci2];
 var stcl2=cd3.type==='point'?'#FF453A':cd3.type==='tempo'?'#0A84FF':cd3.type==='long'?'#30D158':cd3.type==='rest'?'#636366':'#FFD60A';
 var isCustom=P.cust&&P.cust['w'+cw+'d'+ci2];
 
-h+='<div style="background:var(--bg2);border-radius:24px;margin-bottom:8px;overflow:hidden;outline:1px solid rgba(255,255,255,.05);border-left:3px solid '+stcl2+';'+(isToday2?'border:2px solid var(--ac);border-left:3px solid var(--ac)':'')+'">';
+h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.25);border-left:3px solid '+stcl2+';'+(isToday2?'border:2px solid var(--ac);border-left:3px solid var(--ac)':'')+'">';
 
 // Card header
 h+='<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer" onclick="window._stog('+ci2+')">';
@@ -733,7 +743,7 @@ h+='<div style="height:12px"></div>'}
 
 var tI=[['vol','📏','주간 주행거리','목표 대비 실제 볼륨'],['gct','👟','GCT vs 페이스','엘리트·마스터즈 비교'],['ready','🎯','레이스 준비도','종합 점수 0~100'],['load','⚡','훈련 부하','급성:만성 비율']];
 for(var tii=0;tii<tI.length;tii++){var tid=tI[tii][0],tic=tI[tii][1],tit=tI[tii][2],tid2=tI[tii][3],tO=!!UI.tOpen[tid];
-h+='<div style="background:#1b1b1d;border-radius:24px;margin-bottom:8px;overflow:hidden;outline:1px solid rgba(255,255,255,.05)'+(tO?';border:1px solid rgba(232,255,90,.12)':'')+'">';
+h+='<div style="background:var(--bg2);border-radius:14px;margin-bottom:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.25)'+(tO?';border:1px solid rgba(232,255,90,.12)':'')+'">';
 h+='<div style="display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;min-height:60px" onclick="UI.tOpen.'+tid+'=!UI.tOpen.'+tid+';go()">';
 h+='<span style="font-size:24px">'+tic+'</span><div style="flex:1"><div style="font-size:17px;font-weight:600;color:var(--tx)">'+tit+'</div><div style="font-size:13px;color:var(--tx3)">'+tid2+'</div></div>';
 h+='<span style="font-size:16px;color:var(--tx3)">'+(tO?'▲':'▼')+'</span></div>';
@@ -838,7 +848,16 @@ h+='<div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidd
 h+='<div style="font-size:11px;color:var(--tx3)">'+(shoePct>85?'교체 시기가 다가왔어요!':shoePct>60?'절반 이상 사용. 상태 체크.':'아직 여유 있어요.')+'</div></div>';
 
 // 갈치냐옹 코치
-h+='<div class="cd" style="position:relative;overflow:hidden;border-left:3px solid '+stx+'"><div style="position:absolute;top:0;right:0;background:var(--ac);color:#000;font-size:10px;font-weight:700;padding:4px 12px;border-radius:0 0 0 10px;font-family:var(--f)">TODAY</div>';
+var isToday3=(function(){var rt=new Date();rt.setHours(0,0,0,0);var dd6=new Date(wk.w1.getTime()+UI.cd*864e5);dd6.setHours(0,0,0,0);return rt.getTime()===dd6.getTime()})();
+if(isToday3){
+h+='<div style="background:var(--ac);color:#000;border-radius:12px;padding:20px;margin-bottom:10px;position:relative;overflow:hidden">';
+h+='<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:2px;opacity:.7">'+(new Date().getMonth()+1)+'월 '+(new Date().getDate())+'일 • 오늘</div>';
+h+='<div style="font-family:var(--fh);font-size:28px;font-weight:800;letter-spacing:-1px;margin-top:4px">'+cd.l+'</div></div>';
+h+='<div style="background:rgba(0,0,0,.15);padding:8px;border-radius:50%"><span class="material-symbols-outlined" style="font-size:20px">'+
+(cd.type==='tempo'?'speed':cd.type==='point'?'bolt':cd.type==='long'?'route':cd.type==='rest'?'bedtime':'directions_run')+'</span></div></div>';
+}else{
+h+='<div class="cd" style="position:relative;overflow:hidden;border-left:3px solid '+stx+'">';
+}
 h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--acb);display:flex;align-items:center;justify-content:center;font-size:16px">🐟</div><div><div style="font-size:12px;font-weight:600;color:var(--tx)">갈치냐옹 코치</div><div style="font-size:11px;color:var(--tx3)">너의 러닝 파트너</div></div></div>';
 
 // Quick action buttons
